@@ -1,8 +1,14 @@
 {
   "name": "warehouse",
   "version": "0.0.1",
-  "main": "lib/index.js",
   "description": "JSON-based database",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "./lib",
+  },
+  "scripts": {
+    "test": "make test"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/tommy351/warehouse.git"
@@ -18,5 +24,9 @@
   },
   "dependencies": {
     "underscore": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
   }
 }
