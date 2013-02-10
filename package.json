@@ -1,0 +1,22 @@
+{
+  "name": "warehouse",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "description": "JSON-based database",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tommy351/warehouse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tommy351/warehouse/issues"
+  },
+  "keywords": ["database", "json", "db"],
+  "author": "Tommy Chen <tommy351@gmail.com> (http://zespia.tw)",
+  "license": {
+    "type": "MIT",
+    "url": "https://raw.github.com/tommy351/warehouse/master/LICENSE"
+  },
+  "dependencies": {
+    "underscore": "*"
+  }
+}
