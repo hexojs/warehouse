@@ -1,4 +1,5 @@
-var Database = require('../lib'),
+var fs = require('fs'),
+  Database = require('../lib'),
   db = new Database();
 
 var posts = db.model('posts', {
@@ -487,4 +488,26 @@ describe('Store', function(){
       (typeof item).should.eql('undefined');
     });
   })
+});
+
+describe('Database', function(){
+  describe('save()', function(){
+    it('saves database', function(done){
+      db.save('db.json', function(){
+        done();
+      });
+    });
+  });
+
+  describe('load()', function(){
+    it('loads database', function(done){
+      var newdb = new Database('db.json');
+      newdb._store.list().should.eql(require('../db.json'));
+      done();
+    })
+  });
+
+  after(function(){
+    fs.unlink('db.json');
+  });
 });
