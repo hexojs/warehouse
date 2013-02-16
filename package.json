@@ -1,7 +1,7 @@
 {
   "name": "warehouse",
   "version": "0.0.1",
-  "description": "JSON-based database",
+  "description": "Simple JSON-based database",
   "main": "lib/index.js",
   "directories": {
     "lib": "./lib"
