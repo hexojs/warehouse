@@ -372,7 +372,7 @@ describe('Model', function(){
       (typeof posts.get(5)).should.eql('undefined');
     });
 
-    it('no argument - all items', function(){
+    it('all items', function(){
       posts.insert([{}, {}, {}]);
       posts.remove();
       posts._index.should.eql([]);
@@ -381,4 +381,45 @@ describe('Model', function(){
       (typeof posts.get(8)).should.eql('undefined');
     });
   });
+});
+
+describe('Store', function(){
+  var obj = {foo: 1, bar: 2},
+    store = new db.Store(obj);
+
+  describe('list()', function(){
+    it('should return all elements', function(){
+      var list = store.list();
+      list.should.eql(obj);
+    });
+  });
+
+  describe('get()', function(){
+    it('should return the specific element', function(){
+      var item = store.get('foo');
+      item.should.eql(1);
+    });
+  });
+
+  describe('set()', function(){
+    it('should update the specific element', function(){
+      store.set('foo', 4);
+      var item = store.get('foo');
+      item.should.eql(4);
+    });
+
+    it('should insert a new element', function(){
+      store.set('test', 'test');
+      var item = store.get('test');
+      item.should.eql('test');
+    });
+  });
+
+  describe('remove()', function(){
+    it('should remove the specific element', function(){
+      store.remove('test');
+      var item = store.get('test');
+      (typeof item).should.eql('undefined');
+    });
+  })
 });
