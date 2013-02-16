@@ -23,7 +23,7 @@
     "url": "https://raw.github.com/tommy351/warehouse/master/LICENSE"
   },
   "dependencies": {
-    "underscore": "*"
+    "lodash": "*"
   },
   "devDependencies": {
     "mocha": "*",
