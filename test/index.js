@@ -87,19 +87,19 @@ describe('Model', function(){
   });
 
   describe('count()', function(){
-    it('should equal 3', function(){
+    it('equals 3', function(){
       posts.count().should.eql(3);
     });
   });
 
   describe('length', function(){
-    it('should equal 3', function(){
+    it('equals 3', function(){
       posts.length.should.eql(3);
     });
   });
 
   describe('toArray()', function(){
-    it('should return an array including all items', function(){
+    it('returns an array including all items', function(){
       var arr = posts.toArray();
       for (var i=0, len=arr.length; i<len; i++){
         arr[i].should.eql(results[i + 1]);
@@ -108,7 +108,7 @@ describe('Model', function(){
   });
 
   describe('each()', function(){
-    it('should iterate over all items', function(){
+    it('iterates over all items', function(){
       posts.each(function(item, i){
         item.should.eql(results[i]);
       });
@@ -116,59 +116,59 @@ describe('Model', function(){
   });
 
   describe('first()', function(){
-    it('should return the first element', function(){
+    it('returns the first element', function(){
       var item = posts.first();
       item.should.eql(results[1]);
     });
   });
 
   describe('last()', function(){
-    it('should return the last element', function(){
+    it('returns the last element', function(){
       var item = posts.last();
       item.should.eql(results[3]);
     });
   });
 
   describe('eq()', function(){
-    it('should return the second element', function(){
+    it('returns the second element', function(){
       var item = posts.eq(1);
       item.should.eql(results[2]);
     });
 
-    it('should return the last element', function(){
+    it('returns the last element', function(){
       var item = posts.eq(-1);
       item.should.eql(results[3]);
     });
   });
 
   describe('slice()', function(){
-    it('should return the second element', function(){
+    it('returns the second element', function(){
       var item = posts.slice(1, 2);
       item._index.should.eql([2]);
     });
 
-    it('should return the last element', function(){
+    it('returns the last element', function(){
       var item = posts.slice(-1);
       item._index.should.eql([3]);
     });
   });
 
   describe('limit()', function(){
-    it('should return the first two elements', function(){
+    it('returns the first two elements', function(){
       var item = posts.limit(2);
       item._index.should.eql([1, 2]);
     });
   });
 
   describe('skip()', function(){
-    it('should skip the first two elements', function(){
+    it('skips the first two elements', function(){
       var item = posts.skip(2);
       item._index.should.eql([3]);
     });
   });
 
   describe('random()', function(){
-    it('should shuffle the model', function(){
+    it('shuffles the model', function(){
       var item = posts.random();
       item._index.should.include(1);
       item._index.should.include(2);
@@ -189,7 +189,7 @@ describe('Model', function(){
   });
 
   describe('reverse()', function(){
-    it('should return a reversed model', function(){
+    it('returns a reversed model', function(){
       var item = posts.reverse();
       item._index.should.eql([3, 2, 1]);
     });
@@ -383,32 +383,97 @@ describe('Model', function(){
   });
 });
 
+var schema = new db.Schema({
+  first: String,
+  last: String
+});
+
+schema.virtual('full').get(function(){
+  return this.first + ' ' + this.last;
+}).set(function(name){
+  var arr = name.split(' ');
+  this.first = arr[0];
+  this.last = arr[1];
+});
+
+schema.methods.getAll = function(){
+  var obj = {};
+  this.each(function(item, id){
+    obj[id] = item;
+  });
+  return obj;
+};
+
+var users = db.model('users', schema);
+users.insert({first: 'John', last: 'Doe'});
+
+describe('Schema', function(){
+  describe('get()', function(){
+    it('returns the virtual field', function(){
+      var item = users.get(1);
+      item.full.should.eql('John Doe');
+    });
+  });
+
+  describe('set()', function(){
+    it('inserts data based on the virtual field', function(){
+      users.insert({full: 'Tommy Chen'}, function(item){
+        item.should.include({
+          first: 'Tommy',
+          last: 'Chen',
+          full: 'Tommy Chen'
+        });
+      });
+    });
+  });
+
+  describe('methods', function(){
+    it('getAll', function(){
+      var item = users.getAll();
+      item.should.eql({
+        '1': {
+          first: 'John',
+          last: 'Doe',
+          full: 'John Doe',
+          _id: 1
+        },
+        '2': {
+          first: 'Tommy',
+          last: 'Chen',
+          full: 'Tommy Chen',
+          _id: 2
+        }
+      });
+    });
+  });
+});
+
 describe('Store', function(){
   var obj = {foo: 1, bar: 2},
     store = new db.Store(obj);
 
   describe('list()', function(){
-    it('should return all elements', function(){
+    it('returns all elements', function(){
       var list = store.list();
       list.should.eql(obj);
     });
   });
 
   describe('get()', function(){
-    it('should return the specific element', function(){
+    it('returns the specific element', function(){
       var item = store.get('foo');
       item.should.eql(1);
     });
   });
 
   describe('set()', function(){
-    it('should update the specific element', function(){
+    it('updates the specific element', function(){
       store.set('foo', 4);
       var item = store.get('foo');
       item.should.eql(4);
     });
 
-    it('should insert a new element', function(){
+    it('inserts a new element', function(){
       store.set('test', 'test');
       var item = store.get('test');
       item.should.eql('test');
@@ -416,7 +481,7 @@ describe('Store', function(){
   });
 
   describe('remove()', function(){
-    it('should remove the specific element', function(){
+    it('removes the specific element', function(){
       store.remove('test');
       var item = store.get('test');
       (typeof item).should.eql('undefined');
