@@ -1,6 +1,7 @@
 var fs = require('fs'),
   Database = require('../lib'),
-  db = new Database();
+  db = new Database(),
+  util = db.util;
 
 var posts = db.model('posts', {
   title: String,
@@ -509,5 +510,66 @@ describe('Database', function(){
 
   after(function(){
     fs.unlink('db.json');
+  });
+});
+
+var randomArr = function(){
+  var result = [];
+  for (var i=0; i<100; i++){
+    result.push(parseInt(Math.random() * 100));
+  }
+  return result;
+};
+
+describe('Utilities', function(){
+  describe('copy()', function(){
+    it('copies the array', function(){
+      var arr = randomArr(),
+        copy = util.copy(arr);
+      arr.should.eql(copy);
+    });
+  });
+
+  describe('reverse()', function(){
+    it('reverses the array', function(){
+      var arr = util.reverse(randomArr());
+      arr.should.eql(arr.reverse());
+    });
+  });
+
+  describe('shuffle()', function(){
+    it('shuffles the array', function(){
+      var arr = randomArr(),
+        shuffle = util.shuffle(arr);
+      shuffle.sort().should.eql(arr.sort());
+    });
+  });
+
+  describe('unique()', function(){
+    it('filters duplicate elements', function(){
+      var arr = util.unique(randomArr());
+      for (var i=0, len=arr.length; i<len; i++){
+        arr.indexOf(arr[i], i + 1).should.eql(-1);
+      }
+    });
+  });
+
+  describe('flatten()', function(){
+    it('flattens the array', function(){
+      var arr = [1, 3, [4, [5, 6, [7, [8]]]], 5, [6, 7]],
+        flatten = util.flatten(arr);
+      flatten.should.eql([1, 3, 4, 5, 6, 7, 8, 5, 6, 7]);
+    });
+  });
+
+  describe('sort()', function(){
+    it('sorts the array', function(){
+      var arr = randomArr(),
+        sort = util.sort(arr),
+        nativeSort = arr.sort(function(a, b){
+          return a - b;
+        });
+      sort.should.eql(nativeSort);
+    });
   });
 });
