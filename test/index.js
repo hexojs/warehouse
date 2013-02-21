@@ -331,6 +331,15 @@ describe('Model', function(){
       item.comments.should.eql([]);
     });
 
+    it('$addToSet', function(){
+      posts.update(1, {comments: {$addToSet: 1}});
+      var item = posts.get(1);
+      item.comments.should.eql([1]);
+      posts.update(1, {comments: {$addToSet: [1, 2]}});
+      var item = posts.get(1);
+      item.comments.should.eql([1, 2]);
+    });
+
     it('$inc', function(){
       posts.update(1, {num: 1});
       posts.update(1, {num: {$inc: 2}});
