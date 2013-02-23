@@ -511,8 +511,14 @@ describe('Database', function(){
 
   describe('load()', function(){
     it('loads database', function(done){
-      var newdb = new Database('db.json');
-      newdb._store.list().should.eql(require('../db.json'));
+      var newdb = new Database('db.json'),
+        data = require('../db.json'),
+        store = newdb._store.list();
+
+      for (var i in store){
+        store[i].list().should.eql(data[i]);
+      }
+
       done();
     })
   });
