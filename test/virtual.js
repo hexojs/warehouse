@@ -2,7 +2,7 @@ var should = require('should'),
   Virtual = require('../lib/virtual');
 
 describe('Virtual', function(){
-  it('constructor (without arguments)', function(){
+  it('constructor (no arguments)', function(){
     var virtual = new Virtual();
 
     should.not.exist(virtual.getter);

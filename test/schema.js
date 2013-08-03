@@ -19,19 +19,19 @@ describe('Schema', function(){
       }
     });
 
-    schema.paths._id.should.be.instanceof(Types.String);
-    schema.paths.string.should.be.instanceof(Types.String);
-    schema.paths.str.should.be.instanceof(Types.String);
-    schema.paths.number.should.be.instanceof(Types.Number);
-    schema.paths.bool.should.be.instanceof(Types.Boolean);
-    schema.paths.date.should.be.instanceof(Types.Date);
-    schema.paths.array.should.be.instanceof(Types.Array);
-    schema.paths.obj.should.be.instanceof(Types.Object);
-    schema.subpaths['array.0'].should.be.instanceof(Types.Number);
-    schema.subpaths['array.1'].should.be.instanceof(Types.String);
-    schema.subpaths['obj.foo'].should.be.instanceof(Types.Object);
-    schema.subpaths['obj.foo.bar'].should.be.instanceof(Types.Number);
-    schema.subpaths['obj.baz'].should.be.instanceof(Types.String);
+    schema.tree._id.should.be.instanceof(Types.String);
+    schema.tree.string.should.be.instanceof(Types.String);
+    schema.tree.str.should.be.instanceof(Types.String);
+    schema.tree.number.should.be.instanceof(Types.Number);
+    schema.tree.bool.should.be.instanceof(Types.Boolean);
+    schema.tree.date.should.be.instanceof(Types.Date);
+    schema.tree.array.should.be.instanceof(Types.Array);
+    schema.tree.obj.should.be.instanceof(Types.Object);
+    schema.tree.array._nested[0].should.be.instanceof(Types.Number);
+    schema.tree.array._nested[1].should.be.instanceof(Types.String);
+    schema.tree.obj._nested.foo.should.be.instanceof(Types.Object);
+    schema.tree.obj._nested.foo._nested.bar.should.be.instanceof(Types.Number);
+    schema.tree.obj._nested.baz.should.be.instanceof(Types.String);
   });
 
   it('path()', function(){
