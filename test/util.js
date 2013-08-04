@@ -110,4 +110,39 @@ describe('Utilities', function(){
     util.deleteProperty(obj, 'bar[baz]');
     should.not.exist(obj.bar.baz);
   });
+
+  it('getType()', function(){
+    // String
+    util.getType('string').should.be.eql('String');
+    util.getType('').should.be.eql('String');
+
+    // Number
+    util.getType(1).should.be.eql('Number');
+    util.getType(0).should.be.eql('Number');
+
+    // Array
+    util.getType(['str']).should.be.eql('Array');
+    util.getType([]).should.be.eql('Array');
+
+    // Object
+    util.getType({foo: 1, bar: 2}).should.be.eql('Object');
+    util.getType({}).should.be.eql('Object');
+    util.getType({length: 1}).should.be.eql('Object');
+
+    // Boolean
+    util.getType(true).should.be.eql('Boolean');
+    util.getType(false).should.be.eql('Boolean');
+
+    // Function
+    util.getType(function(){}).should.be.eql('Function');
+
+    // Date
+    util.getType(new Date).should.be.eql('Date');
+
+    // Null
+    util.getType(null).should.be.eql('Null');
+
+    // Undefined
+    util.getType(undefined).should.be.eql('Undefined');
+  });
 });
