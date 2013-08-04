@@ -1,4 +1,4 @@
-TESTS = test/*
+TESTS = test/*.js
 REPORTER = spec
 
 test:
