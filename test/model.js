@@ -225,6 +225,16 @@ describe('Model', function(){
     });
   });
 
+  it('updateById() - operators', function(done){
+    var id = Post._index[0],
+      age = Post.first().age;
+
+    Post.updateById(id, {age: {$inc: 1}}, function(post){
+      post.age.should.be.eql(age + 1);
+      done();
+    });
+  });
+
   it('replaceById()', function(done){
     var id = Post._index[1];
 
