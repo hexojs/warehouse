@@ -1,6 +1,5 @@
 var Database = require('../lib'),
-  Query = require('../lib/query'),
-  Schema = Database.Schema,
+  Schema = require('../lib/schema'),
   should = require('should');
 
 describe('Model', function(){
@@ -192,7 +191,7 @@ describe('Model', function(){
   });
 
   it('last()', function(){
-    Post.last().should.be.eql(Post.eq(Post.count() - 1));
+    Post.last().should.be.eql(Post.eq(-1));
   });
 
   it('new()', function(){
@@ -309,73 +308,73 @@ describe('Model', function(){
   it('_createQuery() - no arguments', function(){
     var query = Post._createQuery();
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query._index.should.be.eql(Post._index);
   });
 
   it('_createQuery() - with arguments', function(){
     var query = Post._createQuery([]);
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query._index.should.be.eql([]);
   });
 
   it('slice()', function(){
     var query = Post.slice(0, 2);
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query._index.should.be.eql(Post._index.slice(0, 2));
   });
 
   it('limit()', function(){
     var query = Post.limit(2);
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query._index.should.be.eql(Post._index.slice(0, 2));
   });
 
   it('skip()', function(){
     var query = Post.skip(1);
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query._index.should.be.eql(Post._index.slice(1));
   });
 
   it('reverse()', function(){
     var query = Post.reverse();
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query._index.should.be.eql(Post._index.slice().reverse());
   });
 
   it('sort() - old style', function(){
     var query = Post.sort('age', 1);
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
   });
 
   it('sort() - new style', function(){
     var query = Post.sort({age: 1});
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
   });
 
   it('random()', function(){
     var query = Post.random();
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
   });
 
   it('find() - no options', function(){
     var query = Post.find({});
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
   });
 
   it('find() - with options', function(){
     var query = Post.find({}, {limit: 1});
 
-    query.should.be.instanceof(Query);
+    query.should.be.instanceof(Post._query);
     query.count().should.be.eql(1);
   });
 
