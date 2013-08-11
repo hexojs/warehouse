@@ -5,26 +5,17 @@ var Database = require('../lib'),
 describe('Model', function(){
   var db = new Database();
 
-  var schema = new Schema({
+  var userSchema = new Schema({
     name: {
       first: String,
       last: String
     },
     email: String,
     age: Number,
-    comments: [String],
-    created: Date
+    posts: [{type: String, ref: 'Post'}]
   });
 
-  schema.static('findLatest', function(){
-    return this.sort({created: -1}).limit(3);
-  });
-
-  schema.method('fullName', function(){
-    return this.name.first + ' ' + this.name.last;
-  });
-
-  schema.virtual('name.full').get(function(){
+  userSchema.virtual('name.full').get(function(){
     return this.name.first + ' ' + this.name.last;
   }).set(function(name){
     var split = name.split(' ');
@@ -35,114 +26,139 @@ describe('Model', function(){
     };
   });
 
-  var Post = db.model('Post', schema);
+  userSchema.method('addPost', function(data, callback){
+    var self = this;
+
+    data.user_id = this._id;
+
+    Post.insert(data, function(post){
+      self.update({
+        posts: {$push: post._id}
+      });
+
+      callback && callback(post);
+    });
+  });
+
+  var postSchema = new Schema({
+    title: String,
+    content: String,
+    user_id: {type: String, ref: 'User'},
+    created: Date
+  });
+
+  postSchema.static('findLatest', function(){
+    return this.sort({created: -1}).first();
+  });
+
+  var User = db.model('User', userSchema),
+    Post = db.model('Post', postSchema);
 
   it('apply schema methods', function(){
     Post.findLatest.should.be.a('function');
-    Post._doc.prototype.fullName.should.be.a('function');
+    User._doc.prototype.addPost.should.be.a('function');
   });
 
   it('insert() - object', function(done){
-    Post.insert({
+    User.insert({
       name: {
         first: 'John',
         last: 'Doe'
       },
-      email: 'abc@abc.com',
-      age: 30
-    }, function(data){
-      data.should.be.instanceof(Post._doc);
-      data.name.first.should.be.eql('John');
-      data.name.last.should.be.eql('Doe');
-      data.name.full.should.be.eql('John Doe');
-      data.email.should.be.eql('abc@abc.com');
-      data.age.should.be.eql(30);
-      data.fullName().should.be.eql('John Doe');
-      data._id.should.have.length(16);
+      email: 'a@abc.com',
+      age: 20
+    }, function(user){
+      user.should.be.instanceof(User._doc);
+      user.name.first.should.be.eql('John');
+      user.name.last.should.be.eql('Doe');
+      user.name.full.should.be.eql('John Doe');
+      user.email.should.be.eql('a@abc.com');
+      user.age.should.be.eql(20);
+      user._id.should.have.length(16);
 
       done();
     });
   });
 
   it('insert() - array', function(done){
-    var now = Date.now();
+    var user_id = User.first()._id;
 
     Post.insert([
       {
-        email: 'def@ghi.com',
-        age: 50,
-        created: now
+        title: 'Post One',
+        content: 'post one content',
+        user_id: user_id,
+        date: new Date(2013, 0, 1)
       },
       {
-        name: {
-          full: 'Scarlet Rain'
-        },
-        comments: ['Great!']
-      }
-    ], function(arr){
-      var dataA = arr[0],
-        dataB = arr[1];
+        title: 'Post Two',
+        content: 'post two content',
+        user_id: user_id,
+        date: new Date(2012, 0, 1)
+      },
+      {
+        title: 'Post Three',
+        content: 'post three content',
+        user_id: user_id,
+        date: new Date(2014, 0, 1)
+      },
+    ], function(posts){
+      posts[0].should.be.instanceof(Post._doc);
+      posts[0].title.should.be.eql('Post One');
+      posts[0].content.should.be.eql('post one content');
+      posts[0].user_id.should.be.eql(user_id);
+      posts[0].date.should.be.eql(new Date(2013, 0, 1));
+      posts[0]._id.should.have.length(16);
 
-      dataA.should.be.instanceof(Post._doc);
-      dataA.email.should.be.eql('def@ghi.com');
-      dataA.age.should.be.eql(50);
-      dataA.created.should.be.instanceof(Date);
-      dataA.created.valueOf().should.be.eql(now);
-      dataA._id.should.have.length(16);
+      posts[1].should.be.instanceof(Post._doc);
+      posts[1].title.should.be.eql('Post Two');
+      posts[1].content.should.be.eql('post two content');
+      posts[1].user_id.should.be.eql(user_id);
+      posts[1].date.should.be.eql(new Date(2012, 0, 1));
+      posts[1]._id.should.have.length(16);
 
-      dataB.should.be.instanceof(Post._doc);
-      dataB.name.first.should.be.eql('Scarlet');
-      dataB.name.last.should.be.eql('Rain');
-      dataB.name.full.should.be.eql('Scarlet Rain');
-      dataB.fullName().should.be.eql('Scarlet Rain');
-      dataB.comments.should.be.eql(['Great!']);
-      dataB._id.should.have.length(16);
+      posts[2].should.be.instanceof(Post._doc);
+      posts[2].title.should.be.eql('Post Three');
+      posts[2].content.should.be.eql('post three content');
+      posts[2].user_id.should.be.eql(user_id);
+      posts[2].date.should.be.eql(new Date(2014, 0, 1));
+      posts[2]._id.should.have.length(16);
 
       done();
     });
   });
 
-  it('_updateIndex()', function(){
-    Post._updateIndex();
-
-    var index = Post._index;
-
-    Post.each(function(post, i){
-      post._id.should.be.eql(index[i]);
-    });
-  });
-
   it('_checkID()', function(){
-    var index = Post._index;
+    var post = Post.first();
 
-    index.forEach(function(item){
-      Post._checkID(item).should.be.true;
-    });
+    Post._checkID(post._id).should.be.true;
+    Post._checkID('test').should.be.false;
   });
 
   it('get()', function(){
-    var id = Post._index[0],
-      post = Post.get(id);
+    var id = User._index[0],
+      user = User.get(id);
 
-    post.should.be.instanceof(Post._doc);
-    post.name.first.should.be.eql('John');
-    post.name.last.should.be.eql('Doe');
-    post.email.should.be.eql('abc@abc.com');
-    post.age.should.be.eql(30);
-    post.fullName().should.be.eql('John Doe');
-    post._id.should.have.length(16);
+    user.should.be.instanceof(User._doc);
+    user.name.first.should.be.eql('John');
+    user.name.last.should.be.eql('Doe');
+    user.name.full.should.be.eql('John Doe');
+    user.email.should.be.eql('a@abc.com');
+    user.age.should.be.eql(20);
+    user._id.should.be.eql(id);
   });
 
   it('_getRaw()', function(){
-    var id = Post._index[0],
-      raw = Post._getRaw(id);
+    var id = User._index[0],
+      user = User._getRaw(id);
 
-    raw.should.not.be.instanceof(Post._doc);
-    raw.name.first.should.be.eql('John');
-    raw.name.last.should.be.eql('Doe');
-    raw.email.should.be.eql('abc@abc.com');
-    raw.age.should.be.eql(30);
-    raw._id.should.have.length(16);
+    user.should.not.be.instanceof(User._doc);
+    user.name.first.should.be.eql('John');
+    user.name.last.should.be.eql('Doe');
+    should.not.exist(user.name.full);
+    user.email.should.be.eql('a@abc.com');
+    user.age.should.be.eql(20);
+    user._id.should.be.eql(id);
   });
 
   it('each()', function(){
@@ -195,42 +211,73 @@ describe('Model', function(){
   });
 
   it('new()', function(){
-    var post = Post.new({
+    var user = User.new({
       name: {
         first: 'Silver',
         last: 'Crow'
       },
-      age: 17
+      age: 17,
+      email: 'b@abc.com'
     });
 
-    post.should.be.instanceof(Post._doc);
-    post.name.first.should.be.eql('Silver');
-    post.name.last.should.be.eql('Crow');
-    post.age.should.be.eql(17);
-    post.fullName().should.be.eql('Silver Crow');
+    user.should.be.instanceof(User._doc);
+    user.name.first.should.be.eql('Silver');
+    user.name.last.should.be.eql('Crow');
+    user.age.should.be.eql(17);
+    user.email.should.be.eql('b@abc.com');
   });
 
-  it('updateById()', function(done){
-    var id = Post._index[0];
+  it('schema static test', function(){
+    var post = Post.findLatest();
 
-    Post.updateById(id, {age: 40}, function(post){
+    post.should.be.eql(Post.eq(2));
+  });
+
+  it('schema method test', function(done){
+    var user = User.first();
+
+    user.addPost({
+      title: 'Post Four',
+      content: 'post four content',
+      created: new Date(2011, 0, 1)
+    }, function(post){
+      var user = User.first();
+
       post.should.be.instanceof(Post._doc);
-      post.name.first.should.be.eql('John');
-      post.name.last.should.be.eql('Doe');
-      post.email.should.be.eql('abc@abc.com');
-      post.age.should.be.eql(40);
-      post._id.should.be.eql(id);
+      post.title.should.be.eql('Post Four');
+      post.content.should.be.eql('post four content');
+      post.created.should.be.eql(new Date(2011, 0, 1));
+      post._id.should.have.length(16);
+      post.user_id.should.be.eql(user._id);
+
+      user.posts.should.include(post._id);
 
       done();
     });
   });
 
-  it('updateById() - operators', function(done){
-    var id = Post._index[0],
-      age = Post.first().age;
+  it('updateById()', function(done){
+    var id = User._index[0];
 
-    Post.updateById(id, {age: {$inc: 1}}, function(post){
-      post.age.should.be.eql(age + 1);
+    User.updateById(id, {age: 21}, function(user){
+      user.should.be.instanceof(User._doc);
+      user.name.first.should.be.eql('John');
+      user.name.last.should.be.eql('Doe');
+      user.name.full.should.be.eql('John Doe');
+      user.email.should.be.eql('a@abc.com');
+      user.age.should.be.eql(21);
+      user._id.should.be.eql(id);
+
+      done();
+    });
+  });
+
+  it('updateById - operators', function(done){
+    var id = User._index[0],
+      age = User.first().age;
+
+    User.updateById(id, {age: {$inc: 1}}, function(user){
+      user.age.should.be.eql(age + 1);
       done();
     });
   });
@@ -239,31 +286,16 @@ describe('Model', function(){
     var id = Post._index[1];
 
     var data = {
-      name: {
-        first: 'Black',
-        last: 'Lotus'
-      },
-      age: 18
+      title: 'New Post',
+      content: 'new post content'
     };
 
     Post.replaceById(id, data, function(post){
       post.should.be.instanceof(Post._doc);
-      post.name.first.should.be.eql('Black');
-      post.name.last.should.be.eql('Lotus');
-      post.age.should.be.eql(18);
+      post.title.should.be.eql('New Post');
+      post.content.should.be.eql('new post content');
+      should.not.exist(post.created);
       post._id.should.be.eql(id);
-
-      done();
-    });
-  });
-
-  it('removeById()', function(done){
-    var post = Post.last(),
-      id = post._id;
-
-    Post.removeById(id, function(item){
-      item.should.be.eql(post);
-      Post._checkID(id).should.be.false;
 
       done();
     });
@@ -271,45 +303,49 @@ describe('Model', function(){
 
   it('save() - insert', function(done){
     var index = Post._index.slice();
+
     var data = {
-      name: {
-        first: 'Lime',
-        last: 'Bell'
-      },
-      email: 'abc@abc.com'
+      title: 'Post five',
+      content: 'post five content'
     };
 
-    Post.save(data, function(item){
-      item.should.be.instanceof(Post._doc);
-      item.name.first.should.be.eql('Lime');
-      item.name.last.should.be.eql('Bell');
-      item.email.should.be.eql('abc@abc.com');
-      item._id.should.have.length(16);
-      index.should.not.include(item._id);
+    Post.save(data, function(post){
+      post.should.be.instanceof(Post._doc);
+      post.title.should.be.eql('Post five');
+      post.content.should.be.eql('post five content');
+      post._id.should.have.length(16);
+      index.should.not.include(post._id);
 
       done();
     });
   });
 
   it('save() - replace', function(done){
-    var last = Post.last(),
-      id = last._id;
+    var index = Post._index.slice(),
+      last = Post.last();
 
     var data = {
-      name: {
-        first: 'Cyan',
-        last: 'Pile'
-      },
-      email: 'def@def.jp',
-      _id: id
+      title: 'New post five',
+      _id: last._id
     };
 
-    Post.save(data, function(item){
-      item.should.be.instanceof(Post._doc);
-      item.name.first.should.be.eql('Cyan');
-      item.name.last.should.be.eql('Pile');
-      item.email.should.be.eql('def@def.jp');
-      item._id.should.be.eql(id);
+    Post.save(data, function(post){
+      post.should.be.instanceof(Post._doc);
+      post.title.should.be.eql('New post five');
+      should.not.exist(post.content);
+      post._id.should.be.eql(last._id);
+      index.should.be.eql(Post._index);
+
+      done();
+    });
+  });
+
+  it('removeById()', function(done){
+    var post = Post.last();
+
+    Post.removeById(post._id, function(item){
+      item.should.be.eql(post);
+      Post._checkID(post._id).should.be.false;
 
       done();
     });
@@ -393,5 +429,42 @@ describe('Model', function(){
 
     item.should.be.instanceof(Post._doc);
     item.should.be.eql(Post.first());
+  });
+
+  it('populate()', function(){
+    var query = Post.populate('user_id');
+
+    query.should.be.instanceof(Post._query);
+    query._populates.should.include('user_id');
+  });
+
+  it('_populate() - object', function(){
+    var user = User.first();
+
+    var post = Post._populate({
+      title: 'Post seven',
+      content: 'post seven content',
+      user_id: user._id
+    }, ['user_id']);
+
+    post.title.should.be.eql('Post seven');
+    post.content.should.be.eql('post seven content');
+    post.user_id.should.be.eql(user);
+  });
+
+  it('_populate() - array', function(){
+    var data = User.first();
+
+    data.posts = Post._index.slice();
+
+    var user = User._populate(data, ['posts']);
+
+    user.name.first.should.be.eql('John');
+    user.name.last.should.be.eql('Doe');
+    user.name.full.should.be.eql('John Doe');
+    user.email.should.be.eql('a@abc.com');
+    user.age.should.be.eql(22);
+    user._id.should.be.eql(data._id);
+    user.posts.should.be.eql(Post.toArray());
   });
 });

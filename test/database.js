@@ -1,4 +1,5 @@
 var Database = require('../lib'),
+  path = require('path'),
   Model = require('../lib/model'),
   should = require('should'),
   fs = require('fs');
@@ -33,7 +34,7 @@ describe('Database', function(){
   });
 
   it('save() - target preset', function(done){
-    var db = new Database(__dirname + '/test.json');
+    var db = new Database(path.join(__dirname, 'test.json'));
 
     db.save(function(err){
       should.not.exist(err);
@@ -47,7 +48,7 @@ describe('Database', function(){
 
     Post.insert(require('./dummy.json'));
 
-    db.save(__dirname + '/test.json', function(err){
+    db.save(path.join(__dirname, 'test.json'), function(err){
       should.not.exist(err);
 
       done();
@@ -65,7 +66,7 @@ describe('Database', function(){
   });
 
   it('load() - target preset', function(done){
-    var db = new Database(__dirname + '/test.json');
+    var db = new Database(path.join(__dirname, 'test.json'));
 
     db.load(function(err){
       should.not.exist(err);
@@ -83,7 +84,7 @@ describe('Database', function(){
   it('load() - target argument', function(done){
     var db = new Database();
 
-    db.load(__dirname + '/test.json', function(err){
+    db.load(path.join(__dirname, 'test.json'), function(err){
       should.not.exist(err);
 
       var Post = db.model('Post');
@@ -96,7 +97,12 @@ describe('Database', function(){
     });
   });
 
+  it('_hasModel()', function(){
+    db._hasModel('Post').should.be.true;
+    db._hasModel('foo').should.be.false;
+  });
+
   after(function(){
-    fs.unlink(__dirname + '/test.json');
+    fs.unlink(path.join(__dirname, 'test.json'));
   });
 });
