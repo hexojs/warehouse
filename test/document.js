@@ -1,11 +1,21 @@
-var Database = require('../lib');
+var Database = require('../lib'),
+  should = require('should');
 
 describe('Document', function(){
   var db = new Database();
 
+  var User = db.model('User', {
+    name: String
+  });
+
+  User.insert({
+    name: 'Foo'
+  });
+
   var Post = db.model('Post', {
     name: String,
-    age: Number
+    age: Number,
+    user_id: {type: String, ref: 'User'}
   });
 
   var doc = Post.new({
@@ -22,11 +32,10 @@ describe('Document', function(){
   });
 
   it('save() - insert', function(done){
-    doc.save(function(item){
-      id = item._id;
+    doc.save(function(post){
+      id = post._id;
 
-      var post = Post.get(id);
-
+      post.should.be.instanceof(Post._doc);
       post.name.should.be.eql('Test');
       post.age.should.be.eql(20);
 
@@ -34,12 +43,42 @@ describe('Document', function(){
     });
   });
 
-  it('save() - update', function(){
+  it('save() - update', function(done){
     doc.age = 30;
-    doc.save();
 
-    var post = Post.get(id);
-    post.age.should.be.eql(30);
+    doc.save(function(post){
+      post.should.be.instanceof(Post._doc);
+      post.age.should.be.eql(30);
+
+      done();
+    });
+  });
+
+  it('update()', function(done){
+    doc.update({name: 'New'}, function(post){
+      post.should.be.instanceof(Post._doc);
+      post.name.should.be.eql('New');
+
+      done();
+    });
+  });
+
+  it('replace()', function(done){
+    doc.replace({name: 'Foo'}, function(post){
+      post.should.be.instanceof(Post._doc);
+      post.name.should.be.eql('Foo');
+      should.not.exist(post.age);
+
+      done();
+    });
+  });
+
+  it('populate()', function(){
+    var user = User.first();
+    doc.user_id = user._id;
+
+    doc.populate('user_id');
+    doc.user_id.should.be.eql(user);
   });
 
   it('toString()', function(){
