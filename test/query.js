@@ -173,6 +173,55 @@ describe('Query', function(){
     });
   });
 
+  it('find() - $or', function(){
+    var q = query.find({$or: [
+      {age: {$gt: 65}},
+      {age: {$lt: 18}}
+    ]});
+
+    q.should.be.instanceof(Post._query);
+    q.each(function(item){
+      (item.age > 65 || item.age < 18).should.be.true;
+    });
+  });
+
+  it('find() - $and', function(){
+    var q = query.find({$and: [
+      {'name.last': /^Mc/},
+      {age: {$lt: 50}}
+    ]});
+
+    q.should.be.instanceof(Post._query);
+    q.each(function(item){
+      item.name.last.should.match(/^Mc/);
+      (item.age < 50).should.be.true;
+    });
+  });
+
+  it('find() - $not', function(){
+    var q = query.find({
+      $not: {'name.last': /^Mc/}
+    });
+
+    q.should.be.instanceof(Post._query);
+    q.each(function(item){
+      item.name.last.should.not.match(/^Mc/);
+    });
+  });
+
+  it('find() - $nor', function(){
+    var q = query.find({$nor: [
+      {'name.last': /^Mc/},
+      {age: {$lt: 50}}
+    ]});
+
+    q.should.be.instanceof(Post._query);
+    q.each(function(item){
+      item.name.last.should.not.match(/^Mc/);
+      (item.age < 50).should.not.be.true;
+    });
+  });
+
   it('findOne()', function(){
     var item = query.findOne({});
 
@@ -207,6 +256,6 @@ describe('Query', function(){
   it('remove()', function(){
     query.remove();
 
-    Post.length.should.be.eql(0)
+    Post.length.should.be.eql(0);
   });
 });
