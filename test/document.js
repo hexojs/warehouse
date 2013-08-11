@@ -1,5 +1,7 @@
 var Database = require('../lib'),
-  should = require('should');
+  should = require('should'),
+  util = require('../lib/util'),
+  uid = util.uid;
 
 describe('Document', function(){
   var db = new Database();
@@ -12,10 +14,25 @@ describe('Document', function(){
     name: 'Foo'
   });
 
+  var Comment = db.model('Comment', {
+    content: String
+  });
+
+  var dummyComment = [];
+
+  for (var i = 0; i < 10; i++){
+    dummyComment.push({
+      content: uid(24)
+    });
+  }
+
+  Comment.insert(dummyComment);
+
   var Post = db.model('Post', {
     name: String,
     age: Number,
-    user_id: {type: String, ref: 'User'}
+    user_id: {type: String, ref: 'User'},
+    comments: [{type: String, ref: 'Comment'}]
   });
 
   var doc = Post.new({
@@ -73,12 +90,19 @@ describe('Document', function(){
     });
   });
 
-  it('populate()', function(){
+  it('populate() - object', function(){
     var user = User.first();
     doc.user_id = user._id;
 
     doc.populate('user_id');
     doc.user_id.should.be.eql(user);
+  });
+
+  it('populate() - array', function(){
+    doc.comments = Comment._index;
+
+    doc.populate('comments');
+    doc.comments.should.be.eql(Comment.toArray());
   });
 
   it('toString()', function(){

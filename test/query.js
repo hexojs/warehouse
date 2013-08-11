@@ -1,36 +1,54 @@
-var Database = require('../lib');
+var Database = require('../lib'),
+  should = require('should'),
+  util = require('../lib/util'),
+  uid = util.uid;
 
 describe('Query', function(){
   var db = new Database();
 
-  var Post = db.model('Post', {
+  var User = db.model('User', {
     name: {
       first: String,
       last: String
     },
     age: Number,
-    comments: []
+    partner: {type: String, ref: 'User'},
+    comments: [{type: String, ref: 'Comment'}]
   });
 
-  Post.insert(require('./dummy.json'));
+  var Comment = db.model('Comment', {
+    content: String
+  });
 
-  var query = Post._createQuery();
+  var dummyComment = [];
+
+  for (var i = 0; i < 10; i++){
+    dummyComment.push({
+      content: uid(24)
+    });
+  }
+
+  Comment.insert(dummyComment);
+
+  User.insert(require('./dummy.json'));
+
+  var query = User._createQuery();
 
   it('create a query', function(){
-    query.should.be.instanceof(Post._query);
+    query.should.be.instanceof(User._query);
   });
 
   it('_createQuery()', function(){
     var q = query._createQuery();
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q._index.should.be.eql(query._index);
   });
 
   it('each()', function(){
     query.each(function(item){
-      item.should.be.instanceof(Post._doc);
-      item.should.be.eql(Post.get(item._id));
+      item.should.be.instanceof(User._doc);
+      item.should.be.eql(User.get(item._id));
     });
   });
 
@@ -54,13 +72,13 @@ describe('Query', function(){
 
   it('eq() - positive number', function(){
     for (var i = 0, len = query.count(); i < len; i++){
-      query.eq(i).should.be.eql(Post.get(query._index[i]));
+      query.eq(i).should.be.eql(User.get(query._index[i]));
     }
   });
 
   it('eq() - negative number', function(){
     for (var i = 1, len = query.count(); i <= len; i++){
-      query.eq(-i).should.be.eql(Post.get(query._index[len - i]));
+      query.eq(-i).should.be.eql(User.get(query._index[len - i]));
     }
   });
 
@@ -75,28 +93,28 @@ describe('Query', function(){
   it('slice()', function(){
     var q = query.slice(0, 2);
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q._index.should.be.eql(query._index.slice(0, 2));
   });
 
   it('limit()', function(){
     var q = query.limit(2);
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q._index.should.be.eql(query._index.slice(0, 2));
   });
 
   it('skip()', function(){
     var q = query.skip(1);
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q._index.should.be.eql(query._index.slice(1));
   });
 
   it('reverse()', function(){
     var q = query.reverse();
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q._index.should.be.eql(query._index.slice().reverse());
   });
 
@@ -104,7 +122,7 @@ describe('Query', function(){
     var q = query.sort('age', 1),
       last;
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
 
     q.each(function(item){
       if (last == null){
@@ -123,7 +141,7 @@ describe('Query', function(){
     var q = query.sort({age: 1}),
       last;
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
 
     q.each(function(item){
       if (last == null){
@@ -141,14 +159,14 @@ describe('Query', function(){
   it('random()', function(){
     var q = query.random();
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q._index.sort().should.be.eql(query._index.sort());
   });
 
   it('find() - normal', function(){
     var q = query.find({age: 100});
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       item.age.should.be.eql(100);
     });
@@ -158,7 +176,7 @@ describe('Query', function(){
     var regex = /^Mc/,
       q = query.find({'name.last': regex});
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       item.name.last.should.match(regex);
     })
@@ -167,7 +185,7 @@ describe('Query', function(){
   it('find() - operators', function(){
     var q = query.find({age: {$gt: 50}});
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       (item.age > 50).should.be.true;
     });
@@ -179,7 +197,7 @@ describe('Query', function(){
       {age: {$lt: 18}}
     ]});
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       (item.age > 65 || item.age < 18).should.be.true;
     });
@@ -191,7 +209,7 @@ describe('Query', function(){
       {age: {$lt: 50}}
     ]});
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       item.name.last.should.match(/^Mc/);
       (item.age < 50).should.be.true;
@@ -203,7 +221,7 @@ describe('Query', function(){
       $not: {'name.last': /^Mc/}
     });
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       item.name.last.should.not.match(/^Mc/);
     });
@@ -215,7 +233,7 @@ describe('Query', function(){
       {age: {$lt: 50}}
     ]});
 
-    q.should.be.instanceof(Post._query);
+    q.should.be.instanceof(User._query);
     q.each(function(item){
       item.name.last.should.not.match(/^Mc/);
       (item.age < 50).should.not.be.true;
@@ -225,8 +243,35 @@ describe('Query', function(){
   it('findOne()', function(){
     var item = query.findOne({});
 
-    item.should.be.instanceof(Post._doc);
+    item.should.be.instanceof(User._doc);
     item.should.be.eql(query.first());
+  });
+
+  it('populate() - object', function(){
+    var partner = User.first();
+
+    partner.partner = partner._id;
+
+    query.update({partner: partner._id}, function(){
+      var q = query._createQuery();
+
+      q.populate('partner').each(function(user){
+        user.partner.should.be.eql(partner);
+      });
+    });
+  });
+
+  it('populate() - array', function(){
+    var commentIndex = Comment._index.slice(),
+      comments = Comment.toArray();
+
+    query.update({comments: commentIndex}, function(){
+      var q = query._createQuery();
+
+      q.populate('comments').each(function(user){
+        user.comments.should.be.eql(comments);
+      });
+    });
   });
 
   it('update()', function(){
@@ -256,6 +301,6 @@ describe('Query', function(){
   it('remove()', function(){
     query.remove();
 
-    Post.length.should.be.eql(0);
+    User.length.should.be.eql(0);
   });
 });
