@@ -102,7 +102,8 @@ describe('Document', function(){
     doc.comments = Comment._index;
 
     doc.populate('comments');
-    doc.comments.should.be.eql(Comment.toArray());
+    doc.comments._index.should.be.eql(Comment._index);
+    doc.comments.toArray().should.be.eql(Comment.toArray());
   });
 
   it('toString()', function(){

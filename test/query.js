@@ -269,7 +269,8 @@ describe('Query', function(){
       var q = query._createQuery();
 
       q.populate('comments').each(function(user){
-        user.comments.should.be.eql(comments);
+        user.comments._index.should.be.eql(commentIndex);
+        user.comments.toArray().should.be.eql(comments);
       });
     });
   });

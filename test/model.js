@@ -465,6 +465,7 @@ describe('Model', function(){
     user.email.should.be.eql('a@abc.com');
     user.age.should.be.eql(22);
     user._id.should.be.eql(data._id);
-    user.posts.should.be.eql(Post.toArray());
+    user.posts._index.should.be.eql(Post._index);
+    user.posts.toArray().should.be.eql(Post.toArray());
   });
 });
