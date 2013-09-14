@@ -13,7 +13,7 @@ describe('Virtual', function(){
       return 1;
     });
 
-    virtual.getter().should.be.eql(1);
+    virtual.getter().should.eql(1);
   });
 
   it('get()', function(){
@@ -28,7 +28,7 @@ describe('Virtual', function(){
       return this.first + ' ' + this.last;
     });
 
-    virtual.getter.call(person).should.be.eql('John Doe');
+    virtual.getter.call(person).should.eql('John Doe');
   });
 
   it('set()', function(){
@@ -45,7 +45,7 @@ describe('Virtual', function(){
 
     virtual.setter.call(person, 'John Doe');
 
-    person.first.should.be.eql('John');
-    person.last.should.be.eql('Doe');
+    person.first.should.eql('John');
+    person.last.should.eql('Doe');
   });
 });

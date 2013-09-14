@@ -130,9 +130,9 @@ describe('Schema', function(){
       arrFn: {type: Array, default: function(){ return [4, 5, 6] }}
     });
 
-    schema.path('string').default().should.be.eql('string');
-    schema.path('number').default().should.be.eql(8);
-    schema.path('arr').default().should.be.eql([1, 2, 3]);
-    schema.path('arrFn').default().should.be.eql([4, 5, 6]);
+    schema.path('string').default().should.eql('string');
+    schema.path('number').default().should.eql(8);
+    schema.path('arr').default().should.eql([1, 2, 3]);
+    schema.path('arrFn').default().should.eql([4, 5, 6]);
   });
 });

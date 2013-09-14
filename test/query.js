@@ -42,13 +42,13 @@ describe('Query', function(){
     var q = query._createQuery();
 
     q.should.be.instanceof(User._query);
-    q._index.should.be.eql(query._index);
+    q._index.should.eql(query._index);
   });
 
   it('each()', function(){
     query.each(function(item){
       item.should.be.instanceof(User._doc);
-      item.should.be.eql(User.get(item._id));
+      item.should.eql(User.get(item._id));
     });
   });
 
@@ -59,63 +59,63 @@ describe('Query', function(){
       arr.push(item);
     });
 
-    query.toArray().should.be.eql(arr);
+    query.toArray().should.eql(arr);
   });
 
   it('count()', function(){
-    query.count().should.be.eql(query._index.length);
+    query.count().should.eql(query._index.length);
   });
 
   it('length', function(){
-    query.length.should.be.eql(query._index.length);
+    query.length.should.eql(query._index.length);
   });
 
   it('eq() - positive number', function(){
     for (var i = 0, len = query.count(); i < len; i++){
-      query.eq(i).should.be.eql(User.get(query._index[i]));
+      query.eq(i).should.eql(User.get(query._index[i]));
     }
   });
 
   it('eq() - negative number', function(){
     for (var i = 1, len = query.count(); i <= len; i++){
-      query.eq(-i).should.be.eql(User.get(query._index[len - i]));
+      query.eq(-i).should.eql(User.get(query._index[len - i]));
     }
   });
 
   it('first()', function(){
-    query.first().should.be.eql(query.eq(0));
+    query.first().should.eql(query.eq(0));
   });
 
   it('last()', function(){
-    query.last().should.be.eql(query.eq(-1));
+    query.last().should.eql(query.eq(-1));
   });
 
   it('slice()', function(){
     var q = query.slice(0, 2);
 
     q.should.be.instanceof(User._query);
-    q._index.should.be.eql(query._index.slice(0, 2));
+    q._index.should.eql(query._index.slice(0, 2));
   });
 
   it('limit()', function(){
     var q = query.limit(2);
 
     q.should.be.instanceof(User._query);
-    q._index.should.be.eql(query._index.slice(0, 2));
+    q._index.should.eql(query._index.slice(0, 2));
   });
 
   it('skip()', function(){
     var q = query.skip(1);
 
     q.should.be.instanceof(User._query);
-    q._index.should.be.eql(query._index.slice(1));
+    q._index.should.eql(query._index.slice(1));
   });
 
   it('reverse()', function(){
     var q = query.reverse();
 
     q.should.be.instanceof(User._query);
-    q._index.should.be.eql(query._index.slice().reverse());
+    q._index.should.eql(query._index.slice().reverse());
   });
 
   it('sort() - old style', function(){
@@ -160,7 +160,7 @@ describe('Query', function(){
     var q = query.random();
 
     q.should.be.instanceof(User._query);
-    q._index.sort().should.be.eql(query._index.sort());
+    q._index.sort().should.eql(query._index.sort());
   });
 
   it('find() - normal', function(){
@@ -168,7 +168,7 @@ describe('Query', function(){
 
     q.should.be.instanceof(User._query);
     q.each(function(item){
-      item.age.should.be.eql(100);
+      item.age.should.eql(100);
     });
   });
 
@@ -244,7 +244,7 @@ describe('Query', function(){
     var item = query.findOne({});
 
     item.should.be.instanceof(User._doc);
-    item.should.be.eql(query.first());
+    item.should.eql(query.first());
   });
 
   it('populate() - object', function(){
@@ -256,7 +256,7 @@ describe('Query', function(){
       var q = query._createQuery();
 
       q.populate('partner').each(function(user){
-        user.partner.should.be.eql(partner);
+        user.partner.should.eql(partner);
       });
     });
   });
@@ -269,8 +269,8 @@ describe('Query', function(){
       var q = query._createQuery();
 
       q.populate('comments').each(function(user){
-        user.comments._index.should.be.eql(commentIndex);
-        user.comments.toArray().should.be.eql(comments);
+        user.comments._index.should.eql(commentIndex);
+        user.comments.toArray().should.eql(comments);
       });
     });
   });
@@ -279,7 +279,7 @@ describe('Query', function(){
     query.update({age: 0});
 
     query.each(function(item){
-      item.age.should.be.eql(0);
+      item.age.should.eql(0);
     });
   });
 
@@ -287,7 +287,7 @@ describe('Query', function(){
     query.update({age: {$inc: 10}});
 
     query.each(function(item){
-      item.age.should.be.eql(10);
+      item.age.should.eql(10);
     });
   });
 
@@ -295,13 +295,13 @@ describe('Query', function(){
     query.replace({age: 20});
 
     query.each(function(item){
-      item.age.should.be.eql(20)
+      item.age.should.eql(20)
     });
   });
 
   it('remove()', function(){
     query.remove();
 
-    User.length.should.be.eql(0);
+    User.length.should.eql(0);
   });
 });

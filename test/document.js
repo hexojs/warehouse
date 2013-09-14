@@ -44,8 +44,8 @@ describe('Document', function(){
 
   it('create a new document', function(){
     doc.should.be.instanceof(Post._doc);
-    doc.name.should.be.eql('Test');
-    doc.age.should.be.eql(20);
+    doc.name.should.eql('Test');
+    doc.age.should.eql(20);
   });
 
   it('save() - insert', function(done){
@@ -53,8 +53,8 @@ describe('Document', function(){
       id = post._id;
 
       post.should.be.instanceof(Post._doc);
-      post.name.should.be.eql('Test');
-      post.age.should.be.eql(20);
+      post.name.should.eql('Test');
+      post.age.should.eql(20);
 
       done();
     });
@@ -65,7 +65,7 @@ describe('Document', function(){
 
     doc.save(function(post){
       post.should.be.instanceof(Post._doc);
-      post.age.should.be.eql(30);
+      post.age.should.eql(30);
 
       done();
     });
@@ -74,7 +74,7 @@ describe('Document', function(){
   it('update()', function(done){
     doc.update({name: 'New'}, function(post){
       post.should.be.instanceof(Post._doc);
-      post.name.should.be.eql('New');
+      post.name.should.eql('New');
 
       done();
     });
@@ -83,7 +83,7 @@ describe('Document', function(){
   it('replace()', function(done){
     doc.replace({name: 'Foo'}, function(post){
       post.should.be.instanceof(Post._doc);
-      post.name.should.be.eql('Foo');
+      post.name.should.eql('Foo');
       should.not.exist(post.age);
 
       done();
@@ -95,19 +95,19 @@ describe('Document', function(){
     doc.user_id = user._id;
 
     doc.populate('user_id');
-    doc.user_id.should.be.eql(user);
+    doc.user_id.should.eql(user);
   });
 
   it('populate() - array', function(){
     doc.comments = Comment._index;
 
     doc.populate('comments');
-    doc.comments._index.should.be.eql(Comment._index);
-    doc.comments.toArray().should.be.eql(Comment.toArray());
+    doc.comments._index.should.eql(Comment._index);
+    doc.comments.toArray().should.eql(Comment.toArray());
   });
 
   it('toString()', function(){
-    doc.toString().should.be.eql(JSON.stringify(doc));
+    doc.toString().should.eql(JSON.stringify(doc));
   });
 
   it('remove()', function(){

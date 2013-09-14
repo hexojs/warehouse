@@ -27,7 +27,7 @@ describe('Database', function(){
 
   it('save() - no target', function(done){
     db.save(function(err){
-      err.message.should.be.eql('Destination is not defined');
+      err.message.should.eql('Destination is not defined');
 
       done();
     });
@@ -59,7 +59,7 @@ describe('Database', function(){
     var db = new Database();
 
     db.load(function(err){
-      err.message.should.be.eql('Source is not defined');
+      err.message.should.eql('Source is not defined');
 
       done();
     });
@@ -74,7 +74,7 @@ describe('Database', function(){
       var Post = db.model('Post');
 
       Post.each(function(item, i){
-        item.should.be.eql(db._store.Post[i]);
+        item.should.eql(db._store.Post[i]);
       });
 
       done();
@@ -90,7 +90,7 @@ describe('Database', function(){
       var Post = db.model('Post');
 
       Post.each(function(item, i){
-        item.should.be.eql(db._store.Post[i]);
+        item.should.eql(db._store.Post[i]);
       });
 
       done();

@@ -69,11 +69,11 @@ describe('Model', function(){
       age: 20
     }, function(user){
       user.should.be.instanceof(User._doc);
-      user.name.first.should.be.eql('John');
-      user.name.last.should.be.eql('Doe');
-      user.name.full.should.be.eql('John Doe');
-      user.email.should.be.eql('a@abc.com');
-      user.age.should.be.eql(20);
+      user.name.first.should.eql('John');
+      user.name.last.should.eql('Doe');
+      user.name.full.should.eql('John Doe');
+      user.email.should.eql('a@abc.com');
+      user.age.should.eql(20);
       user._id.should.have.length(16);
 
       done();
@@ -104,24 +104,24 @@ describe('Model', function(){
       },
     ], function(posts){
       posts[0].should.be.instanceof(Post._doc);
-      posts[0].title.should.be.eql('Post One');
-      posts[0].content.should.be.eql('post one content');
-      posts[0].user_id.should.be.eql(user_id);
-      posts[0].date.should.be.eql(new Date(2013, 0, 1));
+      posts[0].title.should.eql('Post One');
+      posts[0].content.should.eql('post one content');
+      posts[0].user_id.should.eql(user_id);
+      posts[0].date.should.eql(new Date(2013, 0, 1));
       posts[0]._id.should.have.length(16);
 
       posts[1].should.be.instanceof(Post._doc);
-      posts[1].title.should.be.eql('Post Two');
-      posts[1].content.should.be.eql('post two content');
-      posts[1].user_id.should.be.eql(user_id);
-      posts[1].date.should.be.eql(new Date(2012, 0, 1));
+      posts[1].title.should.eql('Post Two');
+      posts[1].content.should.eql('post two content');
+      posts[1].user_id.should.eql(user_id);
+      posts[1].date.should.eql(new Date(2012, 0, 1));
       posts[1]._id.should.have.length(16);
 
       posts[2].should.be.instanceof(Post._doc);
-      posts[2].title.should.be.eql('Post Three');
-      posts[2].content.should.be.eql('post three content');
-      posts[2].user_id.should.be.eql(user_id);
-      posts[2].date.should.be.eql(new Date(2014, 0, 1));
+      posts[2].title.should.eql('Post Three');
+      posts[2].content.should.eql('post three content');
+      posts[2].user_id.should.eql(user_id);
+      posts[2].date.should.eql(new Date(2014, 0, 1));
       posts[2]._id.should.have.length(16);
 
       done();
@@ -140,12 +140,12 @@ describe('Model', function(){
       user = User.get(id);
 
     user.should.be.instanceof(User._doc);
-    user.name.first.should.be.eql('John');
-    user.name.last.should.be.eql('Doe');
-    user.name.full.should.be.eql('John Doe');
-    user.email.should.be.eql('a@abc.com');
-    user.age.should.be.eql(20);
-    user._id.should.be.eql(id);
+    user.name.first.should.eql('John');
+    user.name.last.should.eql('Doe');
+    user.name.full.should.eql('John Doe');
+    user.email.should.eql('a@abc.com');
+    user.age.should.eql(20);
+    user._id.should.eql(id);
   });
 
   it('_getRaw()', function(){
@@ -153,12 +153,12 @@ describe('Model', function(){
       user = User._getRaw(id);
 
     user.should.not.be.instanceof(User._doc);
-    user.name.first.should.be.eql('John');
-    user.name.last.should.be.eql('Doe');
+    user.name.first.should.eql('John');
+    user.name.last.should.eql('Doe');
     should.not.exist(user.name.full);
-    user.email.should.be.eql('a@abc.com');
-    user.age.should.be.eql(20);
-    user._id.should.be.eql(id);
+    user.email.should.eql('a@abc.com');
+    user.age.should.eql(20);
+    user._id.should.eql(id);
   });
 
   it('each()', function(){
@@ -166,8 +166,8 @@ describe('Model', function(){
 
     Post.each(function(item, i){
       item.should.be.instanceof(Post._doc);
-      item.should.be.eql(Post.get(item._id));
-      count.should.be.eql(i);
+      item.should.eql(Post.get(item._id));
+      count.should.eql(i);
       count++;
     });
   });
@@ -179,35 +179,35 @@ describe('Model', function(){
       arr.push(item);
     });
 
-    Post.toArray().should.be.eql(arr);
+    Post.toArray().should.eql(arr);
   });
 
   it('count()', function(){
-    Post.count().should.be.eql(Post._index.length);
+    Post.count().should.eql(Post._index.length);
   });
 
   it('length', function(){
-    Post.length.should.be.eql(Post._index.length);
+    Post.length.should.eql(Post._index.length);
   });
 
   it('eq() - positive number', function(){
     for (var i = 0, len = Post.count(); i < len; i++){
-      Post.eq(i).should.be.eql(Post.get(Post._index[i]));
+      Post.eq(i).should.eql(Post.get(Post._index[i]));
     }
   });
 
   it('eq() - negative number', function(){
     for (var i = 1, len = Post.count(); i <= len; i++){
-      Post.eq(-i).should.be.eql(Post.get(Post._index[len - i]));
+      Post.eq(-i).should.eql(Post.get(Post._index[len - i]));
     }
   });
 
   it('first()', function(){
-    Post.first().should.be.eql(Post.eq(0));
+    Post.first().should.eql(Post.eq(0));
   });
 
   it('last()', function(){
-    Post.last().should.be.eql(Post.eq(-1));
+    Post.last().should.eql(Post.eq(-1));
   });
 
   it('new()', function(){
@@ -221,16 +221,16 @@ describe('Model', function(){
     });
 
     user.should.be.instanceof(User._doc);
-    user.name.first.should.be.eql('Silver');
-    user.name.last.should.be.eql('Crow');
-    user.age.should.be.eql(17);
-    user.email.should.be.eql('b@abc.com');
+    user.name.first.should.eql('Silver');
+    user.name.last.should.eql('Crow');
+    user.age.should.eql(17);
+    user.email.should.eql('b@abc.com');
   });
 
   it('schema static test', function(){
     var post = Post.findLatest();
 
-    post.should.be.eql(Post.eq(2));
+    post.should.eql(Post.eq(2));
   });
 
   it('schema method test', function(done){
@@ -244,11 +244,11 @@ describe('Model', function(){
       var user = User.first();
 
       post.should.be.instanceof(Post._doc);
-      post.title.should.be.eql('Post Four');
-      post.content.should.be.eql('post four content');
-      post.created.should.be.eql(new Date(2011, 0, 1));
+      post.title.should.eql('Post Four');
+      post.content.should.eql('post four content');
+      post.created.should.eql(new Date(2011, 0, 1));
       post._id.should.have.length(16);
-      post.user_id.should.be.eql(user._id);
+      post.user_id.should.eql(user._id);
 
       user.posts.should.include(post._id);
 
@@ -261,12 +261,12 @@ describe('Model', function(){
 
     User.updateById(id, {age: 21}, function(user){
       user.should.be.instanceof(User._doc);
-      user.name.first.should.be.eql('John');
-      user.name.last.should.be.eql('Doe');
-      user.name.full.should.be.eql('John Doe');
-      user.email.should.be.eql('a@abc.com');
-      user.age.should.be.eql(21);
-      user._id.should.be.eql(id);
+      user.name.first.should.eql('John');
+      user.name.last.should.eql('Doe');
+      user.name.full.should.eql('John Doe');
+      user.email.should.eql('a@abc.com');
+      user.age.should.eql(21);
+      user._id.should.eql(id);
 
       done();
     });
@@ -277,7 +277,7 @@ describe('Model', function(){
       age = User.first().age;
 
     User.updateById(id, {age: {$inc: 1}}, function(user){
-      user.age.should.be.eql(age + 1);
+      user.age.should.eql(age + 1);
       done();
     });
   });
@@ -292,10 +292,10 @@ describe('Model', function(){
 
     Post.replaceById(id, data, function(post){
       post.should.be.instanceof(Post._doc);
-      post.title.should.be.eql('New Post');
-      post.content.should.be.eql('new post content');
+      post.title.should.eql('New Post');
+      post.content.should.eql('new post content');
       should.not.exist(post.created);
-      post._id.should.be.eql(id);
+      post._id.should.eql(id);
 
       done();
     });
@@ -311,8 +311,8 @@ describe('Model', function(){
 
     Post.save(data, function(post){
       post.should.be.instanceof(Post._doc);
-      post.title.should.be.eql('Post five');
-      post.content.should.be.eql('post five content');
+      post.title.should.eql('Post five');
+      post.content.should.eql('post five content');
       post._id.should.have.length(16);
       index.should.not.include(post._id);
 
@@ -331,10 +331,10 @@ describe('Model', function(){
 
     Post.save(data, function(post){
       post.should.be.instanceof(Post._doc);
-      post.title.should.be.eql('New post five');
+      post.title.should.eql('New post five');
       should.not.exist(post.content);
-      post._id.should.be.eql(last._id);
-      index.should.be.eql(Post._index);
+      post._id.should.eql(last._id);
+      index.should.eql(Post._index);
 
       done();
     });
@@ -344,7 +344,7 @@ describe('Model', function(){
     var post = Post.last();
 
     Post.removeById(post._id, function(item){
-      item.should.be.eql(post);
+      item.should.eql(post);
       Post._checkID(post._id).should.be.false;
 
       done();
@@ -355,42 +355,42 @@ describe('Model', function(){
     var query = Post._createQuery();
 
     query.should.be.instanceof(Post._query);
-    query._index.should.be.eql(Post._index);
+    query._index.should.eql(Post._index);
   });
 
   it('_createQuery() - with arguments', function(){
     var query = Post._createQuery([]);
 
     query.should.be.instanceof(Post._query);
-    query._index.should.be.eql([]);
+    query._index.should.eql([]);
   });
 
   it('slice()', function(){
     var query = Post.slice(0, 2);
 
     query.should.be.instanceof(Post._query);
-    query._index.should.be.eql(Post._index.slice(0, 2));
+    query._index.should.eql(Post._index.slice(0, 2));
   });
 
   it('limit()', function(){
     var query = Post.limit(2);
 
     query.should.be.instanceof(Post._query);
-    query._index.should.be.eql(Post._index.slice(0, 2));
+    query._index.should.eql(Post._index.slice(0, 2));
   });
 
   it('skip()', function(){
     var query = Post.skip(1);
 
     query.should.be.instanceof(Post._query);
-    query._index.should.be.eql(Post._index.slice(1));
+    query._index.should.eql(Post._index.slice(1));
   });
 
   it('reverse()', function(){
     var query = Post.reverse();
 
     query.should.be.instanceof(Post._query);
-    query._index.should.be.eql(Post._index.slice().reverse());
+    query._index.should.eql(Post._index.slice().reverse());
   });
 
   it('sort() - old style', function(){
@@ -421,14 +421,14 @@ describe('Model', function(){
     var query = Post.find({}, {limit: 1});
 
     query.should.be.instanceof(Post._query);
-    query.count().should.be.eql(1);
+    query.count().should.eql(1);
   });
 
   it('findOne()', function(){
     var item = Post.findOne({});
 
     item.should.be.instanceof(Post._doc);
-    item.should.be.eql(Post.first());
+    item.should.eql(Post.first());
   });
 
   it('populate()', function(){
@@ -436,6 +436,10 @@ describe('Model', function(){
 
     query.should.be.instanceof(Post._query);
     query._populates.should.include('user_id');
+
+    var query = User.populate('posts');
+
+    console.log(query)
   });
 
   it('_populate() - object', function(){
@@ -447,9 +451,9 @@ describe('Model', function(){
       user_id: user._id
     }, ['user_id']);
 
-    post.title.should.be.eql('Post seven');
-    post.content.should.be.eql('post seven content');
-    post.user_id.should.be.eql(user);
+    post.title.should.eql('Post seven');
+    post.content.should.eql('post seven content');
+    post.user_id.should.eql(user);
   });
 
   it('_populate() - array', function(){
@@ -459,13 +463,13 @@ describe('Model', function(){
 
     var user = User._populate(data, ['posts']);
 
-    user.name.first.should.be.eql('John');
-    user.name.last.should.be.eql('Doe');
-    user.name.full.should.be.eql('John Doe');
-    user.email.should.be.eql('a@abc.com');
-    user.age.should.be.eql(22);
-    user._id.should.be.eql(data._id);
-    user.posts._index.should.be.eql(Post._index);
-    user.posts.toArray().should.be.eql(Post.toArray());
+    user.name.first.should.eql('John');
+    user.name.last.should.eql('Doe');
+    user.name.full.should.eql('John Doe');
+    user.email.should.eql('a@abc.com');
+    user.age.should.eql(22);
+    user._id.should.eql(data._id);
+    user.posts._index.should.eql(Post._index);
+    user.posts.toArray().should.eql(Post.toArray());
   });
 });

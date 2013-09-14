@@ -113,36 +113,36 @@ describe('Utilities', function(){
 
   it('getType()', function(){
     // String
-    util.getType('string').should.be.eql('String');
-    util.getType('').should.be.eql('String');
+    util.getType('string').should.eql('String');
+    util.getType('').should.eql('String');
 
     // Number
-    util.getType(1).should.be.eql('Number');
-    util.getType(0).should.be.eql('Number');
+    util.getType(1).should.eql('Number');
+    util.getType(0).should.eql('Number');
 
     // Array
-    util.getType(['str']).should.be.eql('Array');
-    util.getType([]).should.be.eql('Array');
+    util.getType(['str']).should.eql('Array');
+    util.getType([]).should.eql('Array');
 
     // Object
-    util.getType({foo: 1, bar: 2}).should.be.eql('Object');
-    util.getType({}).should.be.eql('Object');
-    util.getType({length: 1}).should.be.eql('Object');
+    util.getType({foo: 1, bar: 2}).should.eql('Object');
+    util.getType({}).should.eql('Object');
+    util.getType({length: 1}).should.eql('Object');
 
     // Boolean
-    util.getType(true).should.be.eql('Boolean');
-    util.getType(false).should.be.eql('Boolean');
+    util.getType(true).should.eql('Boolean');
+    util.getType(false).should.eql('Boolean');
 
     // Function
-    util.getType(function(){}).should.be.eql('Function');
+    util.getType(function(){}).should.eql('Function');
 
     // Date
-    util.getType(new Date).should.be.eql('Date');
+    util.getType(new Date).should.eql('Date');
 
     // Null
-    util.getType(null).should.be.eql('Null');
+    util.getType(null).should.eql('Null');
 
     // Undefined
-    util.getType(undefined).should.be.eql('Undefined');
+    util.getType(undefined).should.eql('Undefined');
   });
 });

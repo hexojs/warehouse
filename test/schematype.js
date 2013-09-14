@@ -186,7 +186,7 @@ describe('SchemaType', function(){
       type = new Type();
 
     it('no default', function(){
-      type.default().should.be.eql([]);
+      type.default().should.eql([]);
     });
 
     it('default value', function(){
@@ -194,7 +194,7 @@ describe('SchemaType', function(){
         default: [1, 2, 3]
       });
 
-      type.default().should.be.eql([1, 2, 3]);
+      type.default().should.eql([1, 2, 3]);
     });
 
     it('default function', function(){
@@ -204,7 +204,7 @@ describe('SchemaType', function(){
         }
       });
 
-      type.default().should.be.eql([1, 2, 3]);
+      type.default().should.eql([1, 2, 3]);
     });
 
     it('checkRequired()', function(){
@@ -426,7 +426,7 @@ describe('SchemaType', function(){
     it('save()', function(){
       var date = new Date();
 
-      type.save(date).should.be.eql(date.valueOf());
+      type.save(date).should.eql(date.valueOf());
     });
 
     it('compare()', function(){
@@ -510,19 +510,19 @@ describe('SchemaType', function(){
     });
 
     it('cast()', function(){
-      type.cast(1).should.be.eql(1);
-      type.cast(0).should.be.eql(0);
-      type.cast('1').should.be.eql(1)
-      type.cast('0').should.be.eql(0);
+      type.cast(1).should.eql(1);
+      type.cast(0).should.eql(0);
+      type.cast('1').should.eql(1)
+      type.cast('0').should.eql(0);
       should.not.exist(type.cast('foo'));
     });
 
     it('update - $inc', function(){
-      type.u$inc(1, 2).should.be.eql(3);
+      type.u$inc(1, 2).should.eql(3);
     });
 
     it('update - $dec', function(){
-      type.u$dec(1, 2).should.be.eql(-1);
+      type.u$dec(1, 2).should.eql(-1);
     });
   });
 
@@ -531,7 +531,7 @@ describe('SchemaType', function(){
       type = new Type();
 
     it('no default', function(){
-      type.default().should.be.eql({});
+      type.default().should.eql({});
     });
 
     it('default value', function(){
@@ -541,7 +541,7 @@ describe('SchemaType', function(){
         }
       });
 
-      type.default().should.be.eql({foo: 1});
+      type.default().should.eql({foo: 1});
     });
 
     it('default function', function(){
@@ -551,7 +551,7 @@ describe('SchemaType', function(){
         }
       });
 
-      type.default().should.be.eql({foo: 1});
+      type.default().should.eql({foo: 1});
     });
 
     it('compare()', function(){
@@ -600,12 +600,12 @@ describe('SchemaType', function(){
     });
 
     it('cast()', function(){
-      type.cast('foo').should.be.eql('foo');
-      type.cast('').should.be.eql('');
-      type.cast(true).should.be.eql('true');
-      type.cast(false).should.be.eql('false');
-      type.cast(1).should.be.eql('1');
-      type.cast(0).should.be.eql('0');
+      type.cast('foo').should.eql('foo');
+      type.cast('').should.eql('');
+      type.cast(true).should.eql('true');
+      type.cast(false).should.eql('false');
+      type.cast(1).should.eql('1');
+      type.cast(0).should.eql('0');
     });
 
     it('compare()', function(){
