@@ -436,10 +436,6 @@ describe('Model', function(){
 
     query.should.be.instanceof(Post._query);
     query._populates.should.include('user_id');
-
-    var query = User.populate('posts');
-
-    console.log(query)
   });
 
   it('_populate() - object', function(){
