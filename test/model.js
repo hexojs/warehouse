@@ -55,8 +55,8 @@ describe('Model', function(){
     Post = db.model('Post', postSchema);
 
   it('apply schema methods', function(){
-    Post.findLatest.should.be.a('function');
-    User._doc.prototype.addPost.should.be.a('function');
+    Post.findLatest.should.be.type('function');
+    User._doc.prototype.addPost.should.be.type('function');
   });
 
   it('insert() - object', function(done){
