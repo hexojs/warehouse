@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Simple JSON-based database",
   "main": "lib/index.js",
   "directories": {
@@ -23,7 +23,7 @@
     "url": "https://raw.github.com/tommy351/warehouse/master/LICENSE"
   },
   "dependencies": {
-    "lodash": "2.2.1",
+    "lodash": "2.4.1",
     "async": "0.2.9"
   },
   "devDependencies": {

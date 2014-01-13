@@ -107,7 +107,7 @@ describe('Schema', function(){
 
     schema.method('name', function(){});
 
-    schema.methods.name.should.be.a('function');
+    schema.methods.name.should.be.type('function');
   });
 
   it('static()', function(){
@@ -119,7 +119,7 @@ describe('Schema', function(){
 
     schema.static('name', function(){});
 
-    schema.statics.name.should.be.a('function');
+    schema.statics.name.should.be.type('function');
   });
 
   it('default definition', function(){
