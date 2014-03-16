@@ -4,4 +4,4 @@
 
 MongoDB-style Database
 
-- [API](http://zespia.tw/hexo/api/warehouse/classes/Database.html)
+- [API](http://hexo.io/api/warehouse/classes/Database.html)
