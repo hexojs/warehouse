@@ -275,6 +275,63 @@ describe('Query', function(){
     });
   });
 
+  it('map()', function(){
+    var arr = [];
+
+    query.each(function(user){
+      arr.push(user.age);
+    });
+
+    var result = query.map(function(user){
+      return user.age;
+    });
+
+    result.should.eql(arr);
+    query.map('age').should.eql(arr);
+  });
+
+  it('reduce()', function(){
+    var name = '';
+
+    query.each(function(user){
+      name += user.name.first;
+    });
+
+    var result = query.reduce(function(sum, user){
+      return sum + user.name.first;
+    }, '');
+
+    result.should.eql(name);
+  });
+
+  it('reduceRight()', function(){
+    var name = '';
+
+    query.reverse().each(function(user){
+      name += user.name.last;
+    });
+
+    var result = query.reduceRight(function(sum, user){
+      return sum + user.name.last;
+    }, '');
+
+    result.should.eql(name);
+  });
+
+  it('filter()', function(){
+    var callback = function(user){
+      return user.age % 2;
+    };
+
+    var index = [];
+
+    query.each(function(user){
+      if (callback(user)) index.push(user._id);
+    });
+
+    query.filter(callback)._index.should.eql(index);
+  });
+
   it('update()', function(){
     query.update({age: 0});
 
