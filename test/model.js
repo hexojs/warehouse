@@ -468,4 +468,61 @@ describe('Model', function(){
     user.posts._index.should.eql(Post._index);
     user.posts.toArray().should.eql(Post.toArray());
   });
+
+  it('map()', function(){
+    var arr = [];
+
+    User.each(function(user){
+      arr.push(user.age);
+    });
+
+    var result = User.map(function(user){
+      return user.age;
+    });
+
+    result.should.eql(arr);
+    User.map('age').should.eql(arr);
+  });
+
+  it('reduce()', function(){
+    var name = '';
+
+    User.each(function(user){
+      name += user.name.first;
+    });
+
+    var result = User.reduce(function(sum, user){
+      return sum + user.name.first;
+    }, '');
+
+    result.should.eql(name);
+  });
+
+  it('reduceRight()', function(){
+    var name = '';
+
+    User.reverse().each(function(user){
+      name += user.name.last;
+    });
+
+    var result = User.reduceRight(function(sum, user){
+      return sum + user.name.last;
+    }, '');
+
+    result.should.eql(name);
+  });
+
+  it('filter()', function(){
+    var callback = function(user){
+      return user.age % 2;
+    };
+
+    var index = [];
+
+    User.each(function(user){
+      if (callback(user)) index.push(user._id);
+    });
+
+    User.filter(callback)._index.should.eql(index);
+  });
 });
