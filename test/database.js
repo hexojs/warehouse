@@ -33,22 +33,22 @@ describe('Database', function(){
     });
   });
 
-  it('save() - target preset', function(done){
-    var db = new Database(path.join(__dirname, 'test.json'));
-
-    db.save(function(err){
-      should.not.exist(err);
-
-      done();
-    });
-  });
-
   it('save() - target argument', function(done){
     var Post = db.model('Post');
 
     Post.insert(require('./dummy.json'));
 
     db.save(path.join(__dirname, 'test.json'), function(err){
+      should.not.exist(err);
+
+      done();
+    });
+  });
+
+  it('save() - target preset', function(done){
+    var db = new Database(path.join(__dirname, 'test.json'));
+
+    db.save(function(err){
       should.not.exist(err);
 
       done();
@@ -71,12 +71,6 @@ describe('Database', function(){
     db.load(function(err){
       should.not.exist(err);
 
-      var Post = db.model('Post');
-
-      Post.each(function(item, i){
-        item.should.eql(db._store.Post[i]);
-      });
-
       done();
     });
   });
@@ -86,12 +80,6 @@ describe('Database', function(){
 
     db.load(path.join(__dirname, 'test.json'), function(err){
       should.not.exist(err);
-
-      var Post = db.model('Post');
-
-      Post.each(function(item, i){
-        item.should.eql(db._store.Post[i]);
-      });
 
       done();
     });
