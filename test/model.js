@@ -525,4 +525,17 @@ describe('Model', function(){
 
     User.filter(callback)._index.should.eql(index);
   });
+
+  it('destroy()', function() {
+    Post.destroy();
+    var query = Post.find({});
+    query.should.have.length(0);
+    query.toArray().should.be.empty;
+
+    // Retrieve model instance by using `db.model('modelName')` method,
+    //    ensure that all data has been deleted from the store.
+    query = db.model('Post').find({});
+    query.should.have.length(0);
+    query.toArray().should.be.empty;
+  });
 });
