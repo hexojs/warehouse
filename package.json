@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Simple JSON-based database",
   "main": "lib/index.js",
   "directories": {
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "lodash": "2.4.1",
-    "async": "0.2.10"
+    "async": "0.7.0"
   },
   "devDependencies": {
     "mocha": "*",
