@@ -48,7 +48,7 @@ describe('Model', function(){
   });
 
   postSchema.static('findLatest', function(){
-    return this.sort({created: -1}).first();
+    return this.sort({date: -1}).first();
   });
 
   var User = db.model('User', userSchema),
