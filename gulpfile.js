@@ -1,6 +1,5 @@
 var gulp = require('gulp'),
-  $ = require('gulp-load-plugins')(),
-  path = require('path');
+  $ = require('gulp-load-plugins')();
 
 var lib = 'lib/**/*.js',
   test = 'test/scripts/**/*.js';
