@@ -126,15 +126,16 @@ describe('util', function(){
     util.reverse(arr).should.eql(['w', '2', 1]);
   });
 
-  it.skip('shuffle()');
+  it('shuffle()', function(){
+    var arr = util.shuffle([1, 2, 3]);
+    arr.sort().should.eql([1, 2, 3]);
+  });
 
   it('parseSortArgs()', function(){
     util.parseArgs('name').should.eql({name: 1});
     util.parseArgs('name', -1).should.eql({name: -1});
     util.parseArgs('name -date').should.eql({name: 1, date: -1});
   });
-
-  it.skip('callbackWrapper()');
 
   it('extend()', function(){
     util.extend({a: 1}, {b: 2}).should.eql({a: 1, b: 2});
