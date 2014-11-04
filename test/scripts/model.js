@@ -265,6 +265,12 @@ describe('Model', function(){
     });
   });
 
+  it.skip('updateById() - $set');
+
+  it.skip('updateById() - $unset');
+
+  it.skip('updateById() - $rename');
+
   it.skip('updateById() - id not exist');
 
   it('updateById() - pre-hook', function(){
@@ -439,6 +445,8 @@ describe('Model', function(){
       should.not.exist(User.findById(data._id));
     })
   });
+
+  it.skip('removeById() - id not exist');
 
   it('removeById() - pre-hook', function(){
     var db = new Database(),
