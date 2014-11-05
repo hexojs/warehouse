@@ -43,37 +43,37 @@ describe('SchemaTypeNumber', function(){
       .property('message', '`test` is required!');
   });
 
-  it('u$inc', function(){
+  it('u$inc()', function(){
     type.u$inc(2, 3).should.eql(5);
     type.u$inc(undefined, 3).should.eql(3);
   });
 
-  it('u$dec', function(){
+  it('u$dec()', function(){
     type.u$dec(2, 3).should.eql(-1);
     type.u$dec(undefined, 3).should.eql(-3);
   });
 
-  it('u$mul', function(){
+  it('u$mul()', function(){
     type.u$mul(2, 3).should.eql(6);
     type.u$mul(undefined, 3).should.eql(0);
   });
 
-  it('u$div', function(){
+  it('u$div()', function(){
     type.u$div(10, 5).should.eql(2);
     type.u$div(undefined, 5).should.eql(0);
   });
 
-  it('u$mod', function(){
+  it('u$mod()', function(){
     type.u$mod(13, 5).should.eql(3);
     type.u$mod(undefined, 5).should.eql(0);
   });
 
-  it('u$max', function(){
+  it('u$max()', function(){
     type.u$max(20, 50).should.eql(50);
     type.u$max(70, 50).should.eql(70);
   });
 
-  it('u$min', function(){
+  it('u$min()', function(){
     type.u$min(30, 20).should.eql(20);
     type.u$min(10, 20).should.eql(10);
   });

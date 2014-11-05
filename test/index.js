@@ -1,7 +1,8 @@
 describe('Warehouse', function(){
+  require('./scripts/database');
+  require('./scripts/document');
   require('./scripts/model');
   require('./scripts/query');
-  require('./scripts/document');
   require('./scripts/schematype');
   require('./scripts/types/array');
   require('./scripts/types/boolean');

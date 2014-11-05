@@ -1,5 +1,6 @@
 var should = require('chai').should(),
-  _ = require('lodash');
+  _ = require('lodash'),
+  WarehouseError = require('../../lib/error');
 
 describe('Model', function(){
   var Database = require('../..'),
@@ -94,9 +95,30 @@ describe('Model', function(){
     });
   });
 
-  it.skip('insert() - no id');
+  it('insert() - no id', function(){
+    var doc = User.new();
+    delete doc._id;
 
-  it.skip('insert() - already existed');
+    return User.insert(doc).catch(function(err){
+      err.should.be
+        .instanceOf(WarehouseError)
+        .property('message', 'ID is not defined');
+    });
+  });
+
+  it('insert() - already existed', function(){
+    return User.insert({}).then(function(data){
+      User.insert(data).catch(function(err){
+        err.should.be
+          .instanceOf(WarehouseError)
+          .property('message', 'ID `' + data._id + '` has been used');
+      });
+
+      return data;
+    }).then(function(data){
+      return User.removeById(data._id);
+    });
+  });
 
   it('insert() - pre-hook', function(){
     var db = new Database(),
@@ -219,7 +241,7 @@ describe('Model', function(){
     });
   });
 
-  it('updateById() - dot key', function(){
+  it('updateById() - dot notation', function(){
     return User.insert({
       name: {first: 'John', last: 'Doe'},
       email: 'abc@example.com',
@@ -265,13 +287,74 @@ describe('Model', function(){
     });
   });
 
-  it.skip('updateById() - $set');
+  it('updateById() - $set', function(){
+    return User.insert({
+      name: {first: 'John', last: 'Doe'},
+      email: 'abc@example.com',
+      age: 20
+    }).then(function(data){
+      return User.updateById(data._id, {$set: {age: 25}});
+    }).then(function(data){
+      data.age.should.eql(25);
+      return data;
+    }).then(function(data){
+      return User.removeById(data._id);
+    });
+  });
 
-  it.skip('updateById() - $unset');
+  it('updateById() - $unset', function(){
+    return User.insert({
+      name: {first: 'John', last: 'Doe'},
+      email: 'abc@example.com',
+      age: 20
+    }).then(function(data){
+      return User.updateById(data._id, {$unset: {email: true}});
+    }).then(function(data){
+      should.not.exist(data.email);
+      return data;
+    }).then(function(data){
+      return User.removeById(data._id);
+    });
+  });
 
-  it.skip('updateById() - $rename');
+  it('updateById() - $unset false', function(){
+    return User.insert({
+      name: {first: 'John', last: 'Doe'},
+      email: 'abc@example.com',
+      age: 20
+    }).then(function(data){
+      return User.updateById(data._id, {$unset: {email: false}});
+    }).then(function(data){
+      data.email.should.eql('abc@example.com');
+      return data;
+    }).then(function(data){
+      return User.removeById(data._id);
+    });
+  });
 
-  it.skip('updateById() - id not exist');
+  it('updateById() - $rename', function(){
+    return User.insert({
+      name: {first: 'John', last: 'Doe'},
+      email: 'abc@example.com',
+      age: 20
+    }).then(function(data){
+      return User.updateById(data._id, {$rename: {email: 'address'}});
+    }).then(function(data){
+      data.address.should.eql('abc@example.com');
+      should.not.exist(data.email);
+      return data;
+    }).then(function(data){
+      return User.removeById(data._id);
+    });
+  });
+
+  it('updateById() - id not exist', function(){
+    return User.updateById('foo', {}).catch(function(err){
+      err.should.be
+        .instanceOf(WarehouseError)
+        .property('message', 'ID `foo` does not exist');
+    });
+  });
 
   it('updateById() - pre-hook', function(){
     var db = new Database(),
@@ -363,7 +446,13 @@ describe('Model', function(){
     });
   });
 
-  it.skip('replaceById() - id not exist');
+  it('replaceById() - id not exist', function(){
+    return User.replaceById('foo', {}).catch(function(err){
+      err.should.be
+        .instanceOf(WarehouseError)
+        .property('message', 'ID `foo` does not exist');
+    });
+  });
 
   it('replaceById() - pre-hook', function(){
     var db = new Database(),
@@ -446,7 +535,13 @@ describe('Model', function(){
     })
   });
 
-  it.skip('removeById() - id not exist');
+  it('removeById() - id not exist', function(){
+    return User.removeById('foo', {}).catch(function(err){
+      err.should.be
+        .instanceOf(WarehouseError)
+        .property('message', 'ID `foo` does not exist');
+    });
+  });
 
   it('removeById() - pre-hook', function(){
     var db = new Database(),
@@ -1049,11 +1144,79 @@ describe('Model', function(){
 
   it.skip('populate()');
 
-  it.skip('static method');
+  it('static method', function(){
+    var schema = new Schema();
 
-  it.skip('instance method');
+    schema.static('add', function(value){
+      return this.insert(value);
+    });
 
-  it.skip('_import()');
+    var Test = db.model('Test', schema);
 
-  it.skip('_export()');
+    Test.add({name: 'foo'}).then(function(data){
+      data.name.should.eql('foo');
+    });
+
+    Test.destroy();
+  });
+
+  it('instance method', function(){
+    var schema = new Schema();
+
+    schema.method('getName', function(){
+      return this.name;
+    });
+
+    var Test = db.model('Test', schema);
+
+    Test.insert({name: 'foo'}).then(function(data){
+      data.getName().should.eql('foo');
+    });
+
+    Test.destroy();
+  });
+
+  it('_import()', function(){
+    var schema = new Schema({
+      _id: {type: String, required: true},
+      bool: Boolean
+    });
+
+    var Test = db.model('Test', schema);
+
+    Test._import([
+      {_id: 'A', bool: 1},
+      {_id: 'B', bool: 0}
+    ]);
+
+    Test.length.should.eql(2);
+
+    Test.toArray().should.eql([
+      Test.new({_id: 'A', bool: true}),
+      Test.new({_id: 'B', bool: false})
+    ]);
+
+    Test.destroy();
+  });
+
+  it('_export()', function(){
+    var schema = new Schema({
+      _id: {type: String, required: true},
+      bool: Boolean
+    });
+
+    var Test = db.model('Test', schema);
+
+    Test.insert([
+      {_id: 'A', bool: true},
+      {_id: 'B', bool: false}
+    ]).then(function(data){
+      Test._export().should.eql(JSON.stringify([
+        {_id: 'A', bool: 1},
+        {_id: 'B', bool: 0}
+      ]));
+    });
+
+    Test.destroy();
+  });
 });

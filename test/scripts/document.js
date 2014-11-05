@@ -2,11 +2,29 @@ var should = require('chai').should();
 
 describe('Document', function(){
   var Database = require('../..'),
+    Document = require('../../lib/document'),
     db = new Database();
 
   var User = db.model('User', {
     name: String,
     age: Number
+  });
+
+  it('constructor', function(){
+    var doc = User.new({
+      name: 'John',
+      age: 20
+    });
+
+    doc.should.be.an.instanceOf(Document);
+    doc.name.should.eql('John');
+    doc.age.should.eql(20);
+  });
+
+  it('constructor - no arguments', function(){
+    var doc = User.new();
+
+    doc.should.be.an.instanceOf(Document);
   });
 
   it('save() - insert', function(){
