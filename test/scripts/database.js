@@ -6,7 +6,7 @@ var should = require('chai').should(),
 var DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json'),
   DB_VERSION = 1;
 
-describe.only('Database', function(){
+describe('Database', function(){
   var Database = require('../..'),
     Model = require('../../lib/model'),
     Schema = Database.Schema,
@@ -57,7 +57,7 @@ describe.only('Database', function(){
       path: DB_PATH,
       version: 2,
       onUpgrade: function(oldVersion, newVersion){
-        oldVersion.should.eql(1);
+        oldVersion.should.eql(DB_VERSION);
         newVersion.should.eql(2);
         executed = true;
       }
@@ -75,7 +75,7 @@ describe.only('Database', function(){
       path: DB_PATH,
       version: 0,
       onDowngrade: function(oldVersion, newVersion){
-        oldVersion.should.eql(1);
+        oldVersion.should.eql(DB_VERSION);
         newVersion.should.eql(0);
         executed = true;
       }
