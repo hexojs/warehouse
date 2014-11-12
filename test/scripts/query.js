@@ -1,9 +1,9 @@
-var should = require('chai').should(),
-  _ = require('lodash');
+var should = require('chai').should();
+var _ = require('lodash');
 
 describe('Query', function(){
-  var Database = require('../..'),
-    db = new Database();
+  var Database = require('../..');
+  var db = new Database();
 
   var User = db.model('User', {
     name: String,
@@ -227,8 +227,13 @@ describe('Query', function(){
       {age: 30},
       {age: 40}
     ]).then(function(data){
-      var query = User.find({}).find({age: {$gte: 20}}, {skip: 2});
-      query.data.should.eql(data.slice(3));
+      var query = User.find({}).find({age: {$gte: 20}}, {skip: 1});
+      query.data.should.eql(data.slice(2));
+
+      // with limit
+      query = User.find({}).find({age: {$gte: 20}}, {limit: 1, skip: 1});
+      query.data.should.eql(data.slice(2, 3));
+
       return data;
     }).map(function(item){
       return User.removeById(item._id);

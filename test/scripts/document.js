@@ -1,9 +1,9 @@
 var should = require('chai').should();
 
 describe('Document', function(){
-  var Database = require('../..'),
-    Document = require('../../lib/document'),
-    db = new Database();
+  var Database = require('../..');
+  var Document = require('../../lib/document');
+  var db = new Database();
 
   var User = db.model('User', {
     name: String,

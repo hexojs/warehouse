@@ -1,9 +1,9 @@
-var should = require('chai').should(),
-  ValidationError = require('../../../lib/error/validation');
+var should = require('chai').should();
+var ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeBoolean', function(){
-  var SchemaTypeBoolean = require('../../../lib/types/boolean'),
-    type = new SchemaTypeBoolean('test');
+  var SchemaTypeBoolean = require('../../../lib/types/boolean');
+  var type = new SchemaTypeBoolean('test');
 
   it('cast()', function(){
     type.cast(true).should.eql(true);

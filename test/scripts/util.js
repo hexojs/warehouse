@@ -131,10 +131,11 @@ describe('util', function(){
     arr.sort().should.eql([1, 2, 3]);
   });
 
-  it('parseSortArgs()', function(){
+  it('parseArgs()', function(){
     util.parseArgs('name').should.eql({name: 1});
     util.parseArgs('name', -1).should.eql({name: -1});
     util.parseArgs('name -date').should.eql({name: 1, date: -1});
+    util.parseArgs('name -date +priority').should.eql({name: 1, date: -1, priority: 1});
   });
 
   it('extend()', function(){

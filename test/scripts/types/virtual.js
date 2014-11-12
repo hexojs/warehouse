@@ -1,8 +1,8 @@
 var should = require('chai').should();
 
 describe('SchemaTypeVirtual', function(){
-  var SchemaTypeVirtual = require('../../../lib/types/virtual'),
-    type = new SchemaTypeVirtual('test');
+  var SchemaTypeVirtual = require('../../../lib/types/virtual');
+  var type = new SchemaTypeVirtual('test');
 
   it('get()', function(){
     var getter = function(){

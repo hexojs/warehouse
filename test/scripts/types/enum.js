@@ -1,5 +1,5 @@
-var should = require('chai').should(),
-  ValidationError = require('../../../lib/error/validation');
+var should = require('chai').should();
+var ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeEnum', function(){
   var SchemaTypeEnum = require('../../../lib/types/enum');

@@ -1,16 +1,16 @@
-var should = require('chai').should(),
-  path = require('path'),
-  Promise = require('bluebird'),
-  fs = Promise.promisifyAll(require('fs'));
+var should = require('chai').should();
+var path = require('path');
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
 
-var DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json'),
-  DB_VERSION = 1;
+var DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
+var DB_VERSION = 1;
 
 describe('Database', function(){
-  var Database = require('../..'),
-    Model = require('../../lib/model'),
-    Schema = Database.Schema,
-    db = new Database({path: DB_PATH, version: DB_VERSION});
+  var Database = require('../..');
+  var Model = require('../../lib/model');
+  var Schema = Database.Schema;
+  var db = new Database({path: DB_PATH, version: DB_VERSION});
 
   var TestModel = db.model('Test', new Schema({
     _id: {type: String, required: true}

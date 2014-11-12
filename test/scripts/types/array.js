@@ -1,12 +1,12 @@
-var should = require('chai').should(),
-  ValidationError = require('../../../lib/error/validation');
+var should = require('chai').should();
+var ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeArray', function(){
-  var SchemaTypeArray = require('../../../lib/types/array'),
-    SchemaTypeString = require('../../../lib/types/string'),
-    SchemaTypeDate = require('../../../lib/types/date'),
-    SchemaTypeBoolean = require('../../../lib/types/boolean'),
-    type = new SchemaTypeArray('test');
+  var SchemaTypeArray = require('../../../lib/types/array');
+  var SchemaTypeString = require('../../../lib/types/string');
+  var SchemaTypeDate = require('../../../lib/types/date');
+  var SchemaTypeBoolean = require('../../../lib/types/boolean');
+  var type = new SchemaTypeArray('test');
 
   it('cast()', function(){
     type.cast('foo').should.eql(['foo']);
