@@ -571,6 +571,54 @@ describe('Query', function(){
     });
   });
 
+  it('every()', function(){
+    return User.insert([
+      {age: 10},
+      {age: 20},
+      {age: 30},
+      {age: 40}
+    ]).then(function(data){
+      var num = 0;
+
+      User.find({}).every(function(data, i){
+        i.should.eql(num++);
+        return data.age;
+      }).should.be.true;
+
+      User.find({}).every(function(data, i){
+        return data.age > 10;
+      }).should.be.false;
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('some()', function(){
+    return User.insert([
+      {age: 10},
+      {age: 20},
+      {age: 30},
+      {age: 40}
+    ]).then(function(data){
+      var num = 0;
+
+      User.find({}).some(function(data, i){
+        return data.age > 10;
+      }).should.be.true;
+
+      User.find({}).some(function(data, i){
+        i.should.eql(num++);
+        return data.age < 0;
+      }).should.be.false;
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
   it('update()', function(){
     return User.insert([
       {age: 10},
