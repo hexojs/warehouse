@@ -1,13 +1,21 @@
 var should = require('chai').should();
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 describe('Query', function(){
   var Database = require('../..');
   var db = new Database();
+  var Schema = Database.Schema;
 
   var User = db.model('User', {
     name: String,
-    age: Number
+    age: Number,
+    comments: [{type: Schema.Types.CUID, ref: 'Comment'}]
+  });
+
+  var Comment = db.model('Comment', {
+    content: String,
+    author: {type: Schema.Types.CUID, ref: 'User'}
   });
 
   it('count()', function(){
@@ -520,5 +528,55 @@ describe('Query', function(){
     });
   });
 
-  it.skip('populate()');
+  it('populate() - object', function(){
+    var user, comment;
+
+    return User.insert({}).then(function(user_){
+      user = user_;
+
+      return Comment.insert({
+        author: user._id
+      });
+    }).then(function(comment_){
+      comment = comment_;
+      return Comment.find({}).populate('author');
+    }).then(function(result){
+      result.first().author.should.eql(user);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Comment.removeById(comment._id)
+      ]);
+    });
+  });
+
+  it('populate() - array', function(){
+    var comments, user;
+
+    return Comment.insert([
+      {content: 'foo'},
+      {content: 'bar'},
+      {content: 'baz'},
+      {content: 'ha'}
+    ]).then(function(comments_){
+      comments = comments_;
+
+      return User.insert({
+        comments: _.map(comments, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+      return User.populate('comments');
+    }).then(function(result){
+      result.first().comments.toArray().should.eql(comments);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Comment.removeById(comments[0]._id),
+        Comment.removeById(comments[1]._id),
+        Comment.removeById(comments[2]._id),
+        Comment.removeById(comments[3]._id)
+      ]);
+    });
+  });
 });
