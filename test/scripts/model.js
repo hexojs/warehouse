@@ -740,6 +740,107 @@ describe('Model', function(){
     });
   });
 
+  it('find() - $and', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $and: [
+          {'name.last': 'Doe'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql([data[1]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $or', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $or: [
+          {'name.last': 'White'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql(data.slice(1));
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $nor', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $nor: [
+          {'name.last': 'White'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql([data[0]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $not', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $not: {'name.last': 'Doe'}
+      });
+
+      query.toArray().should.eql(data.slice(2));
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $where', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $where: function(){
+          return this.name.last === 'Doe';
+        }
+      });
+
+      query.toArray().should.eql(data.slice(0, 2));
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
   it('findOne()', function(){
     return User.insert([
       {age: 10},
