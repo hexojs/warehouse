@@ -1,10 +1,11 @@
-var should = require('chai').should(),
-  _ = require('lodash'),
-  WarehouseError = require('../../lib/error');
+var should = require('chai').should();
+var _ = require('lodash');
+var Promise = require('bluebird');
+var WarehouseError = require('../../lib/error');
 
 describe('Model', function(){
-  var Database = require('../..'),
-    Schema = Database.Schema;
+  var Database = require('../..');
+  var Schema = Database.Schema;
 
   var db = new Database();
 
@@ -29,8 +30,8 @@ describe('Model', function(){
     created: Date
   });
 
-  var User = db.model('User', userSchema),
-    Post = db.model('Post', postSchema);
+  var User = db.model('User', userSchema);
+  var Post = db.model('Post', postSchema);
 
   it('new()', function(){
     var user = User.new({
@@ -121,9 +122,9 @@ describe('Model', function(){
   });
 
   it('insert() - pre-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      executed = false;
+    var db = new Database();
+    var testSchema = new Schema();
+    var executed = false;
 
     testSchema.pre('save', function(data){
       data.foo.should.eql('bar');
@@ -138,9 +139,9 @@ describe('Model', function(){
   });
 
   it('insert() - post-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      executed = false;
+    var db = new Database();
+    var testSchema = new Schema();
+    var executed = false;
 
     testSchema.post('save', function(data){
       data.foo.should.eql('bar');
@@ -357,9 +358,9 @@ describe('Model', function(){
   });
 
   it('updateById() - pre-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      count = 0;
+    var db = new Database();
+    var testSchema = new Schema();
+    var count = 0;
 
     testSchema.pre('save', function(data){
       data.foo.should.eql('bar');
@@ -378,9 +379,9 @@ describe('Model', function(){
   });
 
   it('updateById() - post-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      count = 0;
+    var db = new Database();
+    var testSchema = new Schema();
+    var count = 0;
 
     testSchema.post('save', function(data){
       data.foo.should.eql('bar');
@@ -455,9 +456,9 @@ describe('Model', function(){
   });
 
   it('replaceById() - pre-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      count = 0;
+    var db = new Database();
+    var testSchema = new Schema();
+    var count = 0;
 
     testSchema.pre('save', function(data){
       data.foo.should.eql('bar');
@@ -476,9 +477,9 @@ describe('Model', function(){
   });
 
   it('replaceById() - post-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      count = 0;
+    var db = new Database();
+    var testSchema = new Schema();
+    var count = 0;
 
     testSchema.post('save', function(data){
       data.foo.should.eql('bar');
@@ -544,9 +545,9 @@ describe('Model', function(){
   });
 
   it('removeById() - pre-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      executed = false;
+    var db = new Database();
+    var testSchema = new Schema();
+    var executed = false;
 
     testSchema.pre('remove', function(data){
       data.foo.should.eql('bar');
@@ -565,9 +566,9 @@ describe('Model', function(){
   });
 
   it('removeById() - post-hook', function(){
-    var db = new Database(),
-      testSchema = new Schema(),
-      executed = false;
+    var db = new Database();
+    var testSchema = new Schema();
+    var executed = false;
 
     testSchema.post('remove', function(data){
       data.foo.should.eql('bar');
@@ -711,8 +712,13 @@ describe('Model', function(){
       {age: 30},
       {age: 40}
     ]).then(function(data){
-      var query = User.find({age: {$gte: 20}}, {skip: 2});
-      query.data.should.eql(data.slice(3));
+      var query = User.find({age: {$gte: 20}}, {skip: 1});
+      query.data.should.eql(data.slice(2));
+
+      // with limit
+      query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1});
+      query.data.should.eql(data.slice(2, 3));
+
       return data;
     }).map(function(item){
       return User.removeById(item._id);
@@ -728,6 +734,107 @@ describe('Model', function(){
     ]).then(function(data){
       var query = User.find({age: {$gt: 20}}, {lean: true});
       query.should.be.a('array');
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $and', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $and: [
+          {'name.last': 'Doe'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql([data[1]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $or', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $or: [
+          {'name.last': 'White'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql(data.slice(1));
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $nor', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $nor: [
+          {'name.last': 'White'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql([data[0]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $not', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $not: {'name.last': 'Doe'}
+      });
+
+      query.toArray().should.eql(data.slice(2));
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $where', function(){
+    return User.insert([
+      {name: {first: 'John', last: 'Doe'}, age: 20},
+      {name: {first: 'Jane', last: 'Doe'}, age: 25},
+      {name: {first: 'Jack', last: 'White'}, age: 30}
+    ]).then(function(data){
+      var query = User.find({
+        $where: function(){
+          return this.name.last === 'Doe';
+        }
+      });
+
+      query.toArray().should.eql(data.slice(0, 2));
+
       return data;
     }).map(function(item){
       return User.removeById(item._id);
@@ -1142,7 +1249,282 @@ describe('Model', function(){
     });
   });
 
-  it.skip('populate()');
+  it('every()', function(){
+    return User.insert([
+      {age: 10},
+      {age: 20},
+      {age: 30},
+      {age: 40}
+    ]).then(function(data){
+      var num = 0;
+
+      User.every(function(data, i){
+        i.should.eql(num++);
+        return data.age;
+      }).should.be.true;
+
+      User.every(function(data, i){
+        return data.age > 10;
+      }).should.be.false;
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('some()', function(){
+    return User.insert([
+      {age: 10},
+      {age: 20},
+      {age: 30},
+      {age: 40}
+    ]).then(function(data){
+      var num = 0;
+
+      User.some(function(data, i){
+        return data.age > 10;
+      }).should.be.true;
+
+      User.some(function(data, i){
+        i.should.eql(num++);
+        return data.age < 0;
+      }).should.be.false;
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('populate() - object', function(){
+    var user, post;
+
+    return User.insert({}).then(function(user_){
+      user = user_;
+
+      return Post.insert({
+        user_id: user_._id
+      });
+    }).then(function(post_){
+      post = post_;
+      return Post.populate('user_id');
+    }).then(function(result){
+      result.first().user_id.should.eql(user);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(post._id)
+      ]);
+    });
+  });
+
+  it('populate() - array', function(){
+    var posts, user;
+
+    return Post.insert([
+      {title: 'ABCD'},
+      {title: 'ACD'},
+      {title: 'CDE'},
+      {title: 'XYZ'}
+    ]).then(function(posts_){
+      posts = posts_;
+
+      return User.insert({
+        posts: _.map(posts, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+      return User.populate('posts');
+    }).then(function(result){
+      var query = result.first().posts;
+
+      query.should.be.an.instanceOf(Post.Query);
+      query.toArray().should.eql(posts);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(posts[0]._id),
+        Post.removeById(posts[1]._id),
+        Post.removeById(posts[2]._id),
+        Post.removeById(posts[3]._id)
+      ]);
+    });
+  });
+
+  it('populate() - match', function(){
+    var posts, user;
+
+    return Post.insert([
+      {title: 'ABCD'},
+      {title: 'ACD'},
+      {title: 'CDE'},
+      {title: 'XYZ'}
+    ]).then(function(posts_){
+      posts = posts_;
+
+      return User.insert({
+        posts: _.map(posts, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+      return User.populate({
+        path: 'posts',
+        match: {title: /^A/}
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(0, 2));
+
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(posts[0]._id),
+        Post.removeById(posts[1]._id),
+        Post.removeById(posts[2]._id),
+        Post.removeById(posts[3]._id)
+      ]);
+    });
+  });
+
+  it('populate() - sort', function(){
+    var posts, user;
+
+    return Post.insert([
+      {title: 'XYZ'},
+      {title: 'ABCD'},
+      {title: 'CDE'},
+      {title: 'ACD'}
+    ]).then(function(posts_){
+      posts = posts_;
+
+      return User.insert({
+        posts: _.map(posts, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+
+      return User.populate({
+        path: 'posts',
+        sort: 'title'
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql([
+        posts[1], posts[3], posts[2], posts[0]
+      ]);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(posts[0]._id),
+        Post.removeById(posts[1]._id),
+        Post.removeById(posts[2]._id),
+        Post.removeById(posts[3]._id)
+      ]);
+    });
+  });
+
+  it('populate() - limit', function(){
+    var posts, user;
+
+    return Post.insert([
+      {title: 'XYZ'},
+      {title: 'ABCD'},
+      {title: 'CDE'},
+      {title: 'ACD'}
+    ]).then(function(posts_){
+      posts = posts_;
+
+      return User.insert({
+        posts: _.map(posts, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+
+      return User.populate({
+        path: 'posts',
+        limit: 2
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(0, 2));
+
+      // with match
+      return User.populate({
+        path: 'posts',
+        match: {title: /D/},
+        limit: 2
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(1, 3));
+
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(posts[0]._id),
+        Post.removeById(posts[1]._id),
+        Post.removeById(posts[2]._id),
+        Post.removeById(posts[3]._id)
+      ]);
+    });
+  });
+
+  it('populate() - skip', function(){
+    var posts, user;
+
+    return Post.insert([
+      {title: 'XYZ'},
+      {title: 'ABCD'},
+      {title: 'CDE'},
+      {title: 'ACD'}
+    ]).then(function(posts_){
+      posts = posts_;
+
+      return User.insert({
+        posts: _.map(posts, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+
+      return User.populate({
+        path: 'posts',
+        skip: 2
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(2));
+
+      // with match
+      return User.populate({
+        path: 'posts',
+        match: {title: /D/},
+        skip: 2
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(3));
+
+      // with limit
+      return User.populate({
+        path: 'posts',
+        limit: 2,
+        skip: 1
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(1, 3));
+
+      // with match & limit
+      return User.populate({
+        path: 'posts',
+        match: {title: /D/},
+        limit: 2,
+        skip: 1
+      });
+    }).then(function(result){
+      result.first().posts.toArray().should.eql(posts.slice(2));
+
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(posts[0]._id),
+        Post.removeById(posts[1]._id),
+        Post.removeById(posts[2]._id),
+        Post.removeById(posts[3]._id)
+      ]);
+    });
+  });
 
   it('static method', function(){
     var schema = new Schema();

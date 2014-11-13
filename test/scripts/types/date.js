@@ -1,9 +1,9 @@
-var should = require('chai').should(),
-  ValidationError = require('../../../lib/error/validation');
+var should = require('chai').should();
+var ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeDate', function(){
-  var SchemaTypeDate = require('../../../lib/types/date'),
-    type = new SchemaTypeDate('test');
+  var SchemaTypeDate = require('../../../lib/types/date');
+  var type = new SchemaTypeDate('test');
 
   it('cast()', function(){
     type.cast(new Date(2014, 1, 1)).should.eql(new Date(2014, 1, 1));
@@ -12,8 +12,8 @@ describe('SchemaTypeDate', function(){
   });
 
   it('cast() - default', function(){
-    var date = new Date(),
-      type = new SchemaTypeDate('test', {default: date});
+    var date = new Date();
+    var type = new SchemaTypeDate('test', {default: date});
 
     type.cast().should.eql(date);
   });

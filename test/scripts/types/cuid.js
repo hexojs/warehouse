@@ -1,9 +1,9 @@
-var should = require('chai').should(),
-  ValidationError = require('../../../lib/error/validation');
+var should = require('chai').should();
+var ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeCUID', function(){
-  var SchemaTypeCUID = require('../../../lib/types/cuid'),
-    type = new SchemaTypeCUID('test');
+  var SchemaTypeCUID = require('../../../lib/types/cuid');
+  var type = new SchemaTypeCUID('test');
 
   it('cast()', function(){
     type.cast('foo').should.eql('foo');

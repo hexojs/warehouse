@@ -1,13 +1,21 @@
-var should = require('chai').should(),
-  _ = require('lodash');
+var should = require('chai').should();
+var _ = require('lodash');
+var Promise = require('bluebird');
 
 describe('Query', function(){
-  var Database = require('../..'),
-    db = new Database();
+  var Database = require('../..');
+  var db = new Database();
+  var Schema = Database.Schema;
 
   var User = db.model('User', {
     name: String,
-    age: Number
+    age: Number,
+    comments: [{type: Schema.Types.CUID, ref: 'Comment'}]
+  });
+
+  var Comment = db.model('Comment', {
+    content: String,
+    author: {type: Schema.Types.CUID, ref: 'User'}
   });
 
   it('count()', function(){
@@ -227,8 +235,13 @@ describe('Query', function(){
       {age: 30},
       {age: 40}
     ]).then(function(data){
-      var query = User.find({}).find({age: {$gte: 20}}, {skip: 2});
-      query.data.should.eql(data.slice(3));
+      var query = User.find({}).find({age: {$gte: 20}}, {skip: 1});
+      query.data.should.eql(data.slice(2));
+
+      // with limit
+      query = User.find({}).find({age: {$gte: 20}}, {limit: 1, skip: 1});
+      query.data.should.eql(data.slice(2, 3));
+
       return data;
     }).map(function(item){
       return User.removeById(item._id);
@@ -244,6 +257,107 @@ describe('Query', function(){
     ]).then(function(data){
       var query = User.find({}).find({age: {$gt: 20}}, {lean: true});
       query.should.be.a('array');
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $and', function(){
+    return User.insert([
+      {name: 'John', age: 20},
+      {name: 'John', age: 25},
+      {name: 'Jack', age: 30}
+    ]).then(function(data){
+      var query = User.find({}).find({
+        $and: [
+          {name: 'John'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql([data[1]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $or', function(){
+    return User.insert([
+      {name: 'John', age: 20},
+      {name: 'John', age: 25},
+      {name: 'Jack', age: 30}
+    ]).then(function(data){
+      var query = User.find({}).find({
+        $or: [
+          {name: 'Jack'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql(data.slice(1));
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $nor', function(){
+    return User.insert([
+      {name: 'John', age: 20},
+      {name: 'John', age: 25},
+      {name: 'Jack', age: 30}
+    ]).then(function(data){
+      var query = User.find({}).find({
+        $nor: [
+          {name: 'Jack'},
+          {age: {$gt: 20}}
+        ]
+      });
+
+      query.toArray().should.eql([data[0]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $not', function(){
+    return User.insert([
+      {name: 'John', age: 20},
+      {name: 'John', age: 25},
+      {name: 'Jack', age: 30}
+    ]).then(function(data){
+      var query = User.find({}).find({
+        $not: {name: 'John'}
+      });
+
+      query.toArray().should.eql([data[2]]);
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('find() - $where', function(){
+    return User.insert([
+      {name: 'John', age: 20},
+      {name: 'John', age: 25},
+      {name: 'Jack', age: 30}
+    ]).then(function(data){
+      var query = User.find({}).find({
+        $where: function(){
+          return this.name === 'John';
+        }
+      });
+
+      query.toArray().should.eql(data.slice(0, 2));
+
       return data;
     }).map(function(item){
       return User.removeById(item._id);
@@ -457,6 +571,54 @@ describe('Query', function(){
     });
   });
 
+  it('every()', function(){
+    return User.insert([
+      {age: 10},
+      {age: 20},
+      {age: 30},
+      {age: 40}
+    ]).then(function(data){
+      var num = 0;
+
+      User.find({}).every(function(data, i){
+        i.should.eql(num++);
+        return data.age;
+      }).should.be.true;
+
+      User.find({}).every(function(data, i){
+        return data.age > 10;
+      }).should.be.false;
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
+  it('some()', function(){
+    return User.insert([
+      {age: 10},
+      {age: 20},
+      {age: 30},
+      {age: 40}
+    ]).then(function(data){
+      var num = 0;
+
+      User.find({}).some(function(data, i){
+        return data.age > 10;
+      }).should.be.true;
+
+      User.find({}).some(function(data, i){
+        i.should.eql(num++);
+        return data.age < 0;
+      }).should.be.false;
+
+      return data;
+    }).map(function(item){
+      return User.removeById(item._id);
+    });
+  });
+
   it('update()', function(){
     return User.insert([
       {age: 10},
@@ -515,5 +677,55 @@ describe('Query', function(){
     });
   });
 
-  it.skip('populate()');
+  it('populate() - object', function(){
+    var user, comment;
+
+    return User.insert({}).then(function(user_){
+      user = user_;
+
+      return Comment.insert({
+        author: user._id
+      });
+    }).then(function(comment_){
+      comment = comment_;
+      return Comment.find({}).populate('author');
+    }).then(function(result){
+      result.first().author.should.eql(user);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Comment.removeById(comment._id)
+      ]);
+    });
+  });
+
+  it('populate() - array', function(){
+    var comments, user;
+
+    return Comment.insert([
+      {content: 'foo'},
+      {content: 'bar'},
+      {content: 'baz'},
+      {content: 'ha'}
+    ]).then(function(comments_){
+      comments = comments_;
+
+      return User.insert({
+        comments: _.map(comments, '_id')
+      });
+    }).then(function(user_){
+      user = user_;
+      return User.populate('comments');
+    }).then(function(result){
+      result.first().comments.toArray().should.eql(comments);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Comment.removeById(comments[0]._id),
+        Comment.removeById(comments[1]._id),
+        Comment.removeById(comments[2]._id),
+        Comment.removeById(comments[3]._id)
+      ]);
+    });
+  });
 });

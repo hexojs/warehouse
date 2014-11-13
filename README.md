@@ -11,8 +11,8 @@ $ npm install warehouse
 ## Usage
 
 ``` js
-var Database = require('warehouse'),
-  db = new Database();
+var Database = require('warehouse');
+var db = new Database();
   
 var Post = db.model('posts', {
   title: String,
