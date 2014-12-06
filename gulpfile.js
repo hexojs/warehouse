@@ -1,9 +1,9 @@
-var gulp = require('gulp'),
-  $ = require('gulp-load-plugins')(),
-  del = require('del');
+var gulp = require('gulp');
+var $ = require('gulp-load-plugins')();
+var del = require('del');
 
-var lib = 'lib/**/*.js',
-  test = 'test/scripts/**/*.js';
+var lib = 'lib/**/*.js';
+var test = 'test/scripts/**/*.js';
 
 gulp.task('coverage', function(){
   return gulp.src(lib)
