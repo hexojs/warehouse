@@ -21,6 +21,22 @@ describe('util', function(){
     util.getProp(obj, 'd.e.f').should.eql(obj.d.e.f);
   });
 
+  it('getProp() - obj must be an object', function(){
+    try {
+      util.getProp();
+    } catch (err){
+      err.should.have.property('message', 'obj must be an object!');
+    }
+  });
+
+  it('getProp() - key is required', function(){
+    try {
+      util.getProp({});
+    } catch (err){
+      err.should.have.property('message', 'key is required!');
+    }
+  });
+
   it('setProp()', function(){
     var obj = {
       a: {
@@ -44,6 +60,22 @@ describe('util', function(){
     obj.d.e.f.should.eql('haha');
   });
 
+  it('setProp() - obj must be an object', function(){
+    try {
+      util.setProp();
+    } catch (err){
+      err.should.have.property('message', 'obj must be an object!');
+    }
+  });
+
+  it('setProp() - key is required', function(){
+    try {
+      util.setProp({});
+    } catch (err){
+      err.should.have.property('message', 'key is required!');
+    }
+  });
+
   it('delProp()', function(){
     var obj = {
       a: {
@@ -65,6 +97,22 @@ describe('util', function(){
 
     util.delProp(obj, 'd.e.f');
     should.not.exist(obj.d.e.f);
+  });
+
+  it('delProp() - obj must be an object', function(){
+    try {
+      util.delProp();
+    } catch (err){
+      err.should.have.property('message', 'obj must be an object!');
+    }
+  });
+
+  it('delProp() - key is required', function(){
+    try {
+      util.delProp({});
+    } catch (err){
+      err.should.have.property('message', 'key is required!');
+    }
   });
 
   it('setGetter()', function(){
@@ -101,8 +149,40 @@ describe('util', function(){
     obj.a.c.h.should.eql('ach');
   });
 
+  it('setGetter() - obj must be an object', function(){
+    try {
+      util.setGetter();
+    } catch (err){
+      err.should.have.property('message', 'obj must be an object!');
+    }
+  });
+
+  it('setGetter() - key is required', function(){
+    try {
+      util.setGetter({});
+    } catch (err){
+      err.should.have.property('message', 'key is required!');
+    }
+  });
+
+  it('setGetter() - fn must be a function', function(){
+    try {
+      util.setGetter({}, 'test');
+    } catch (err){
+      err.should.have.property('message', 'fn must be a function!');
+    }
+  });
+
   it('arr2obj()', function(){
     util.arr2obj(['a', 'b'], 1).should.eql({a: 1, b: 1});
+  });
+
+  it('arr2obj() - arr must be an array', function(){
+    try {
+      util.arr2obj();
+    } catch (err){
+      err.should.have.property('message', 'arr must be an array!');
+    }
   });
 
   it('arrayEqual()', function(){
@@ -110,14 +190,46 @@ describe('util', function(){
     util.arrayEqual(['1', 2], ['1', '2']).should.be.false;
   });
 
+  it('arrayEqual() - a must be an array', function(){
+    try {
+      util.arrayEqual();
+    } catch (err){
+      err.should.have.property('message', 'a must be an array!');
+    }
+  });
+
+  it('arrayEqual() - b must be an array', function(){
+    try {
+      util.arrayEqual([]);
+    } catch (err){
+      err.should.have.property('message', 'b must be an array!');
+    }
+  });
+
   it('cloneArray()', function(){
     util.cloneArray([1, 2, 3]).should.eql([1, 2, 3]);
     util.cloneArray([1, [2, 3], [4, [5, 6]]]).should.eql([1, [2, 3], [4, [5, 6]]]);
   });
 
+  it('cloneArray() - arr must be an array', function(){
+    try {
+      util.cloneArray();
+    } catch (err){
+      err.should.have.property('message', 'arr must be an array!');
+    }
+  });
+
   it('contains()', function(){
     util.contains(['1', '2', 3], '1').should.be.true;
     util.contains(['1', '2', 3], '3').should.be.false;
+  });
+
+  it('contains() - arr must be an array', function(){
+    try {
+      util.contains();
+    } catch (err){
+      err.should.have.property('message', 'arr must be an array!');
+    }
   });
 
   it('reverse()', function(){
@@ -126,9 +238,25 @@ describe('util', function(){
     util.reverse(arr).should.eql(['w', '2', 1]);
   });
 
+  it('reverse() - arr must be an array', function(){
+    try {
+      util.reverse();
+    } catch (err){
+      err.should.have.property('message', 'arr must be an array!');
+    }
+  });
+
   it('shuffle()', function(){
     var arr = util.shuffle([1, 2, 3]);
     arr.sort().should.eql([1, 2, 3]);
+  });
+
+  it('parseArgs() - arr must be an array', function(){
+    try {
+      util.parseArgs();
+    } catch (err){
+      err.should.have.property('message', 'arr must be an array!');
+    }
   });
 
   it('parseArgs()', function(){

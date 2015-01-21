@@ -86,6 +86,27 @@ describe('Document', function(){
     doc.toObject().should.not.be.instanceOf(User.Document);
   });
 
+  it('toObject() - don\'t deep clone getters', function(){
+    var db = new Database();
+
+    var userSchema = new Schema({
+      name: String,
+      age: Number
+    });
+
+    userSchema.virtual('users').get(function(){
+      return User.find({});
+    });
+
+    var User = db.model('User', userSchema);
+
+    return User.insert({}).then(function(data){
+      return User.findById(data._id);
+    }).then(function(data){
+      data.toObject().should.be.ok;
+    });
+  });
+
   it('toString()', function(){
     var doc = User.new({});
     doc.toString().should.eql(JSON.stringify(doc));
