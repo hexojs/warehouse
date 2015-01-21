@@ -4,16 +4,8 @@ node_js:
   - "0.10"
   - "0.11"
 
-before_script:
-  - npm install -g gulp
-
 script:
   - npm test
 
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-  - cat ./coverage/lcov.info | codeclimate
-
-addons:
-  code_climate:
-    repo_token: 47a797c76665f3d1ff692740cc7e87380b3455199a05620dd06e7b4ca67eb000
