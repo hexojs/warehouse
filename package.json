@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "description": "Simple JSON-based database",
   "main": "lib/database",
   "directories": {
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "JSONStream": "^0.10.0",
-    "bluebird": "^2.3.11",
+    "bluebird": "^2.8.2",
     "cuid": "^1.2.4",
     "lodash": "^2.4.1"
   },
