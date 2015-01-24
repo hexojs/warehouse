@@ -1,6 +1,7 @@
 var should = require('chai').should();
 var _ = require('lodash');
 var Promise = require('bluebird');
+var sinon = require('sinon');
 var WarehouseError = require('../../lib/error');
 
 describe('Model', function(){
@@ -76,11 +77,11 @@ describe('Model', function(){
   });
 
   it('insert()', function(){
-    var emitted = false;
-
-    User.once('insert', function(){
-      emitted = true;
+    var listener = sinon.spy(function(data){
+      User.findById(data._id).should.exist;
     });
+
+    User.once('insert', listener);
 
     return User.insert({
       name: {first: 'John', last: 'Doe'},
@@ -89,7 +90,7 @@ describe('Model', function(){
     }).then(function(data){
       User.findById(data._id).should.exist;
       User.length.should.eql(1);
-      emitted.should.be.true;
+      listener.calledOnce.should.be.true;
       return data;
     }).then(function(data){
       return User.removeById(data._id);
@@ -108,50 +109,42 @@ describe('Model', function(){
   });
 
   it('insert() - already existed', function(){
+    var user;
+
     return User.insert({}).then(function(data){
-      User.insert(data).catch(function(err){
-        err.should.be
-          .instanceOf(WarehouseError)
-          .property('message', 'ID `' + data._id + '` has been used');
-      });
-
-      return data;
-    }).then(function(data){
-      return User.removeById(data._id);
+      user = data;
+      return User.insert(data);
+    }).finally(function(){
+      return User.removeById(user._id);
+    }).catch(function(err){
+      err.should.be
+        .instanceOf(WarehouseError)
+        .property('message', 'ID `' + user._id + '` has been used');
     });
   });
 
-  it('insert() - pre-hook', function(){
+  it('insert() - hook', function(){
     var db = new Database();
     var testSchema = new Schema();
-    var executed = false;
 
-    testSchema.pre('save', function(data){
+    var preHook = sinon.spy(function(data){
+      should.not.exist(Test.findById(data._id));
       data.foo.should.eql('bar');
-      executed = true;
     });
+
+    var postHook = sinon.spy(function(data){
+      Test.findById(data._id).should.exist;
+      data.foo.should.eql('bar');
+    });
+
+    testSchema.pre('save', preHook);
+    testSchema.post('save', postHook);
 
     var Test = db.model('Test', testSchema);
 
     return Test.insert({foo: 'bar'}).then(function(){
-      executed.should.be.true;
-    });
-  });
-
-  it('insert() - post-hook', function(){
-    var db = new Database();
-    var testSchema = new Schema();
-    var executed = false;
-
-    testSchema.post('save', function(data){
-      data.foo.should.eql('bar');
-      executed = true;
-    });
-
-    var Test = db.model('Test', testSchema);
-
-    return Test.insert({foo: 'bar'}).then(function(){
-      executed.should.be.true;
+      preHook.calledOnce.should.be.true;
+      postHook.calledOnce.should.be.true;
     });
   });
 
@@ -205,11 +198,11 @@ describe('Model', function(){
   });
 
   it('updateById()', function(){
-    var emitted = false;
-
-    User.once('update', function(){
-      emitted = true;
+    var listener = sinon.spy(function(data){
+      User.findById(data._id).age.should.eql(30);
     });
+
+    User.once('update', listener);
 
     return User.insert({
       name: {first: 'John', last: 'Doe'},
@@ -219,7 +212,7 @@ describe('Model', function(){
       return User.updateById(data._id, {age: 30});
     }).then(function(data){
       data.age.should.eql(30);
-      emitted.should.be.true;
+      listener.calledOnce.should.be.true;
       return data;
     }).then(function(data){
       return User.removeById(data._id);
@@ -357,45 +350,29 @@ describe('Model', function(){
     });
   });
 
-  it('updateById() - pre-hook', function(){
+  it('updateById() - hook', function(){
     var db = new Database();
     var testSchema = new Schema();
-    var count = 0;
+    var Test = db.model('Test', testSchema);
 
-    testSchema.pre('save', function(data){
-      data.foo.should.eql('bar');
-      count++;
+    var preHook = sinon.spy(function(data){
+      should.not.exist(Test.findById(data._id).baz);
     });
 
-    var Test = db.model('Test', testSchema);
+    var postHook = sinon.spy(function(data){
+      Test.findById(data._id).baz.should.eql(1);
+    });
 
     return Test.insert({
       foo: 'bar'
     }).then(function(data){
+      testSchema.pre('save', preHook);
+      testSchema.post('save', postHook);
+
       return Test.updateById(data._id, {baz: 1});
     }).then(function(){
-      count.should.eql(2);
-    });
-  });
-
-  it('updateById() - post-hook', function(){
-    var db = new Database();
-    var testSchema = new Schema();
-    var count = 0;
-
-    testSchema.post('save', function(data){
-      data.foo.should.eql('bar');
-      count++;
-    });
-
-    var Test = db.model('Test', testSchema);
-
-    return Test.insert({
-      foo: 'bar'
-    }).then(function(data){
-      return Test.updateById(data._id, {baz: 1});
-    }).then(function(){
-      count.should.eql(2);
+      preHook.calledOnce.should.be.true;
+      postHook.calledOnce.should.be.true;
     });
   });
 
@@ -420,11 +397,18 @@ describe('Model', function(){
   });
 
   it('replaceById()', function(){
-    var emitted = false;
+    function validate(data){
+      data.name.first.should.eql('Mary');
+      data.name.last.should.eql('White');
+      data.age.should.eql(40);
+      data.should.not.ownProperty('email');
+    }
 
-    User.once('update', function(){
-      emitted = true;
+    var listener = sinon.spy(function(data){
+      validate(User.findById(data._id));
     });
+
+    User.once('update', listener);
 
     return User.insert({
       name: {first: 'John', last: 'Doe'},
@@ -436,11 +420,8 @@ describe('Model', function(){
         age: 40
       });
     }).then(function(data){
-      emitted.should.be.true;
-      data.name.first.should.eql('Mary');
-      data.name.last.should.eql('White');
-      data.age.should.eql(40);
-      data.should.not.ownProperty('email');
+      validate(data);
+      listener.calledOnce.should.be.true;
       return data;
     }).then(function(data){
       return User.removeById(data._id);
@@ -458,42 +439,26 @@ describe('Model', function(){
   it('replaceById() - pre-hook', function(){
     var db = new Database();
     var testSchema = new Schema();
-    var count = 0;
+    var Test = db.model('Test', testSchema);
 
-    testSchema.pre('save', function(data){
-      data.foo.should.eql('bar');
-      count++;
+    var preHook = sinon.spy(function(data){
+      Test.findById(data._id).foo.should.eql('bar');
     });
 
-    var Test = db.model('Test', testSchema);
+    var postHook = sinon.spy(function(data){
+      Test.findById(data._id).foo.should.eql('baz');
+    });
 
     return Test.insert({
       foo: 'bar'
     }).then(function(data){
-      return Test.replaceById(data._id, {foo: 'bar'});
+      testSchema.pre('save', preHook);
+      testSchema.post('save', postHook);
+
+      return Test.replaceById(data._id, {foo: 'baz'});
     }).then(function(){
-      count.should.eql(2);
-    });
-  });
-
-  it('replaceById() - post-hook', function(){
-    var db = new Database();
-    var testSchema = new Schema();
-    var count = 0;
-
-    testSchema.post('save', function(data){
-      data.foo.should.eql('bar');
-      count++;
-    });
-
-    var Test = db.model('Test', testSchema);
-
-    return Test.insert({
-      foo: 'bar'
-    }).then(function(data){
-      return Test.replaceById(data._id, {foo: 'bar'});
-    }).then(function(){
-      count.should.eql(2);
+      preHook.calledOnce.should.be.true;
+      postHook.calledOnce.should.be.true;
     });
   });
 
@@ -518,11 +483,11 @@ describe('Model', function(){
   });
 
   it('removeById()', function(){
-    var emitted = false;
-
-    User.once('remove', function(){
-      emitted = true;
+    var listener = sinon.spy(function(data){
+      should.not.exist(User.findById(data._id));
     });
+
+    User.once('remove', listener);
 
     return User.insert({
       name: {first: 'John', last: 'Doe'},
@@ -531,7 +496,7 @@ describe('Model', function(){
     }).then(function(data){
       return User.removeById(data._id);
     }).then(function(data){
-      emitted.should.be.true;
+      listener.calledOnce.should.be.true;
       should.not.exist(User.findById(data._id));
     })
   });
@@ -544,45 +509,29 @@ describe('Model', function(){
     });
   });
 
-  it('removeById() - pre-hook', function(){
+  it('removeById() - hook', function(){
     var db = new Database();
     var testSchema = new Schema();
-    var executed = false;
+    var Test = db.model('Test', testSchema);
 
-    testSchema.pre('remove', function(data){
-      data.foo.should.eql('bar');
-      executed = true;
+    var preHook = sinon.spy(function(data){
+      Test.findById(data._id).should.exist;
     });
 
-    var Test = db.model('Test', testSchema);
+    var postHook = sinon.spy(function(data){
+      should.not.exist(Test.findById(data._id));
+    });
+
+    testSchema.pre('remove', preHook);
+    testSchema.post('remove', postHook);
 
     return Test.insert({
       foo: 'bar'
     }).then(function(data){
       return Test.removeById(data._id);
     }).then(function(){
-      executed.should.be.true;
-    });
-  });
-
-  it('removeById() - post-hook', function(){
-    var db = new Database();
-    var testSchema = new Schema();
-    var executed = false;
-
-    testSchema.post('remove', function(data){
-      data.foo.should.eql('bar');
-      executed = true;
-    });
-
-    var Test = db.model('Test', testSchema);
-
-    return Test.insert({
-      foo: 'bar'
-    }).then(function(data){
-      return Test.removeById(data._id);
-    }).then(function(){
-      executed.should.be.true;
+      preHook.calledOnce.should.be.true;
+      postHook.calledOnce.should.be.true;
     });
   });
 

@@ -3,6 +3,7 @@ describe('Warehouse', function(){
   require('./scripts/document');
   require('./scripts/model');
   require('./scripts/query');
+  require('./scripts/queue');
   require('./scripts/schema');
   require('./scripts/schematype');
   require('./scripts/types/array');
