@@ -5,6 +5,13 @@ var del = require('del');
 var lib = 'lib/**/*.js';
 var test = 'test/scripts/**/*.js';
 
+function mochaStream(){
+  return gulp.src('test/index.js')
+    .pipe($.mocha({
+      reporter: 'spec'
+    }));
+}
+
 gulp.task('coverage', function(){
   return gulp.src(lib)
     .pipe($.istanbul());
@@ -15,11 +22,12 @@ gulp.task('coverage:clean', function(callback){
 });
 
 gulp.task('mocha', ['coverage'], function(){
-  return gulp.src('test/index.js')
-    .pipe($.mocha({
-      reporter: 'spec'
-    }))
+  return mochaStream()
     .pipe($.istanbul.writeReports());
+});
+
+gulp.task('mocha:nocov', function(){
+  return mochaStream();
 });
 
 gulp.task('jshint', function(){
