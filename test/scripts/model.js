@@ -168,6 +168,26 @@ describe('Model', function(){
     });
   });
 
+  it('insert() - sync problem', function(callback){
+    var db = new Database();
+    var testSchema = new Schema();
+
+    testSchema.pre('save', function(data){
+      var item = Test.findOne({id: data.id});
+      if (item) throw new Error('ID "' + data.id + '" has been used.');
+    });
+
+    var Test = db.model('Test', testSchema);
+
+    Test.insert([
+      {id: 1},
+      {id: 1}
+    ]).catch(function(err){
+      err.should.have.property('message', 'ID "1" has been used.');
+      callback();
+    });
+  });
+
   it('save() - insert', function(){
     return User.save({
       name: {first: 'John', last: 'Doe'},
