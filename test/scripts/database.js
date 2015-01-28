@@ -1,6 +1,7 @@
 var should = require('chai').should();
 var path = require('path');
 var Promise = require('bluebird');
+var sinon = require('sinon');
 var fs = Promise.promisifyAll(require('fs'));
 
 var DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
@@ -51,38 +52,36 @@ describe('Database', function(){
   });
 
   it('load() - upgrade', function(){
-    var executed = false;
+    var onUpgrade = sinon.spy(function(oldVersion, newVersion){
+      oldVersion.should.eql(DB_VERSION);
+      newVersion.should.eql(2);
+    });
 
     var db = new Database({
       path: DB_PATH,
       version: 2,
-      onUpgrade: function(oldVersion, newVersion){
-        oldVersion.should.eql(DB_VERSION);
-        newVersion.should.eql(2);
-        executed = true;
-      }
+      onUpgrade: onUpgrade
     });
 
     return db.load().then(function(){
-      executed.should.be.true;
+      onUpgrade.calledOnce.should.be.true;
     });
   });
 
   it('load() - downgrade', function(){
-    var executed = false;
+    var onDowngrade = sinon.spy(function(oldVersion, newVersion){
+      oldVersion.should.eql(DB_VERSION);
+      newVersion.should.eql(0);
+    });
 
     var db = new Database({
       path: DB_PATH,
       version: 0,
-      onDowngrade: function(oldVersion, newVersion){
-        oldVersion.should.eql(DB_VERSION);
-        newVersion.should.eql(0);
-        executed = true;
-      }
+      onDowngrade: onDowngrade
     });
 
     return db.load().then(function(){
-      executed.should.be.true;
+      onDowngrade.calledOnce.should.be.true;
     });
   });
 

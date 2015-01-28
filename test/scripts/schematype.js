@@ -1,9 +1,9 @@
-var should = require('chai').should(),
-  ValidationError = require('../../lib/error/validation');
+var should = require('chai').should();
+var ValidationError = require('../../lib/error/validation');
 
 describe('SchemaType', function(){
-  var SchemaType = require('../../lib/schematype'),
-    type = new SchemaType('test');
+  var SchemaType = require('../../lib/schematype');
+  var type = new SchemaType('test');
 
   it('cast()', function(){
     type.cast(123).should.eql(123);

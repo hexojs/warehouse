@@ -3,10 +3,12 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var sinon = require('sinon');
 var WarehouseError = require('../../lib/error');
+var util = require('util');
 
 describe('Model', function(){
   var Database = require('../..');
   var Schema = Database.Schema;
+  var SchemaType = Database.SchemaType;
 
   var db = new Database();
 
@@ -165,6 +167,26 @@ describe('Model', function(){
       return data;
     }).map(function(item){
       return User.removeById(item._id);
+    });
+  });
+
+  it('insert() - sync problem', function(callback){
+    var db = new Database();
+    var testSchema = new Schema();
+
+    testSchema.pre('save', function(data){
+      var item = Test.findOne({id: data.id});
+      if (item) throw new Error('ID "' + data.id + '" has been used.');
+    });
+
+    var Test = db.model('Test', testSchema);
+
+    Test.insert([
+      {id: 1},
+      {id: 1}
+    ]).catch(function(err){
+      err.should.have.property('message', 'ID "1" has been used.');
+      callback();
     });
   });
 
@@ -1538,7 +1560,7 @@ describe('Model', function(){
 
     var Test = db.model('Test', schema);
 
-    Test.insert([
+    return Test.insert([
       {_id: 'A', bool: true},
       {_id: 'B', bool: false}
     ]).then(function(data){
@@ -1546,8 +1568,35 @@ describe('Model', function(){
         {_id: 'A', bool: 1},
         {_id: 'B', bool: 0}
       ]));
+
+      return Test.destroy();
+    });
+  });
+
+  it('_export() - should not save undefined value', function(){
+    var CacheType = function(){
+      SchemaType.apply(this, arguments);
+    };
+
+    util.inherits(CacheType, SchemaType);
+
+    CacheType.prototype.value = function(){
+      return;
+    };
+
+    var schema = new Schema({
+      cache: CacheType
     });
 
-    Test.destroy();
+    var Test = db.model('Test', schema);
+
+    return Test.insert({
+      cache: 'test'
+    }).then(function(data){
+      data.cache.should.exist;
+      should.not.exist(JSON.parse(Test._export())[0].cache);
+
+      return Test.destroy();
+    });
   });
 });
