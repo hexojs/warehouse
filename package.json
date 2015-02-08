@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple JSON-based database",
   "main": "lib/database",
   "directories": {
@@ -30,6 +30,7 @@
     "JSONStream": "^0.10.0",
     "bluebird": "^2.8.2",
     "cuid": "^1.2.4",
+    "graceful-fs": "^3.0.5",
     "lodash": "^3.0.0"
   },
   "devDependencies": {
