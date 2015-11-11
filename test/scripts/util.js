@@ -191,53 +191,6 @@ describe('util', function() {
     }
   });
 
-  it('arrayEqual()', function() {
-    util.arrayEqual(['a', 'b'], ['a', 'b']).should.be.true;
-    util.arrayEqual(['1', 2], ['1', '2']).should.be.false;
-  });
-
-  it('arrayEqual() - a must be an array', function() {
-    try {
-      util.arrayEqual();
-    } catch (err) {
-      err.should.have.property('message', 'a must be an array!');
-    }
-  });
-
-  it('arrayEqual() - b must be an array', function() {
-    try {
-      util.arrayEqual([]);
-    } catch (err) {
-      err.should.have.property('message', 'b must be an array!');
-    }
-  });
-
-  it('cloneArray()', function() {
-    util.cloneArray([1, 2, 3]).should.eql([1, 2, 3]);
-    util.cloneArray([1, [2, 3], [4, [5, 6]]]).should.eql([1, [2, 3], [4, [5, 6]]]);
-  });
-
-  it('cloneArray() - arr must be an array', function() {
-    try {
-      util.cloneArray();
-    } catch (err) {
-      err.should.have.property('message', 'arr must be an array!');
-    }
-  });
-
-  it('contains()', function() {
-    util.contains(['1', '2', 3], '1').should.be.true;
-    util.contains(['1', '2', 3], '3').should.be.false;
-  });
-
-  it('contains() - arr must be an array', function() {
-    try {
-      util.contains();
-    } catch (err) {
-      err.should.have.property('message', 'arr must be an array!');
-    }
-  });
-
   it('reverse()', function() {
     var arr = [1, '2', 'w'];
 
@@ -250,11 +203,6 @@ describe('util', function() {
     } catch (err) {
       err.should.have.property('message', 'arr must be an array!');
     }
-  });
-
-  it('shuffle()', function() {
-    var arr = util.shuffle([1, 2, 3]);
-    arr.sort().should.eql([1, 2, 3]);
   });
 
   it('parseArgs() - arr must be an array', function() {
@@ -270,10 +218,5 @@ describe('util', function() {
     util.parseArgs('name', -1).should.eql({name: -1});
     util.parseArgs('name -date').should.eql({name: 1, date: -1});
     util.parseArgs('name -date +priority').should.eql({name: 1, date: -1, priority: 1});
-  });
-
-  it('extend()', function() {
-    util.extend({a: 1}, {b: 2}).should.eql({a: 1, b: 2});
-    util.extend({a: 1}, undefined, {b: 2}).should.eql({a: 1, b: 2});
   });
 });
