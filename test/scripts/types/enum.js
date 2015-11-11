@@ -1,10 +1,12 @@
-var should = require('chai').should();
+'use strict';
+
+var should = require('chai').should(); // eslint-disable-line
 var ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeEnum', function(){
+describe('SchemaTypeEnum', function() {
   var SchemaTypeEnum = require('../../../lib/types/enum');
 
-  it('validate()', function(){
+  it('validate()', function() {
     var type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
 
     type.validate('foo').should.eql('foo');
@@ -13,7 +15,7 @@ describe('SchemaTypeEnum', function(){
       .property('message', 'The value must be one of foo, bar, baz');
   });
 
-  it('validate() - required', function(){
+  it('validate() - required', function() {
     var type = new SchemaTypeEnum('test', {required: true});
     type.validate().should.be
       .instanceOf(ValidationError)

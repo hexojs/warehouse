@@ -1,11 +1,13 @@
-var should = require('chai').should();
+'use strict';
+
+var should = require('chai').should(); // eslint-disable-line
 var ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeInteger', function(){
+describe('SchemaTypeInteger', function() {
   var SchemaTypeInteger = require('../../../lib/types/integer');
   var type = new SchemaTypeInteger('test');
 
-  it('cast()', function(){
+  it('cast()', function() {
     type.cast(0).should.eql(0);
     type.cast(3.14).should.eql(3);
     type.cast('0').should.eql(0);
@@ -15,18 +17,18 @@ describe('SchemaTypeInteger', function(){
     type.cast(false).should.eql(0);
   });
 
-  it('cast() - default', function(){
+  it('cast() - default', function() {
     var type = new SchemaTypeInteger('test', {default: 3});
     type.cast().should.eql(3);
   });
 
-  function shouldThrowError(value){
+  function shouldThrowError(value) {
     type.validate(value).should.be
       .instanceOf(ValidationError)
       .property('message', '`' + value + '` is not a number!');
   }
 
-  it('validate()', function(){
+  it('validate()', function() {
     type.validate(1).should.eql(1);
     type.validate(0).should.eql(0);
     type.validate(3.14).should.be
@@ -39,7 +41,7 @@ describe('SchemaTypeInteger', function(){
     shouldThrowError({});
   });
 
-  it('validate() - required', function(){
+  it('validate() - required', function() {
     var type = new SchemaTypeInteger('test', {required: true});
     type.validate().should.be
       .instanceOf(ValidationError)

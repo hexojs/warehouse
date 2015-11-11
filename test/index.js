@@ -1,4 +1,6 @@
-describe('Warehouse', function(){
+'use strict';
+
+describe('Warehouse', function() {
   require('./scripts/database');
   require('./scripts/document');
   require('./scripts/model');

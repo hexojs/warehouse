@@ -1,10 +1,12 @@
-var should = require('chai').should();
+'use strict';
 
-describe('SchemaTypeObject', function(){
-  var SchemaTypeObject = require('../../../lib/types/object'),
-    type = new SchemaTypeObject('test');
+var should = require('chai').should(); // eslint-disable-line
 
-  it('cast() - default', function(){
+describe('SchemaTypeObject', function() {
+  var SchemaTypeObject = require('../../../lib/types/object');
+  var type = new SchemaTypeObject('test');
+
+  it('cast() - default', function() {
     type.cast().should.eql({});
   });
 });

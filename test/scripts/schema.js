@@ -1,10 +1,12 @@
-var should = require('chai').should();
+'use strict';
 
-describe('Schema', function(){
+var should = require('chai').should(); // eslint-disable-line
+
+describe('Schema', function() {
   var Database = require('../..');
   var Schema = Database.Schema;
 
-  it('add()', function(){
+  it('add()', function() {
     var schema = new Schema();
 
     schema.add({
@@ -65,112 +67,119 @@ describe('Schema', function(){
     schema.paths.id.options.required.should.be.true;
   });
 
-  it('virtual() - without getter', function(){
+  it('virtual() - without getter', function() {
     var schema = new Schema();
 
     schema.virtual('test');
     schema.paths.test.should.be.an.instanceOf(Schema.Types.Virtual);
   });
 
-  it('virtual() - with getter', function(){
+  it('virtual() - with getter', function() {
     var schema = new Schema();
 
-    schema.virtual('test', function(){});
+    schema.virtual('test', function() {});
+
     schema.paths.test.should.be
       .an.instanceOf(Schema.Types.Virtual)
       .have.property('getter');
   });
 
-  it('pre()', function(){
+  it('pre()', function() {
     var schema = new Schema();
 
     // save
-    schema.pre('save', function(){});
+    schema.pre('save', function() {});
+
     schema.hooks.pre.save.should.have.length(1);
 
     // remove
-    schema.pre('remove', function(){});
+    schema.pre('remove', function() {});
+
     schema.hooks.pre.remove.should.have.length(1);
 
     // incompatible type
     try {
-      schema.pre('wtf', function(){});
-    } catch (err){
+      schema.pre('wtf', function() {});
+    } catch (err) {
       err.should.eql(new TypeError('Hook type must be `save` or `remove`!'));
     }
 
     // hook is not a function
     try {
       schema.pre('save');
-    } catch (err){
+    } catch (err) {
       err.should.eql(new TypeError('Hook must be a function!'));
     }
   });
 
-  it('post()', function(){
+  it('post()', function() {
     var schema = new Schema();
 
     // save
-    schema.post('save', function(){});
+    schema.post('save', function() {});
+
     schema.hooks.post.save.should.have.length(1);
 
     // remove
-    schema.post('remove', function(){});
+    schema.post('remove', function() {});
+
     schema.hooks.post.remove.should.have.length(1);
 
     // incompatible type
     try {
-      schema.post('wtf', function(){});
-    } catch (err){
+      schema.post('wtf', function() {});
+    } catch (err) {
       err.should.eql(new TypeError('Hook type must be `save` or `remove`!'));
     }
 
     // hook is not a function
     try {
       schema.post('save');
-    } catch (err){
+    } catch (err) {
       err.should.eql(new TypeError('Hook must be a function!'));
     }
   });
 
-  it('method()', function(){
+  it('method()', function() {
     var schema = new Schema();
 
-    schema.method('test', function(){});
+    schema.method('test', function() {});
+
     schema.methods.test.should.exist;
 
     // without name
     try {
       schema.method();
-    } catch (err){
+    } catch (err) {
       err.should.eql(new TypeError('Method name is required!'));
     }
 
     // without function
     try {
       schema.method('wtf');
-    } catch (err){
+    } catch (err) {
       err.should.eql(new TypeError('Instance method must be a function!'));
     }
   });
 
-  it('static()', function(){
+  it('static()', function() {
     var schema = new Schema();
 
-    schema.static('test', function(){});
+    schema.static('test', function() {});
+
     schema.statics.test.should.exist;
 
     // without name
     try {
       schema.static();
-    } catch (err){
+    } catch (err) {
       err.should.eql(new TypeError('Method name is required!'));
     }
 
     // without function
     try {
       schema.sttic('wtf');
-    } catch (err){
+    } catch (err) {
       err.should.eql(new TypeError('Static method must be a function!'));
     }
   });

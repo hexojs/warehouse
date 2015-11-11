@@ -1,8 +1,9 @@
-var should = require('chai').should();
-var _ = require('lodash');
-var Promise = require('bluebird');
+'use strict';
 
-describe('Document', function(){
+var should = require('chai').should(); // eslint-disable-line
+var _ = require('lodash');
+
+describe('Document', function() {
   var Database = require('../..');
   var Document = require('../../lib/document');
   var db = new Database();
@@ -19,7 +20,7 @@ describe('Document', function(){
     author: {type: Schema.Types.CUID, ref: 'User'}
   });
 
-  it('constructor', function(){
+  it('constructor', function() {
     var doc = User.new({
       name: 'John',
       age: 20
@@ -30,115 +31,116 @@ describe('Document', function(){
     doc.age.should.eql(20);
   });
 
-  it('constructor - no arguments', function(){
+  it('constructor - no arguments', function() {
     var doc = User.new();
 
     doc.should.be.an.instanceOf(Document);
   });
 
-  it('save() - insert', function(){
+  it('save() - insert', function() {
     var doc = User.new({});
 
-    return doc.save().then(function(item){
+    return doc.save().then(function(item) {
       User.findById(doc._id).should.exist;
       return User.removeById(item._id);
     });
   });
 
-  it('save() - replace', function(){
-    return User.insert({}).then(function(doc){
+  it('save() - replace', function() {
+    return User.insert({}).then(function(doc) {
       doc.name = 'A';
       return doc.save();
-    }).then(function(doc){
+    }).then(function(doc) {
       doc.name.should.eql('A');
       return User.removeById(doc._id);
     });
   });
 
-  it('update()', function(){
-    return User.insert({}).then(function(doc){
+  it('update()', function() {
+    return User.insert({}).then(function(doc) {
       return doc.update({name: 'A'});
-    }).then(function(doc){
+    }).then(function(doc) {
       doc.name.should.eql('A');
       return User.removeById(doc._id);
     });
   });
 
-  it('replace()', function(){
-    return User.insert({}).then(function(doc){
+  it('replace()', function() {
+    return User.insert({}).then(function(doc) {
       return doc.replace({name: 'A'});
-    }).then(function(doc){
+    }).then(function(doc) {
       doc.name.should.eql('A');
       return User.removeById(doc._id);
     });
   });
 
-  it('remove()', function(){
-    return User.insert({}).then(function(doc){
+  it('remove()', function() {
+    return User.insert({}).then(function(doc) {
       return doc.remove();
-    }).then(function(doc){
+    }).then(function(doc) {
       should.not.exist(User.findById(doc._id));
     });
   });
 
-  it('toObject()', function(){
+  it('toObject()', function() {
     var doc = User.new({});
     doc.toObject().should.not.be.instanceOf(User.Document);
   });
 
-  it('toObject() - don\'t deep clone getters', function(){
+  it('toObject() - don\'t deep clone getters', function() {
     var db = new Database();
+    var User;
 
     var userSchema = new Schema({
       name: String,
       age: Number
     });
 
-    userSchema.virtual('users').get(function(){
+    userSchema.virtual('users').get(function() {
       return User.find({});
     });
 
-    var User = db.model('User', userSchema);
+    User = db.model('User', userSchema);
 
-    return User.insert({}).then(function(data){
+    return User.insert({}).then(function(data) {
       return User.findById(data._id);
-    }).then(function(data){
+    }).then(function(data) {
       data.toObject().should.be.ok;
     });
   });
 
-  it('toString()', function(){
+  it('toString()', function() {
     var doc = User.new({});
     doc.toString().should.eql(JSON.stringify(doc));
   });
 
-  it('populate() - object', function(){
-    return User.insert({}).then(function(user){
+  it('populate() - object', function() {
+    return User.insert({}).then(function(user) {
       var comment = Comment.new({
         author: user._id
       });
 
       comment.populate('author').author.should.eql(user);
       return user;
-    }).then(function(user){
+    }).then(function(user) {
       return User.removeById(user._id);
     });
   });
 
-  it('populate() - array', function(){
+  it('populate() - array', function() {
     return Comment.insert([
       {content: 'foo'},
       {content: 'bar'},
       {content: 'baz'},
       {content: 'ha'}
-    ]).then(function(comments){
+    ]).then(function(comments) {
       var user = User.new({
         comments: _.map(comments, '_id')
       });
 
       user.populate('comments').comments.toArray().should.eql(comments);
       return comments;
-    }).map(function(comment){
+    }).map(function(comment) {
       return Comment.removeById(comment._id);
     });
   });

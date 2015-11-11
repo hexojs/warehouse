@@ -7,7 +7,10 @@
     "lib": "./lib"
   },
   "scripts": {
-    "test": "gulp test"
+    "eslint": "eslint .",
+    "jscs": "jscs .",
+    "test": "mocha test/index.js",
+    "test-cov": "istanbul cover --print both _mocha -- test/index.js"
   },
   "repository": "tommy351/warehouse",
   "keywords": [
@@ -25,17 +28,11 @@
     "lodash": "^3.0.0"
   },
   "devDependencies": {
-    "benchmark": "^1.0.0",
     "chai": "^3.2.0",
     "colors": "^1.0.3",
-    "coveralls": "^2.11.2",
-    "del": "^1.2.1",
-    "gulp": "^3.8.9",
-    "gulp-istanbul": "^0.10.0",
-    "gulp-jshint": "^1.8.6",
-    "gulp-load-plugins": "^1.0.0-rc.1",
-    "gulp-mocha": "^2.0.0",
-    "jshint-stylish": "^2.0.1",
+    "eslint": "^1.9.0",
+    "istanbul": "^0.4.0",
+    "jscs": "^2.5.1",
     "mocha": "^2.0.1",
     "sinon": "^1.12.2"
   }
