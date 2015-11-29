@@ -1,5 +1,10 @@
 'use strict';
 
+var chai = require('chai');
+
+chai.should();
+chai.use(require('chai-as-promised'));
+
 describe('Warehouse', function() {
   require('./scripts/database');
   require('./scripts/document');

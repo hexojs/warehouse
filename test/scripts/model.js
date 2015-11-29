@@ -1,10 +1,9 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
+var should = require('chai').should();
 var _ = require('lodash');
 var Promise = require('bluebird');
 var sinon = require('sinon');
-var WarehouseError = require('../../lib/error');
 var util = require('util');
 
 describe('Model', function() {
@@ -105,11 +104,7 @@ describe('Model', function() {
     var doc = User.new();
     delete doc._id;
 
-    return User.insert(doc).catch(function(err) {
-      err.should.be
-        .instanceOf(WarehouseError)
-        .property('message', 'ID is not defined');
-    });
+    return User.insert(doc).should.eventually.be.rejected;
   });
 
   it('insert() - already existed', function() {
@@ -120,11 +115,7 @@ describe('Model', function() {
       return User.insert(data);
     }).finally(function() {
       return User.removeById(user._id);
-    }).catch(function(err) {
-      err.should.be
-        .instanceOf(WarehouseError)
-        .property('message', 'ID `' + user._id + '` has been used');
-    });
+    }).should.eventually.be.rejected;
   });
 
   it('insert() - hook', function() {
@@ -173,7 +164,7 @@ describe('Model', function() {
     });
   });
 
-  it('insert() - sync problem', function(callback) {
+  it('insert() - sync problem', function() {
     var db = new Database();
     var testSchema = new Schema();
     var Test;
@@ -185,13 +176,10 @@ describe('Model', function() {
 
     Test = db.model('Test', testSchema);
 
-    Test.insert([
+    return Test.insert([
       {id: 1},
       {id: 1}
-    ]).catch(function(err) {
-      err.should.have.property('message', 'ID "1" has been used.');
-      callback();
-    });
+    ]).should.eventually.be.rejected;
   });
 
   it('save() - insert', function() {
@@ -369,11 +357,7 @@ describe('Model', function() {
   });
 
   it('updateById() - id not exist', function() {
-    return User.updateById('foo', {}).catch(function(err) {
-      err.should.be
-        .instanceOf(WarehouseError)
-        .property('message', 'ID `foo` does not exist');
-    });
+    return User.updateById('foo', {}).should.eventually.be.rejected;
   });
 
   it('updateById() - hook', function() {
@@ -455,11 +439,7 @@ describe('Model', function() {
   });
 
   it('replaceById() - id not exist', function() {
-    return User.replaceById('foo', {}).catch(function(err) {
-      err.should.be
-        .instanceOf(WarehouseError)
-        .property('message', 'ID `foo` does not exist');
-    });
+    return User.replaceById('foo', {}).should.eventually.be.rejected;
   });
 
   it('replaceById() - pre-hook', function() {
@@ -528,11 +508,7 @@ describe('Model', function() {
   });
 
   it('removeById() - id not exist', function() {
-    return User.removeById('foo', {}).catch(function(err) {
-      err.should.be
-        .instanceOf(WarehouseError)
-        .property('message', 'ID `foo` does not exist');
-    });
+    return User.removeById('foo', {}).should.eventually.be.rejected;
   });
 
   it('removeById() - hook', function() {
