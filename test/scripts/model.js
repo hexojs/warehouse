@@ -176,9 +176,9 @@ describe('Model', function() {
 
     Test = db.model('Test', testSchema);
 
-    return Test.insert([
-      {id: 1},
-      {id: 1}
+    return Promise.all([
+      Test.insert({id: 1}),
+      Test.insert({id: 1})
     ]).should.eventually.be.rejected;
   });
 

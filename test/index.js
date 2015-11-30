@@ -23,4 +23,5 @@ describe('Warehouse', function() {
   require('./scripts/types/string');
   require('./scripts/types/virtual');
   require('./scripts/util');
+  require('./scripts/mutex');
 });
