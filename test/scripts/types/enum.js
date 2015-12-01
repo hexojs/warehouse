@@ -10,15 +10,25 @@ describe('SchemaTypeEnum', function() {
     var type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
 
     type.validate('foo').should.eql('foo');
-    type.validate('wat').should.be
-      .instanceOf(ValidationError)
-      .property('message', 'The value must be one of foo, bar, baz');
+
+    try {
+      type.validate('wat');
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', 'The value must be one of foo, bar, baz');
+    }
   });
 
   it('validate() - required', function() {
     var type = new SchemaTypeEnum('test', {required: true});
-    type.validate().should.be
-      .instanceOf(ValidationError)
-      .property('message', '`test` is required!');
+
+    try {
+      type.validate();
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`test` is required!');
+    }
   });
 });

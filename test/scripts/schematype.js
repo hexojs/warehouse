@@ -22,9 +22,14 @@ describe('SchemaType', function() {
 
   it('validate() - required', function() {
     var type = new SchemaType('test', {required: true});
-    type.validate().should.be
-      .instanceOf(ValidationError)
-      .property('message', '`test` is required!');
+
+    try {
+      type.validate();
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`test` is required!');
+    }
   });
 
   it('compare()', function() {

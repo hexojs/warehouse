@@ -21,9 +21,13 @@ describe('SchemaTypeDate', function() {
   });
 
   function shouldThrowError(value) {
-    type.validate(value).should.be
-      .instanceOf(ValidationError)
-      .property('message', '`' + value + '` is not a valid date!');
+    try {
+      type.validate(value);
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`' + value + '` is not a valid date!');
+    }
   }
 
   it('validate()', function() {
@@ -38,9 +42,14 @@ describe('SchemaTypeDate', function() {
 
   it('validate() - required', function() {
     var type = new SchemaTypeDate('test', {required: true});
-    type.validate().should.be
-      .instanceOf(ValidationError)
-      .property('message', '`test` is required!');
+
+    try {
+      type.validate();
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`test` is required!');
+    }
   });
 
   it('match()', function() {

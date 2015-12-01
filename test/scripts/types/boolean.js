@@ -28,9 +28,13 @@ describe('SchemaTypeBoolean', function() {
   });
 
   function shouldThrowError(value) {
-    type.validate(value).should.be
-      .instanceOf(ValidationError)
-      .property('message', '`' + value + '` is not a boolean!');
+    try {
+      type.validate(value);
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`' + value + '` is not a boolean!');
+    }
   }
 
   it('validate()', function() {
@@ -46,9 +50,14 @@ describe('SchemaTypeBoolean', function() {
 
   it('validate() - required', function() {
     var type = new SchemaTypeBoolean('test', {required: true});
-    type.validate().should.be
-      .instanceOf(ValidationError)
-      .property('message', '`test` is required!');
+
+    try {
+      type.validate();
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`test` is required!');
+    }
   });
 
   it('parse()', function() {

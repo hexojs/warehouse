@@ -19,8 +19,13 @@ describe('SchemaTypeCUID', function() {
 
   it('validate()', function() {
     type.validate('ch72gsb320000udocl363eofy').should.eql('ch72gsb320000udocl363eofy');
-    type.validate('foo').should.be
-      .instanceOf(ValidationError)
-      .property('message', '`foo` is not a valid CUID');
+
+    try {
+      type.validate('foo');
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`foo` is not a valid CUID');
+    }
   });
 });

@@ -22,9 +22,13 @@ describe('SchemaTypeNumber', function() {
   });
 
   function shouldThrowError(value) {
-    type.validate(value).should.be
-      .instanceOf(ValidationError)
-      .property('message', '`' + value + '` is not a number!');
+    try {
+      type.validate(value);
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`' + value + '` is not a number!');
+    }
   }
 
   it('validate()', function() {
@@ -40,9 +44,14 @@ describe('SchemaTypeNumber', function() {
 
   it('validate() - required', function() {
     var type = new SchemaTypeNumber('test', {required: true});
-    type.validate().should.be
-      .instanceOf(ValidationError)
-      .property('message', '`test` is required!');
+
+    try {
+      type.validate();
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`test` is required!');
+    }
   });
 
   it('u$inc()', function() {

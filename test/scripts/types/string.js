@@ -26,9 +26,13 @@ describe('SchemaTypeString', function() {
   });
 
   function shouldThrowError(value) {
-    type.validate(value).should.be
-      .instanceOf(ValidationError)
-      .property('message', '`' + value + '` is not a string!');
+    try {
+      type.validate(value);
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`' + value + '` is not a string!');
+    }
   }
 
   it('validate()', function() {
@@ -44,9 +48,14 @@ describe('SchemaTypeString', function() {
 
   it('validate() - required', function() {
     var type = new SchemaTypeString('test', {required: true});
-    type.validate().should.be
-      .instanceOf(ValidationError)
-      .property('message', '`test` is required!');
+
+    try {
+      type.validate();
+    } catch (err) {
+      err.should.be
+        .instanceOf(ValidationError)
+        .property('message', '`test` is required!');
+    }
   });
 
   it('match()', function() {

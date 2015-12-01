@@ -5,6 +5,7 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var sinon = require('sinon');
 var util = require('util');
+var cuid = require('cuid');
 
 describe('Model', function() {
   var Database = require('../..');
@@ -208,6 +209,22 @@ describe('Model', function() {
       return data;
     }).then(function(data) {
       return User.removeById(data._id);
+    });
+  });
+
+  it('save() - sync problem', function() {
+    var id = cuid();
+
+    return Promise.all([
+      User.save({_id: id, age: 1}),
+      User.save({_id: id, age: 2})
+    ]).then(function() {
+      var user = User.findById(id);
+
+      user.age.should.eql(2);
+      User.length.should.eql(1);
+
+      return User.removeById(id);
     });
   });
 
