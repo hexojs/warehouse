@@ -10,7 +10,8 @@
     "eslint": "eslint .",
     "jscs": "jscs .",
     "test": "mocha test/index.js",
-    "test-cov": "istanbul cover --print both _mocha -- test/index.js"
+    "test-cov": "istanbul cover --print both _mocha -- test/index.js",
+    "jsdoc": "jsdoc --configure .jsdoc.json"
   },
   "repository": "tommy351/warehouse",
   "keywords": [
@@ -34,6 +35,8 @@
     "eslint": "^1.9.0",
     "istanbul": "^0.4.0",
     "jscs": "^2.5.1",
+    "jsdoc": "^3.4.0",
+    "minami": "^1.1.1",
     "mocha": "^2.3.3",
     "sinon": "^1.17.2"
   }

@@ -6,3 +6,4 @@ gulpfile.js
 *.log
 .idea/
 benchmark/
+docs/
