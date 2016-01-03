@@ -1,5 +1,5 @@
 {
-  "excludeFiles": ["node_modules/**", "coverage/**", "tmp/**"],
+  "excludeFiles": ["node_modules/**", "coverage/**", "tmp/**", "docs/**"],
   "validateIndentation": 2,
   "validateLineBreaks": "LF",
   "validateQuoteMarks": "'",

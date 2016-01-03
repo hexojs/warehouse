@@ -5,7 +5,7 @@
 ## Installation
 
 ``` bash
-$ npm install warehouse 
+$ npm install warehouse
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ $ npm install warehouse
 ``` js
 var Database = require('warehouse');
 var db = new Database();
-  
+
 var Post = db.model('posts', {
   title: String,
   created: {type: Date, default: Date.now}
@@ -26,7 +26,7 @@ Post.insert({
 });
 ```
 
-- [API](http://hexo.io/api/warehouse/classes/Database.html)
+- [API](http://tommy351.github.io/warehouse/)
 
 ## Test
 
