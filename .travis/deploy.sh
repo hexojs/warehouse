@@ -19,5 +19,5 @@ npm run jsdoc
 # Push to GitHub
 cd docs
 git add -A
-git commit -m Update docs
+git commit -m "Update docs"
 git push origin gh-pages --force
