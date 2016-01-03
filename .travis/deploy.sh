@@ -17,4 +17,7 @@ git clone git@github.com:tommy351/warehouse.git --branch gh-pages docs
 # Generate JSDoc
 npm run jsdoc
 # Push to GitHub
-cd docs && git push
+cd docs
+git add -A
+git commit -m Update docs
+git push origin gh-pages --force

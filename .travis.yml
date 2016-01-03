@@ -28,3 +28,4 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
+    node: "4"
