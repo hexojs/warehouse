@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>schema.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Database.html">Database</a><ul class='methods'><li data-type='method'><a href="Database.html#load">load</a></li><li data-type='method'><a href="Database.html#model">model</a></li><li data-type='method'><a href="Database.html#save">save</a></li></ul></li><li><a href="Document.html">Document</a><ul class='methods'><li data-type='method'><a href="Document.html#populate">populate</a></li><li data-type='method'><a href="Document.html#remove">remove</a></li><li data-type='method'><a href="Document.html#replace">replace</a></li><li data-type='method'><a href="Document.html#save">save</a></li><li data-type='method'><a href="Document.html#toObject">toObject</a></li><li data-type='method'><a href="Document.html#toString">toString</a></li><li data-type='method'><a href="Document.html#update">update</a></li></ul></li><li><a href="Model.html">Model</a><ul class='methods'><li data-type='method'><a href="Model.html#count">count</a></li><li data-type='method'><a href="Model.html#destroy">destroy</a></li><li data-type='method'><a href="Model.html#eq">eq</a></li><li data-type='method'><a href="Model.html#every">every</a></li><li data-type='method'><a href="Model.html#filter">filter</a></li><li data-type='method'><a href="Model.html#find">find</a></li><li data-type='method'><a href="Model.html#findOne">findOne</a></li><li data-type='method'><a href="Model.html#first">first</a></li><li data-type='method'><a href="Model.html#forEach">forEach</a></li><li data-type='method'><a href="Model.html#has">has</a></li><li data-type='method'><a href="Model.html#insert">insert</a></li><li data-type='method'><a href="Model.html#insertOne">insertOne</a></li><li data-type='method'><a href="Model.html#last">last</a></li><li data-type='method'><a href="Model.html#limit">limit</a></li><li data-type='method'><a href="Model.html#map">map</a></li><li data-type='method'><a href="Model.html#new">new</a></li><li data-type='method'><a href="Model.html#populate">populate</a></li><li data-type='method'><a href="Model.html#reduce">reduce</a></li><li data-type='method'><a href="Model.html#reduceRight">reduceRight</a></li><li data-type='method'><a href="Model.html#remove">remove</a></li><li data-type='method'><a href="Model.html#removeById">removeById</a></li><li data-type='method'><a href="Model.html#replace">replace</a></li><li data-type='method'><a href="Model.html#replaceById">replaceById</a></li><li data-type='method'><a href="Model.html#reverse">reverse</a></li><li data-type='method'><a href="Model.html#save">save</a></li><li data-type='method'><a href="Model.html#skip">skip</a></li><li data-type='method'><a href="Model.html#slice">slice</a></li><li data-type='method'><a href="Model.html#some">some</a></li><li data-type='method'><a href="Model.html#sort">sort</a></li><li data-type='method'><a href="Model.html#toArray">toArray</a></li><li data-type='method'><a href="Model.html#update">update</a></li><li data-type='method'><a href="Model.html#updateById">updateById</a></li></ul></li><li><a href="Query.html">Query</a><ul class='methods'><li data-type='method'><a href="Query.html#count">count</a></li><li data-type='method'><a href="Query.html#eq">eq</a></li><li data-type='method'><a href="Query.html#every">every</a></li><li data-type='method'><a href="Query.html#filter">filter</a></li><li data-type='method'><a href="Query.html#find">find</a></li><li data-type='method'><a href="Query.html#findOne">findOne</a></li><li data-type='method'><a href="Query.html#first">first</a></li><li data-type='method'><a href="Query.html#forEach">forEach</a></li><li data-type='method'><a href="Query.html#last">last</a></li><li data-type='method'><a href="Query.html#limit">limit</a></li><li data-type='method'><a href="Query.html#map">map</a></li><li data-type='method'><a href="Query.html#populate">populate</a></li><li data-type='method'><a href="Query.html#reduce">reduce</a></li><li data-type='method'><a href="Query.html#reduceRight">reduceRight</a></li><li data-type='method'><a href="Query.html#remove">remove</a></li><li data-type='method'><a href="Query.html#replace">replace</a></li><li data-type='method'><a href="Query.html#reverse">reverse</a></li><li data-type='method'><a href="Query.html#shuffle">shuffle</a></li><li data-type='method'><a href="Query.html#skip">skip</a></li><li data-type='method'><a href="Query.html#slice">slice</a></li><li data-type='method'><a href="Query.html#some">some</a></li><li data-type='method'><a href="Query.html#sort">sort</a></li><li data-type='method'><a href="Query.html#toArray">toArray</a></li><li data-type='method'><a href="Query.html#update">update</a></li></ul></li><li><a href="Schema.html">Schema</a><ul class='methods'><li data-type='method'><a href="Schema.html#add">add</a></li><li data-type='method'><a href="Schema.html#method">method</a></li><li data-type='method'><a href="Schema.html#path">path</a></li><li data-type='method'><a href="Schema.html#post">post</a></li><li data-type='method'><a href="Schema.html#pre">pre</a></li><li data-type='method'><a href="Schema.html#static">static</a></li><li data-type='method'><a href="Schema.html#virtual">virtual</a></li></ul></li><li><a href="SchemaType.html">SchemaType</a><ul class='methods'><li data-type='method'><a href="SchemaType.html#cast">cast</a></li><li data-type='method'><a href="SchemaType.html#compare">compare</a></li><li data-type='method'><a href="SchemaType.html#match">match</a></li><li data-type='method'><a href="SchemaType.html#parse">parse</a></li><li data-type='method'><a href="SchemaType.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaType.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaType.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaType.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaType.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaType.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaType.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaType.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaType.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaType.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaType.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaType.html#validate">validate</a></li><li data-type='method'><a href="SchemaType.html#value">value</a></li></ul></li><li><a href="SchemaTypeArray.html">SchemaTypeArray</a><ul class='methods'><li data-type='method'><a href="SchemaTypeArray.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeArray.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeArray.html#match">match</a></li><li data-type='method'><a href="SchemaTypeArray.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$all">q$all</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeArray.html#q$size">q$size</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$addToSet">u$addToSet</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$pop">u$pop</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$pull">u$pull</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$push">u$push</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$shift">u$shift</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeArray.html#u$unshift">u$unshift</a></li><li data-type='method'><a href="SchemaTypeArray.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeArray.html#value">value</a></li></ul></li><li><a href="SchemaTypeBoolean.html">SchemaTypeBoolean</a><ul class='methods'><li data-type='method'><a href="SchemaTypeBoolean.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#match">match</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeBoolean.html#value">value</a></li></ul></li><li><a href="SchemaTypeCUID.html">SchemaTypeCUID</a><ul class='methods'><li data-type='method'><a href="SchemaTypeCUID.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeCUID.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeCUID.html#match">match</a></li><li data-type='method'><a href="SchemaTypeCUID.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeCUID.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeCUID.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeCUID.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeCUID.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeCUID.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeCUID.html#value">value</a></li></ul></li><li><a href="SchemaTypeDate.html">SchemaTypeDate</a><ul class='methods'><li data-type='method'><a href="SchemaTypeDate.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeDate.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeDate.html#match">match</a></li><li data-type='method'><a href="SchemaTypeDate.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$day">q$day</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$month">q$month</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeDate.html#q$year">q$year</a></li><li data-type='method'><a href="SchemaTypeDate.html#u$dec">u$dec</a></li><li data-type='method'><a href="SchemaTypeDate.html#u$inc">u$inc</a></li><li data-type='method'><a href="SchemaTypeDate.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeDate.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeDate.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeDate.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeDate.html#value">value</a></li></ul></li><li><a href="SchemaTypeEnum.html">SchemaTypeEnum</a><ul class='methods'><li data-type='method'><a href="SchemaTypeEnum.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeEnum.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeEnum.html#match">match</a></li><li data-type='method'><a href="SchemaTypeEnum.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeEnum.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeEnum.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeEnum.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeEnum.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeEnum.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeEnum.html#value">value</a></li></ul></li><li><a href="SchemaTypeInteger.html">SchemaTypeInteger</a><ul class='methods'><li data-type='method'><a href="SchemaTypeInteger.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeInteger.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeInteger.html#match">match</a></li><li data-type='method'><a href="SchemaTypeInteger.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeInteger.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$dec">u$dec</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$div">u$div</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$inc">u$inc</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$max">u$max</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$min">u$min</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$mod">u$mod</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$mul">u$mul</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeInteger.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeInteger.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeInteger.html#value">value</a></li></ul></li><li><a href="SchemaTypeNumber.html">SchemaTypeNumber</a><ul class='methods'><li data-type='method'><a href="SchemaTypeNumber.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeNumber.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeNumber.html#match">match</a></li><li data-type='method'><a href="SchemaTypeNumber.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeNumber.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$dec">u$dec</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$div">u$div</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$inc">u$inc</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$max">u$max</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$min">u$min</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$mod">u$mod</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$mul">u$mul</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeNumber.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeNumber.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeNumber.html#value">value</a></li></ul></li><li><a href="SchemaTypeObject.html">SchemaTypeObject</a><ul class='methods'><li data-type='method'><a href="SchemaTypeObject.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeObject.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeObject.html#match">match</a></li><li data-type='method'><a href="SchemaTypeObject.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeObject.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeObject.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeObject.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeObject.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeObject.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeObject.html#value">value</a></li></ul></li><li><a href="SchemaTypeString.html">SchemaTypeString</a><ul class='methods'><li data-type='method'><a href="SchemaTypeString.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeString.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeString.html#match">match</a></li><li data-type='method'><a href="SchemaTypeString.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeString.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeString.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeString.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeString.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeString.html#q$length">q$length</a></li><li data-type='method'><a href="SchemaTypeString.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeString.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeString.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeString.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeString.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeString.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeString.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeString.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeString.html#value">value</a></li></ul></li><li><a href="SchemaTypeVirtual.html">SchemaTypeVirtual</a><ul class='methods'><li data-type='method'><a href="SchemaTypeVirtual.html#cast">cast</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#compare">compare</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#get">get</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#match">match</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#parse">parse</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$exist">q$exist</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$gt">q$gt</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$gte">q$gte</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$in">q$in</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$lt">q$lt</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$lte">q$lte</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$ne">q$ne</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#q$nin">q$nin</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#set">set</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#u$rename">u$rename</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#u$set">u$set</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#u$unset">u$unset</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#validate">validate</a></li><li data-type='method'><a href="SchemaTypeVirtual.html#value">value</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#get">get</a></li><li><a href="global.html#random">random</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">schema.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+var SchemaType = require('./schematype');
+var Types = require('./types');
+var Promise = require('bluebird');
+var util = require('./util');
+var PopulationError = require('./error/population');
+var isPlainObject = require('is-plain-object');
+
+var getProp = util.getProp;
+var setProp = util.setProp;
+var delProp = util.delProp;
+var isArray = Array.isArray;
+
+var builtinTypes = {
+  String: true,
+  Number: true,
+  Boolean: true,
+  Array: true,
+  Object: true,
+  Date: true
+};
+
+/**
+ * Schema constructor.
+ *
+ * @class
+ * @param {Object} schema
+ */
+function Schema(schema) {
+  this.paths = {};
+  this.statics = {};
+  this.methods = {};
+
+  this.hooks = {
+    pre: {
+      save: [],
+      remove: []
+    },
+    post: {
+      save: [],
+      remove: []
+    }
+  };
+
+  this.stacks = {
+    getter: [],
+    setter: [],
+    import: [],
+    export: []
+  };
+
+  if (schema) {
+    this.add(schema);
+  }
+}
+
+/**
+ * Adds paths.
+ *
+ * @param {Object} schema
+ * @param {String} prefix
+ */
+Schema.prototype.add = function(schema, prefix_) {
+  var prefix = prefix_ || '';
+  var keys = Object.keys(schema);
+  var len = keys.length;
+  var key, value;
+
+  if (!len) return;
+
+  for (var i = 0; i &lt; len; i++) {
+    key = keys[i];
+    value = schema[key];
+
+    this.path(prefix + key, value);
+  }
+};
+
+function getSchemaType(name, options) {
+  var Type = options.type || options;
+  var typeName = Type.name;
+
+  if (builtinTypes[typeName]) {
+    return new Types[typeName](name, options);
+  }
+
+  return new Type(name, options);
+}
+
+/**
+ * Gets/Sets a path.
+ *
+ * @param {String} name
+ * @param {*} obj
+ * @return {SchemaType}
+ */
+Schema.prototype.path = function(name, obj) {
+  if (obj == null) {
+    return this.paths[name];
+  }
+
+  var type;
+  var nested = false;
+
+  if (obj instanceof SchemaType) {
+    type = obj;
+  } else {
+    switch (typeof obj){
+      case 'function':
+        type = getSchemaType(name, {type: obj});
+        break;
+
+      case 'object':
+        if (obj.type) {
+          type = getSchemaType(name, obj);
+        } else if (isArray(obj)) {
+          type = new Types.Array(name, {
+            child: obj.length ? getSchemaType(name, obj[0]) : new SchemaType(name)
+          });
+        } else {
+          type = new Types.Object();
+          nested = Object.keys(obj).length > 0;
+        }
+
+        break;
+
+      default:
+        throw new TypeError('Invalid value for schema path `' + name + '`');
+    }
+  }
+
+  this.paths[name] = type;
+  this._updateStack(name, type);
+
+  if (nested) this.add(obj, name + '.');
+};
+
+/**
+ * Updates cache stacks.
+ *
+ * @param {String} name
+ * @param {SchemaType} type
+ * @private
+ */
+Schema.prototype._updateStack = function(name, type) {
+  var stacks = this.stacks;
+
+  stacks.getter.push(function(data) {
+    var value = getProp(data, name);
+    var result = type.cast(value, data);
+
+    if (result !== undefined) {
+      setProp(data, name, result);
+    }
+  });
+
+  stacks.setter.push(function(data) {
+    var value = getProp(data, name);
+    var result = type.validate(value, data);
+
+    if (result !== undefined) {
+      setProp(data, name, result);
+    } else {
+      delProp(data, name);
+    }
+  });
+
+  stacks.import.push(function(data) {
+    var value = getProp(data, name);
+    var result = type.parse(value, data);
+
+    if (result !== undefined) {
+      setProp(data, name, result);
+    }
+  });
+
+  stacks.export.push(function(data) {
+    var value = getProp(data, name);
+    var result = type.value(value, data);
+
+    if (result !== undefined) {
+      setProp(data, name, result);
+    } else {
+      delProp(data, name);
+    }
+  });
+};
+
+/**
+ * Adds a virtual path.
+ *
+ * @param {String} name
+ * @param {Function} [getter]
+ * @return {SchemaType.Virtual}
+ */
+Schema.prototype.virtual = function(name, getter) {
+  var virtual = new Types.Virtual(name, {});
+  if (getter) virtual.get(getter);
+
+  this.path(name, virtual);
+
+  return virtual;
+};
+
+function checkHookType(type) {
+  if (type !== 'save' &amp;&amp; type !== 'remove') {
+    throw new TypeError('Hook type must be `save` or `remove`!');
+  }
+}
+
+function hookWrapper(fn) {
+  if (fn.length > 1) {
+    return Promise.promisify(fn);
+  }
+
+  return Promise.method(fn);
+}
+
+/**
+ * Adds a pre-hook.
+ *
+ * @param {String} type Hook type. One of `save` or `remove`.
+ * @param {Function} fn
+ */
+Schema.prototype.pre = function(type, fn) {
+  checkHookType(type);
+  if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
+
+  this.hooks.pre[type].push(hookWrapper(fn));
+};
+
+/**
+ * Adds a post-hook.
+ *
+ * @param {String} type Hook type. One of `save` or `remove`.
+ * @param {Function} fn
+ */
+Schema.prototype.post = function(type, fn) {
+  checkHookType(type);
+  if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
+
+  this.hooks.post[type].push(hookWrapper(fn));
+};
+
+/**
+ * Adds a instance method.
+ *
+ * @param {String} name
+ * @param {Function} fn
+ */
+Schema.prototype.method = function(name, fn) {
+  if (!name) throw new TypeError('Method name is required!');
+
+  if (typeof fn !== 'function') {
+    throw new TypeError('Instance method must be a function!');
+  }
+
+  this.methods[name] = fn;
+};
+
+/**
+ * Adds a static method.
+ *
+ * @param {String} name
+ * @param {Function} fn
+ */
+Schema.prototype.static = function(name, fn) {
+  if (!name) throw new TypeError('Method name is required!');
+
+  if (typeof fn !== 'function') {
+    throw new TypeError('Static method must be a function!');
+  }
+
+  this.statics[name] = fn;
+};
+
+/**
+ * Apply getters.
+ *
+ * @param {Object} data
+ * @return {*}
+ * @private
+ */
+Schema.prototype._applyGetters = function(data) {
+  var stack = this.stacks.getter;
+
+  for (var i = 0, len = stack.length; i &lt; len; i++) {
+    stack[i](data);
+  }
+};
+
+/**
+ * Apply setters.
+ *
+ * @param {Object} data
+ * @return {*}
+ * @private
+ */
+Schema.prototype._applySetters = function(data) {
+  var stack = this.stacks.setter;
+
+  for (var i = 0, len = stack.length; i &lt; len; i++) {
+    stack[i](data);
+  }
+};
+
+/**
+ * Parses database.
+ *
+ * @param {Object} data
+ * @return {Object}
+ * @private
+ */
+Schema.prototype._parseDatabase = function(data) {
+  var stack = this.stacks.import;
+
+  for (var i = 0, len = stack.length; i &lt; len; i++) {
+    stack[i](data);
+  }
+
+  return data;
+};
+
+/**
+ * Exports database.
+ *
+ * @param {Object} data
+ * @return {Object}
+ * @private
+ */
+Schema.prototype._exportDatabase = function(data) {
+  var stack = this.stacks.export;
+
+  for (var i = 0, len = stack.length; i &lt; len; i++) {
+    stack[i](data);
+  }
+
+  return data;
+};
+
+function updateStackNormal(key, update) {
+  return function(data) {
+    setProp(data, key, update);
+  };
+}
+
+function updateStackOperator(path_, ukey, key, update) {
+  var path = path_ || new SchemaType(key);
+
+  return function(data) {
+    var result = path[ukey](getProp(data, key), update, data);
+    setProp(data, key, result);
+  };
+}
+
+/**
+ * Parses updating expressions and returns a stack.
+ *
+ * @param {Object} updates
+ * @param {String} [prefix]
+ * @return {Array}
+ * @private
+ */
+Schema.prototype._parseUpdate = function(updates, prefix_) {
+  var prefix = prefix_ || '';
+  var paths = this.paths;
+  var stack = [];
+  var keys = Object.keys(updates);
+  var key, update, ukey, name, path, fields, field, j, fieldLen, prefixNoDot;
+
+  if (prefix) {
+    prefixNoDot = prefix.substring(0, prefix.length - 1);
+    path = paths[prefixNoDot];
+  }
+
+  for (var i = 0, len = keys.length; i &lt; len; i++) {
+    key = keys[i];
+    update = updates[key];
+    name = prefix + key;
+
+    // Update operators
+    if (key[0] === '$') {
+      ukey = 'u' + key;
+
+      // First-class update operators
+      if (prefix) {
+        stack.push(updateStackOperator(path, ukey, prefixNoDot, update));
+      } else { // Inline update operators
+        fields = Object.keys(update);
+        fieldLen = fields.length;
+
+        for (j = 0; j &lt; fieldLen; j++) {
+          field = fields[i];
+          stack.push(
+            updateStackOperator(paths[field], ukey, field, update[field]));
+        }
+      }
+    } else if (isPlainObject(update)) {
+      stack = stack.concat(this._parseUpdate(update, name + '.'));
+    } else {
+      stack.push(updateStackNormal(name, update));
+    }
+  }
+
+  return stack;
+};
+
+function queryStackNormal(path_, key, query) {
+  var path = path_ || new SchemaType(key);
+
+  return function(data) {
+    return path.match(getProp(data, key), query, data);
+  };
+}
+
+function queryStackOperator(path_, qkey, key, query) {
+  var path = path_ || new SchemaType(key);
+
+  return function(data) {
+    return path[qkey](getProp(data, key), query, data);
+  };
+}
+
+function execQueryStack(stack) {
+  var len = stack.length;
+  var i;
+
+  return function(data) {
+    for (i = 0; i &lt; len; i++) {
+      if (!stack[i](data)) return false;
+    }
+
+    return true;
+  };
+}
+
+function $or(stack) {
+  var len = stack.length;
+  var i;
+
+  return function(data) {
+    for (i = 0; i &lt; len; i++) {
+      if (stack[i](data)) return true;
+    }
+
+    return false;
+  };
+}
+
+function $nor(stack) {
+  var len = stack.length;
+  var i;
+
+  return function(data) {
+    for (i = 0; i &lt; len; i++) {
+      if (stack[i](data)) return false;
+    }
+
+    return true;
+  };
+}
+
+function $not(stack) {
+  var fn = execQueryStack(stack);
+
+  return function(data) {
+    return !fn(data);
+  };
+}
+
+function $where(fn) {
+  return function(data) {
+    return fn.call(data);
+  };
+}
+
+/**
+ * Parses array of query expressions and returns a stack.
+ *
+ * @param {Array} arr
+ * @return {Array}
+ * @private
+ */
+Schema.prototype._parseQueryArray = function(arr) {
+  var stack = [];
+
+  for (var i = 0, len = arr.length; i &lt; len; i++) {
+    stack.push(execQueryStack(this._parseQuery(arr[i])));
+  }
+
+  return stack;
+};
+
+/**
+ * Parses normal query expressions and returns a stack.
+ *
+ * @param {Array} queries
+ * @param {String} [prefix]
+ * @return {Array}
+ * @private
+ */
+Schema.prototype._parseNormalQuery = function(queries, prefix_) {
+  var prefix = prefix_ || '';
+  var paths = this.paths;
+  var stack = [];
+  var keys = Object.keys(queries);
+  var key, query, name, path, prefixNoDot;
+
+  if (prefix) {
+    prefixNoDot = prefix.substring(0, prefix.length - 1);
+    path = paths[prefixNoDot];
+  }
+
+  for (var i = 0, len = keys.length; i &lt; len; i++) {
+    key = keys[i];
+    query = queries[key];
+    name = prefix + key;
+
+    if (key[0] === '$') {
+      stack.push(queryStackOperator(path, 'q' + key, prefixNoDot, query));
+    } else if (isPlainObject(query)) {
+      stack = stack.concat(this._parseNormalQuery(query, name + '.'));
+    } else {
+      stack.push(queryStackNormal(paths[name], name, query));
+    }
+  }
+
+  return stack;
+};
+
+/**
+ * Parses query expressions and returns a stack.
+ *
+ * @param {Array} queries
+ * @return {Array}
+ * @private
+ */
+Schema.prototype._parseQuery = function(queries) {
+  var stack = [];
+  var paths = this.paths;
+  var keys = Object.keys(queries);
+  var key, query;
+
+  for (var i = 0, len = keys.length; i &lt; len; i++) {
+    key = keys[i];
+    query = queries[key];
+
+    switch (key){
+      case '$and':
+        stack = stack.concat(this._parseQueryArray(query));
+        break;
+
+      case '$or':
+        stack.push($or(this._parseQueryArray(query)));
+        break;
+
+      case '$nor':
+        stack.push($nor(this._parseQueryArray(query)));
+        break;
+
+      case '$not':
+        stack.push($not(this._parseQuery(query)));
+        break;
+
+      case '$where':
+        stack.push($where(query));
+        break;
+
+      default:
+        if (isPlainObject(query)) {
+          stack = stack.concat(this._parseNormalQuery(query, key + '.'));
+        } else {
+          stack.push(queryStackNormal(paths[key], key, query));
+        }
+    }
+  }
+
+  return stack;
+};
+
+/**
+ * Returns a function for querying.
+ *
+ * @param {Object} query
+ * @return {Function}
+ * @private
+ */
+Schema.prototype._execQuery = function(query) {
+  var stack = this._parseQuery(query);
+  return execQueryStack(stack);
+};
+
+function execSortStack(stack) {
+  var len = stack.length;
+  var i;
+
+  return function(a, b) {
+    var result;
+
+    for (i = 0; i &lt; len; i++) {
+      result = stack[i](a, b);
+      if (result) break;
+    }
+
+    return result;
+  };
+}
+
+function sortStack(path_, key, sort) {
+  var path = path_ || new SchemaType(key);
+  var descending = sort === 'desc' || sort === -1;
+
+  return function(a, b) {
+    var result = path.compare(getProp(a, key), getProp(b, key));
+    return descending &amp;&amp; result ? result * -1 : result;
+  };
+}
+
+/**
+ * Parses sorting expressions and returns a stack.
+ *
+ * @param {Object} sorts
+ * @param {String} [prefix]
+ * @return {Array}
+ * @private
+ */
+Schema.prototype._parseSort = function(sorts, prefix_) {
+  var prefix = prefix_ || '';
+  var paths = this.paths;
+  var stack = [];
+  var keys = Object.keys(sorts);
+  var key, sort, name;
+
+  for (var i = 0, len = keys.length; i &lt; len; i++) {
+    key = keys[i];
+    sort = sorts[key];
+    name = prefix + key;
+
+    if (typeof sort === 'object') {
+      stack = stack.concat(this._parseSort(sort, name + '.'));
+    } else {
+      stack.push(sortStack(paths[name], name, sort));
+    }
+  }
+
+  return stack;
+};
+
+/**
+ * Returns a function for sorting.
+ *
+ * @param {Object} sorts
+ * @return {Function}
+ * @private
+ */
+Schema.prototype._execSort = function(sorts) {
+  var stack = this._parseSort(sorts);
+  return execSortStack(stack);
+};
+
+/**
+ * Parses population expression and returns a stack.
+ *
+ * @param {String|Object} expr
+ * @return {Array}
+ * @private
+ */
+Schema.prototype._parsePopulate = function(expr) {
+  var paths = this.paths;
+  var arr, i, len, item, path, key, ref;
+
+  if (typeof expr === 'string') {
+    var split = expr.split(' ');
+    arr = [];
+
+    for (i = 0, len = split.length; i &lt; len; i++) {
+      arr.push({
+        path: split[i]
+      });
+    }
+  } else if (isArray(expr)) {
+    for (i = 0, len = expr.length; i &lt; len; i++) {
+      item = expr[i];
+
+      if (typeof item === 'string') {
+        arr.push({
+          path: item
+        });
+      } else {
+        arr.push(item);
+      }
+    }
+  } else {
+    arr = [expr];
+  }
+
+  for (i = 0, len = arr.length; i &lt; len; i++) {
+    item = arr[i];
+    key = item.path;
+
+    if (!key) {
+      throw new PopulationError('path is required');
+    }
+
+    if (!item.model) {
+      path = paths[key];
+      ref = path.child ? path.child.options.ref : path.options.ref;
+
+      if (ref) {
+        item.model = ref;
+      } else {
+        throw new PopulationError('model is required');
+      }
+    }
+  }
+
+  return arr;
+};
+
+Schema.Types = Schema.prototype.Types = Types;
+
+module.exports = Schema;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Jan 03 2016 14:36:17 GMT+0800 (CST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
