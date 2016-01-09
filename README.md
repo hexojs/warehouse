@@ -31,5 +31,5 @@ Post.insert({
 ## Test
 
 ``` bash
-$ gulp test
+$ npm test
 ```
