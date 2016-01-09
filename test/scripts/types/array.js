@@ -113,6 +113,7 @@ describe('SchemaTypeArray', function() {
     type.match([1, 2, 3], ['1', '2', '3']).should.be.false;
     type.match([1, 2, 3], [1, 2, 3, 4]).should.be.false;
     type.match(undefined, []).should.be.false;
+    type.match(undefined, undefined).should.be.true;
   });
 
   it('match() - child', function() {

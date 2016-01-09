@@ -61,6 +61,8 @@ describe('SchemaTypeString', function() {
   it('match()', function() {
     type.match('foo', 'foo').should.be.true;
     type.match('foo', 'bar').should.be.false;
+    type.match(undefined, '').should.be.false;
+    type.match(undefined, undefined).should.be.true;
   });
 
   it('match() - RegExp', function() {
