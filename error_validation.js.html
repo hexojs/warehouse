@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>error/validation.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,45 +28,41 @@
 
 <div id="main">
     
+    <h1 class="page-title">error/validation.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
 
+var util = require('../util');
+var WarehouseError = require('../error');
 
+/**
+ * ValidationError constructor
+ *
+ * @class
+ * @param {String} msg
+ * @extends WarehouseError
+ */
+function ValidationError(msg) {
+  WarehouseError.call(this);
 
+  this.name = 'ValidationError';
+  this.message = msg;
+}
 
+util.inherits(ValidationError, WarehouseError);
 
-
-
-
-
-    
-
-
-    <section class="readme">
-        <article><h1>Warehouse</h1><p><a href="https://travis-ci.org/tommy351/warehouse"><img src="https://travis-ci.org/tommy351/warehouse.svg?branch=master" alt="Build Status"></a>  <a href="http://badge.fury.io/js/warehouse"><img src="https://badge.fury.io/js/warehouse.svg" alt="NPM version"></a> <a href="https://coveralls.io/r/tommy351/warehouse?branch=master"><img src="https://coveralls.io/repos/tommy351/warehouse/badge.svg?branch=master" alt="Coverage Status"></a></p>
-<h2>Installation</h2><pre class="prettyprint source lang-bash"><code>$ npm install warehouse</code></pre><h2>Usage</h2><pre class="prettyprint source lang-js"><code>var Database = require('warehouse');
-var db = new Database();
-
-var Post = db.model('posts', {
-  title: String,
-  created: {type: Date, default: Date.now}
-});
-
-Post.insert({
-  title: 'Hello world'
-}).then(function(post){
-  console.log(post);
-});</code></pre><ul>
-<li><a href="http://tommy351.github.io/warehouse/">API</a></li>
-</ul>
-<h2>Test</h2><pre class="prettyprint source lang-bash"><code>$ gulp test</code></pre></article>
+module.exports = ValidationError;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 
