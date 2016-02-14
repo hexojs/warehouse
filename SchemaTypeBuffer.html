@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>SchemaTypeArray - Documentation</title>
+    <title>SchemaTypeBuffer - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">SchemaTypeArray</h1>
+    <h1 class="page-title">SchemaTypeBuffer</h1>
     
 
     
@@ -41,7 +41,7 @@
 <header>
     
         <h2>
-        SchemaTypeArray
+        SchemaTypeBuffer
         </h2>
         
     
@@ -54,14 +54,14 @@
 
     
 
-    <h4 class="name" id="SchemaTypeArray"><span class="type-signature"></span>new SchemaTypeArray<span class="signature">(name, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="SchemaTypeBuffer"><span class="type-signature"></span>new SchemaTypeBuffer<span class="signature">(name, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Array schema type.</p>
+    <p>Boolean schema type.</p>
 </div>
 
 
@@ -231,7 +231,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Boolean</span>
 |
 
 <span class="param-type">function</span>
@@ -255,8 +255,6 @@
             
                 <td class="default">
                 
-                    []
-                
                 </td>
             
 
@@ -267,13 +265,13 @@
 
         <tr>
             
-                <td class="name"><code>child</code></td>
+                <td class="name"><code>encoding</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="SchemaType.html">SchemaType</a></span>
+<span class="param-type">String</span>
 
 
             
@@ -293,6 +291,8 @@
 
             
                 <td class="default">
+                
+                    hex
                 
                 </td>
             
@@ -345,7 +345,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line23">line 23</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line21">line 21</a>
     </li></ul></dd>
     
 
@@ -405,14 +405,14 @@
 
     
 
-    <h4 class="name" id="cast"><span class="type-signature"></span>cast<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="cast"><span class="type-signature"></span>cast<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Casts an array and its child elements.</p>
+    <p>Casts data.</p>
 </div>
 
 
@@ -533,7 +533,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line40">line 40</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -567,7 +567,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type">Buffer</span>
 
 
     </dd>
@@ -589,7 +589,7 @@
 
 
 <div class="description">
-    <p>Compares an array by its child elements and the size of the array.</p>
+    <p>Compares between two buffers.</p>
 </div>
 
 
@@ -631,7 +631,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Buffer</span>
 
 
             
@@ -654,7 +654,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Buffer</span>
 
 
             
@@ -710,7 +710,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line88">line 88</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -766,7 +766,7 @@
 
 
 <div class="description">
-    <p>Checks the equality of an array.</p>
+    <p>Checks the equality of data.</p>
 </div>
 
 
@@ -808,7 +808,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Buffer</span>
 
 
             
@@ -831,7 +831,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Buffer</span>
 
 
             
@@ -910,7 +910,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line163">line 163</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -959,14 +959,14 @@
 
     
 
-    <h4 class="name" id="parse"><span class="type-signature"></span>parse<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="parse"><span class="type-signature"></span>parse<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Parses data.</p>
+    <p>Parses data and transform them into buffer values.</p>
 </div>
 
 
@@ -1008,7 +1008,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">*</span>
 
 
             
@@ -1087,202 +1087,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line116">line 116</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="q$all"><span class="type-signature"></span>q$all<span class="signature">(value, query, data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Checks whether an array contains all elements in <code>query</code>.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>query</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line240">line 240</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line83">line 83</a>
     </li></ul></dd>
     
 
@@ -1938,7 +1743,7 @@
 
 
 <div class="description">
-    <p>Checks whether an array contains one of elements in <code>query</code>.</p>
+    <p>Checks whether <code>value</code> is equal to one of elements in <code>query</code>.</p>
 </div>
 
 
@@ -1980,7 +1785,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">*</span>
 
 
             
@@ -2055,10 +1860,8 @@
     
 
     
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
         <a href="SchemaType.html#q$in">SchemaType#q$in</a>
     </li></ul></dd>
     
@@ -2080,9 +1883,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line204">line 204</a>
+        <a href="schematype.js.html">schematype.js</a>, <a href="schematype.js.html#line250">line 250</a>
     </li></ul></dd>
     
 
@@ -2738,7 +2543,7 @@
 
 
 <div class="description">
-    <p>Checks whether an array does not contain in any elements in <code>query</code>.</p>
+    <p>Checks whether <code>value</code> is not equal to any elements in <code>query</code>.</p>
 </div>
 
 
@@ -2780,7 +2585,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">*</span>
 
 
             
@@ -2855,10 +2660,8 @@
     
 
     
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
         <a href="SchemaType.html#q$nin">SchemaType#q$nin</a>
     </li></ul></dd>
     
@@ -2880,9 +2683,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line222">line 222</a>
+        <a href="schematype.js.html">schematype.js</a>, <a href="schematype.js.html#line262">line 262</a>
     </li></ul></dd>
     
 
@@ -2917,984 +2722,6 @@
     <dd>
         
 <span class="param-type">Boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="q$size"><span class="type-signature"></span>q$size<span class="signature">(value, query, data)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Checks whether the number of elements in an array is equal to <code>query</code>.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>query</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line190">line 190</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="u$addToSet"><span class="type-signature"></span>u$addToSet<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Add elements to an array only if the value is not already in the array.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>update</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line364">line 364</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="u$pop"><span class="type-signature"></span>u$pop<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Removes the last element from an array.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>update</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-|
-
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line342">line 342</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="u$pull"><span class="type-signature"></span>u$pull<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Removes elements from an array.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>update</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line304">line 304</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="u$push"><span class="type-signature"></span>u$push<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Add elements to an array.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>update</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line258">line 258</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
 
 
     </dd>
@@ -4309,204 +3136,6 @@
 
     
 
-    <h4 class="name" id="u$shift"><span class="type-signature"></span>u$shift<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Removes the first element from an array.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>update</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-|
-
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line322">line 322</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
     <h4 class="name" id="u$unset"><span class="type-signature"></span>u$unset<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {*}</span></h4>
 
     
@@ -4707,209 +3336,14 @@
 
     
 
-    <h4 class="name" id="u$unshift"><span class="type-signature"></span>u$unshift<span class="signature">(value, update, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="validate"><span class="type-signature"></span>validate<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Add elements in front of an array.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>update</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line281">line 281</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="validate"><span class="type-signature"></span>validate<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Array|Error}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Validates an array and its child elements.</p>
+    <p>Validates data.</p>
 </div>
 
 
@@ -5030,7 +3464,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line63">line 63</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -5064,10 +3498,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
-|
-
-<span class="param-type">Error</span>
+<span class="param-type">Buffer</span>
 
 
     </dd>
@@ -5082,14 +3513,14 @@
 
     
 
-    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="signature">(value, data)</span><span class="type-signature"> &rarr; {Number}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Transforms data.</p>
+    <p>Transforms data into number to compress the size of database files.</p>
 </div>
 
 
@@ -5131,7 +3562,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Buffer</span>
 
 
             
@@ -5210,7 +3641,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="types_array.js.html">types/array.js</a>, <a href="types_array.js.html#line139">line 139</a>
+        <a href="types_buffer.js.html">types/buffer.js</a>, <a href="types_buffer.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -5244,7 +3675,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type">Number</span>
 
 
     </dd>
