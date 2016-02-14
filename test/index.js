@@ -14,6 +14,7 @@ describe('Warehouse', function() {
   require('./scripts/schematype');
   require('./scripts/types/array');
   require('./scripts/types/boolean');
+  require('./scripts/types/buffer');
   require('./scripts/types/cuid');
   require('./scripts/types/date');
   require('./scripts/types/enum');
