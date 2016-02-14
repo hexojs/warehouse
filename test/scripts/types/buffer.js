@@ -3,7 +3,7 @@
 var should = require('chai').should(); // eslint-disable-line
 var ValidationError = require('../../../lib/error/validation');
 
-describe.only('SchemaTypeBuffer', function() {
+describe('SchemaTypeBuffer', function() {
   var SchemaTypeBuffer = require('../../../lib/types/buffer');
   var type = new SchemaTypeBuffer('test');
 
