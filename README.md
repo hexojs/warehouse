@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/hexojs/warehouse.svg?branch=master)](https://travis-ci.org/hexojs/warehouse)  [![NPM version](https://badge.fury.io/js/warehouse.svg)](http://badge.fury.io/js/warehouse) [![Coverage Status](https://coveralls.io/repos/tommy351/warehouse/badge.svg?branch=master)](https://coveralls.io/r/tommy351/warehouse?branch=master)
 
+A JSON database with Models, Schemas, and a flexible querying interface. It powers the wildly successful static site generator [Hexo](https://hexo.io).
+
 ## Installation
 
 ``` bash
@@ -26,7 +28,9 @@ Post.insert({
 });
 ```
 
-- [API](http://tommy351.github.io/warehouse/)
++ [API documentation](https://hexo.io/warehouse)
++ [Examples of `Model`, `Schema`, and `SchemaType`](https://github.com/hexojs/hexo/tree/master/lib/models)
++ [More examples in `./test/scripts`](./test/scripts)
 
 ## Test
 
