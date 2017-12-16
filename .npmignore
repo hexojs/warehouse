@@ -7,3 +7,4 @@ gulpfile.js
 .idea/
 benchmark/
 docs/
+.travis/
