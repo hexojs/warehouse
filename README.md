@@ -28,7 +28,7 @@ Post.insert({
 });
 ```
 
-+ [API documentation](https://hexo.io/warehouse)
++ [API documentation](https://hexojs.github.io/warehouse/)
 + [Examples of `Model`, `Schema`, and `SchemaType`](https://github.com/hexojs/hexo/tree/master/lib/models)
 + [More examples in `./test/scripts`](./test/scripts)
 
