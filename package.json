@@ -8,12 +8,11 @@
   },
   "scripts": {
     "eslint": "eslint .",
-    "jscs": "jscs .",
     "test": "mocha test/index.js",
     "test-cov": "istanbul cover --print both _mocha -- test/index.js",
     "jsdoc": "jsdoc --configure .jsdoc.json"
   },
-  "repository": "tommy351/warehouse",
+  "repository": "hexojs/warehouse",
   "keywords": [
     "database",
     "json",
@@ -32,14 +31,15 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
-    "eslint": "^1.10.3",
+    "eslint": "^5.3.0",
+    "eslint-config-hexo": "^3.0.0",
     "istanbul": "^0.4.2",
-    "jscs": "^2.9.0",
     "jsdoc": "^3.4.0",
     "minami": "^1.1.1",
     "mocha": "^2.4.5",
     "sinon": "^1.17.3"
-  }, "engines": {
+  },
+  "engines": {
     "node": "6 || 8 || >=10"
   }
 }
