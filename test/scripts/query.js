@@ -1,7 +1,7 @@
 'use strict';
 
 var should = require('chai').should(); // eslint-disable-line
-var _ = require('lodash');
+var sortBy = require('lodash/sortBy');
 var Promise = require('bluebird');
 
 describe('Query', function() {
@@ -21,7 +21,7 @@ describe('Query', function() {
   });
 
   it('count()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).count().should.eql(data.length);
       return data;
     }).map(function(item) {
@@ -30,7 +30,7 @@ describe('Query', function() {
   });
 
   it('forEach()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       var count = 0;
 
       User.find({}).forEach(function(item, i) {
@@ -45,7 +45,7 @@ describe('Query', function() {
   });
 
   it('toArray()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).toArray().should.eql(data);
       return data;
     }).map(function(item) {
@@ -54,7 +54,7 @@ describe('Query', function() {
   });
 
   it('eq()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       var query = User.find({});
 
       for (var i = 0, len = data.length; i < len; i++) {
@@ -68,7 +68,7 @@ describe('Query', function() {
   });
 
   it('eq() - negative index', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       var query = User.find({});
 
       for (var i = 1, len = data.length; i <= len; i++) {
@@ -82,7 +82,7 @@ describe('Query', function() {
   });
 
   it('first()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).first().should.eql(data[0]);
       return data;
     }).map(function(item) {
@@ -91,7 +91,7 @@ describe('Query', function() {
   });
 
   it('last()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).last().should.eql(data[data.length - 1]);
       return data;
     }).map(function(item) {
@@ -100,7 +100,7 @@ describe('Query', function() {
   });
 
   it('slice()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).slice(2, 4).data.should.eql(data.slice(2, 4));
       return data;
     }).map(function(item) {
@@ -109,7 +109,7 @@ describe('Query', function() {
   });
 
   it('limit()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).limit(2).data.should.eql(data.slice(0, 2));
       return data;
     }).map(function(item) {
@@ -118,7 +118,7 @@ describe('Query', function() {
   });
 
   it('skip()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).skip(2).data.should.eql(data.slice(2));
       return data;
     }).map(function(item) {
@@ -127,7 +127,7 @@ describe('Query', function() {
   });
 
   it('reverse()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       User.find({}).reverse().data.should.eql(data.reverse());
       return data;
     }).map(function(item) {
@@ -136,8 +136,8 @@ describe('Query', function() {
   });
 
   it('shuffle()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
-      _.sortBy(User.find({}).shuffle().data, '_id').should.eql(_.sortBy(data, '_id'));
+    return User.insert(Array(5).fill({})).then(function(data) {
+      sortBy(User.find({}).shuffle().data, '_id').should.eql(sortBy(data, '_id'));
       return data;
     }).map(function(item) {
       return User.removeById(item._id);
@@ -421,7 +421,7 @@ describe('Query', function() {
   });
 
   it('map()', function() {
-    return User.insert(_.fill(Array(5), {})).then(function(data) {
+    return User.insert(Array(5).fill({})).then(function(data) {
       var num = 0;
 
       var d1 = User.find({}).map(function(item, i) {
@@ -687,7 +687,7 @@ describe('Query', function() {
       comments = comments_;
 
       return User.insert({
-        comments: _.map(comments, '_id')
+        comments: comments.map(item => item._id)
       });
     }).then(function(user_) {
       user = user_;

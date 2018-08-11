@@ -1,7 +1,7 @@
 'use strict';
 
 var should = require('chai').should();
-var _ = require('lodash');
+var sortBy = require('lodash/sortBy');
 var Promise = require('bluebird');
 var sinon = require('sinon');
 var util = require('util');
@@ -585,7 +585,7 @@ describe('Model', function() {
   it('forEach()', function() {
     var count = 0;
 
-    return Post.insert(_.fill(Array(10), {})).then(function(data) {
+    return Post.insert(Array(10).fill({})).then(function(data) {
       Post.forEach(function(item, i) {
         item.should.eql(data[i]);
         i.should.eql(count++);
@@ -599,7 +599,7 @@ describe('Model', function() {
   });
 
   it('toArray()', function() {
-    return Post.insert(_.fill(Array(10), {})).then(function(data) {
+    return Post.insert(Array(10).fill({})).then(function(data) {
       Post.toArray().should.eql(data);
       return data;
     }).map(function(item) {
@@ -884,7 +884,7 @@ describe('Model', function() {
   });
 
   it('eq()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       for (var i = 0, len = data.length; i < len; i++) {
         Post.eq(i).should.eql(data[i]);
       }
@@ -896,7 +896,7 @@ describe('Model', function() {
   });
 
   it('eq() - negative index', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       for (var i = 1, len = data.length; i <= len; i++) {
         Post.eq(-i).should.eql(data[len - i]);
       }
@@ -908,7 +908,7 @@ describe('Model', function() {
   });
 
   it('first()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.first().should.eql(data[0]);
 
       return data;
@@ -918,7 +918,7 @@ describe('Model', function() {
   });
 
   it('last()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.last().should.eql(data[data.length - 1]);
 
       return data;
@@ -928,7 +928,7 @@ describe('Model', function() {
   });
 
   it('slice() - no arguments', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice().data.should.eql(data);
       return data;
     }).map(function(item) {
@@ -937,7 +937,7 @@ describe('Model', function() {
   });
 
   it('slice() - one argument', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(2).data.should.eql(data.slice(2));
       return data;
     }).map(function(item) {
@@ -946,7 +946,7 @@ describe('Model', function() {
   });
 
   it('slice() - one negative argument', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(-2).data.should.eql(data.slice(-2));
       return data;
     }).map(function(item) {
@@ -955,7 +955,7 @@ describe('Model', function() {
   });
 
   it('slice() - two arguments', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(2, 4).data.should.eql(data.slice(2, 4));
       return data;
     }).map(function(item) {
@@ -964,7 +964,7 @@ describe('Model', function() {
   });
 
   it('slice() - start + negative end index', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(1, -1).data.should.eql(data.slice(1, -1));
       return data;
     }).map(function(item) {
@@ -973,7 +973,7 @@ describe('Model', function() {
   });
 
   it('slice() - two negative arguments', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(-3, -1).data.should.eql(data.slice(-3, -1));
       return data;
     }).map(function(item) {
@@ -982,7 +982,7 @@ describe('Model', function() {
   });
 
   it('slice() - start > end', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(-1, -3).data.should.eql(data.slice(-1, -3));
       return data;
     }).map(function(item) {
@@ -991,7 +991,7 @@ describe('Model', function() {
   });
 
   it('slice() - index overflow', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(1, 100).data.should.eql(data.slice(1, 100));
       return data;
     }).map(function(item) {
@@ -1000,7 +1000,7 @@ describe('Model', function() {
   });
 
   it('slice() - index overflow 2', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.slice(100, 200).data.should.eql(data.slice(100, 200));
       return data;
     }).map(function(item) {
@@ -1009,7 +1009,7 @@ describe('Model', function() {
   });
 
   it('limit()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.limit(2).data.should.eql(data.slice(0, 2));
       return data;
     }).map(function(item) {
@@ -1018,7 +1018,7 @@ describe('Model', function() {
   });
 
   it('skip()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       Post.skip(2).data.should.eql(data.slice(2));
       return data;
     }).map(function(item) {
@@ -1027,7 +1027,7 @@ describe('Model', function() {
   });
 
   it('reverse()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       var query = Post.reverse();
 
       for (var i = 0, len = data.length; i < len; i++) {
@@ -1041,9 +1041,9 @@ describe('Model', function() {
   });
 
   it('shuffle()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       var query = Post.shuffle();
-      _.sortBy(query.data, '_id').should.eql(_.sortBy(data, '_id'));
+      sortBy(query.data, '_id').should.eql(sortBy(data, '_id'));
       return data;
     }).map(function(item) {
       return Post.removeById(item._id);
@@ -1051,7 +1051,7 @@ describe('Model', function() {
   });
 
   it('map()', function() {
-    return Post.insert(_.fill(Array(5), {})).then(function(data) {
+    return Post.insert(Array(5).fill({})).then(function(data) {
       var num = 0;
 
       var d1 = Post.map(function(item, i) {
@@ -1259,7 +1259,7 @@ describe('Model', function() {
       posts = posts_;
 
       return User.insert({
-        posts: _.map(posts, '_id')
+        posts: posts.map(post => post._id)
       });
     }).then(function(user_) {
       user = user_;
@@ -1292,7 +1292,7 @@ describe('Model', function() {
       posts = posts_;
 
       return User.insert({
-        posts: _.map(posts, '_id')
+        posts: posts.map(post => post._id)
       });
     }).then(function(user_) {
       user = user_;
@@ -1325,7 +1325,7 @@ describe('Model', function() {
       posts = posts_;
 
       return User.insert({
-        posts: _.map(posts, '_id')
+        posts: posts.map(post => post._id)
       });
     }).then(function(user_) {
       user = user_;
@@ -1364,7 +1364,7 @@ describe('Model', function() {
       posts = posts_;
 
       return User.insert({
-        posts: _.map(posts, '_id')
+        posts: posts.map(post => post._id)
       });
     }).then(function(user_) {
       user = user_;
@@ -1407,7 +1407,7 @@ describe('Model', function() {
       posts = posts_;
 
       return User.insert({
-        posts: _.map(posts, '_id')
+        posts: posts.map(post => post._id)
       });
     }).then(function(user_) {
       user = user_;
