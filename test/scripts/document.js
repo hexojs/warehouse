@@ -1,7 +1,6 @@
 'use strict';
 
 var should = require('chai').should(); // eslint-disable-line
-var _ = require('lodash');
 
 describe('Document', function() {
   var Database = require('../..');
@@ -135,7 +134,7 @@ describe('Document', function() {
       {content: 'ha'}
     ]).then(function(comments) {
       var user = User.new({
-        comments: _.map(comments, '_id')
+        comments: comments.map(comment => comment._id)
       });
 
       user.populate('comments').comments.toArray().should.eql(comments);
