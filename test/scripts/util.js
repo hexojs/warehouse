@@ -1,12 +1,12 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
+const should = require('chai').should(); // eslint-disable-line
 
-describe('util', function() {
-  var util = require('../../lib/util');
+describe('util', () => {
+  const util = require('../../lib/util');
 
-  it('getProp()', function() {
-    var obj = {
+  it('getProp()', () => {
+    const obj = {
       a: {
         b: 1
       },
@@ -23,7 +23,7 @@ describe('util', function() {
     util.getProp(obj, 'd.e.f').should.eql(obj.d.e.f);
   });
 
-  it('getProp() - obj must be an object', function() {
+  it('getProp() - obj must be an object', () => {
     try {
       util.getProp();
     } catch (err) {
@@ -31,7 +31,7 @@ describe('util', function() {
     }
   });
 
-  it('getProp() - key is required', function() {
+  it('getProp() - key is required', () => {
     try {
       util.getProp({});
     } catch (err) {
@@ -39,8 +39,8 @@ describe('util', function() {
     }
   });
 
-  it('setProp()', function() {
-    var obj = {
+  it('setProp()', () => {
+    const obj = {
       a: {
         b: 1
       },
@@ -62,7 +62,7 @@ describe('util', function() {
     obj.d.e.f.should.eql('haha');
   });
 
-  it('setProp() - obj must be an object', function() {
+  it('setProp() - obj must be an object', () => {
     try {
       util.setProp();
     } catch (err) {
@@ -70,7 +70,7 @@ describe('util', function() {
     }
   });
 
-  it('setProp() - key is required', function() {
+  it('setProp() - key is required', () => {
     try {
       util.setProp({});
     } catch (err) {
@@ -78,8 +78,8 @@ describe('util', function() {
     }
   });
 
-  it('delProp()', function() {
-    var obj = {
+  it('delProp()', () => {
+    const obj = {
       a: {
         b: 1
       },
@@ -101,7 +101,7 @@ describe('util', function() {
     should.not.exist(obj.d.e.f);
   });
 
-  it('delProp() - obj must be an object', function() {
+  it('delProp() - obj must be an object', () => {
     try {
       util.delProp();
     } catch (err) {
@@ -109,7 +109,7 @@ describe('util', function() {
     }
   });
 
-  it('delProp() - key is required', function() {
+  it('delProp() - key is required', () => {
     try {
       util.delProp({});
     } catch (err) {
@@ -117,8 +117,8 @@ describe('util', function() {
     }
   });
 
-  it('setGetter()', function() {
-    var obj = {
+  it('setGetter()', () => {
+    const obj = {
       a: {
         b: 1
       },
@@ -130,32 +130,24 @@ describe('util', function() {
       }
     };
 
-    util.setGetter(obj, 'a.b', function() {
-      return 100;
-    });
+    util.setGetter(obj, 'a.b', () => 100);
 
     obj.a.b.should.eql(100);
 
-    util.setGetter(obj, 'c', function() {
-      return 200;
-    });
+    util.setGetter(obj, 'c', () => 200);
 
     obj.c.should.eql(200);
 
-    util.setGetter(obj, 'd.e.f', function() {
-      return 'haha';
-    });
+    util.setGetter(obj, 'd.e.f', () => 'haha');
 
     obj.d.e.f.should.eql('haha');
 
-    util.setGetter(obj, 'a.c.h', function() {
-      return 'ach';
-    });
+    util.setGetter(obj, 'a.c.h', () => 'ach');
 
     obj.a.c.h.should.eql('ach');
   });
 
-  it('setGetter() - obj must be an object', function() {
+  it('setGetter() - obj must be an object', () => {
     try {
       util.setGetter();
     } catch (err) {
@@ -163,7 +155,7 @@ describe('util', function() {
     }
   });
 
-  it('setGetter() - key is required', function() {
+  it('setGetter() - key is required', () => {
     try {
       util.setGetter({});
     } catch (err) {
@@ -171,7 +163,7 @@ describe('util', function() {
     }
   });
 
-  it('setGetter() - fn must be a function', function() {
+  it('setGetter() - fn must be a function', () => {
     try {
       util.setGetter({}, 'test');
     } catch (err) {
@@ -179,11 +171,11 @@ describe('util', function() {
     }
   });
 
-  it('arr2obj()', function() {
+  it('arr2obj()', () => {
     util.arr2obj(['a', 'b'], 1).should.eql({a: 1, b: 1});
   });
 
-  it('arr2obj() - arr must be an array', function() {
+  it('arr2obj() - arr must be an array', () => {
     try {
       util.arr2obj();
     } catch (err) {
@@ -191,13 +183,13 @@ describe('util', function() {
     }
   });
 
-  it('reverse()', function() {
-    var arr = [1, '2', 'w'];
+  it('reverse()', () => {
+    const arr = [1, '2', 'w'];
 
     util.reverse(arr).should.eql(['w', '2', 1]);
   });
 
-  it('reverse() - arr must be an array', function() {
+  it('reverse() - arr must be an array', () => {
     try {
       util.reverse();
     } catch (err) {
@@ -205,7 +197,7 @@ describe('util', function() {
     }
   });
 
-  it('parseArgs() - arr must be an array', function() {
+  it('parseArgs() - arr must be an array', () => {
     try {
       util.parseArgs();
     } catch (err) {
@@ -213,7 +205,7 @@ describe('util', function() {
     }
   });
 
-  it('parseArgs()', function() {
+  it('parseArgs()', () => {
     util.parseArgs('name').should.eql({name: 1});
     util.parseArgs('name', -1).should.eql({name: -1});
     util.parseArgs('name -date').should.eql({name: 1, date: -1});

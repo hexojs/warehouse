@@ -1,30 +1,30 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
-var ValidationError = require('../../../lib/error/validation');
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeBuffer', function() {
-  var SchemaTypeBuffer = require('../../../lib/types/buffer');
-  var type = new SchemaTypeBuffer('test');
+describe('SchemaTypeBuffer', () => {
+  const SchemaTypeBuffer = require('../../../lib/types/buffer');
+  const type = new SchemaTypeBuffer('test');
 
-  it('cast()', function() {
-    var buf = new Buffer([97, 98, 99]);
+  it('cast()', () => {
+    const buf = new Buffer([97, 98, 99]);
 
     type.cast(buf).should.eql(buf);
     type.cast(buf.toString('hex')).should.eql(buf);
     type.cast([97, 98, 99]).should.eql(buf);
   });
 
-  it('cast() - custom encoding', function() {
-    var buf = new Buffer([97, 98, 99]);
-    var type = new SchemaTypeBuffer('test', {encoding: 'base64'});
+  it('cast() - custom encoding', () => {
+    const buf = new Buffer([97, 98, 99]);
+    const type = new SchemaTypeBuffer('test', {encoding: 'base64'});
 
     type.cast(buf.toString('base64')).should.eql(buf);
   });
 
-  it('cast() - default', function() {
-    var buf = new Buffer([97, 98, 99]);
-    var type = new SchemaTypeBuffer('test', {default: buf});
+  it('cast() - default', () => {
+    const buf = new Buffer([97, 98, 99]);
+    const type = new SchemaTypeBuffer('test', {default: buf});
 
     type.cast().should.eql(buf);
   });
@@ -35,11 +35,11 @@ describe('SchemaTypeBuffer', function() {
     } catch (err) {
       err.should.be
         .instanceOf(ValidationError)
-        .property('message', '`' + value + '` is not a valid buffer!');
+        .property('message', `\`${value}\` is not a valid buffer!`);
     }
   }
 
-  it('validate()', function() {
+  it('validate()', () => {
     type.validate(new Buffer([97, 98, 99])).should.eql(new Buffer([97, 98, 99]));
     shouldThrowError(1);
     shouldThrowError('foo');
@@ -48,8 +48,8 @@ describe('SchemaTypeBuffer', function() {
     shouldThrowError({});
   });
 
-  it('validate() - required', function() {
-    var type = new SchemaTypeBuffer('test', {required: true});
+  it('validate() - required', () => {
+    const type = new SchemaTypeBuffer('test', {required: true});
 
     try {
       type.validate();
@@ -60,14 +60,14 @@ describe('SchemaTypeBuffer', function() {
     }
   });
 
-  it('match()', function() {
+  it('match()', () => {
     type.match(new Buffer([97, 98, 99]), new Buffer([97, 98, 99])).should.be.true;
     type.match(new Buffer([97, 98, 99]), new Buffer([97, 98, 100])).should.be.false;
     type.match(undefined, new Buffer([97, 98, 99])).should.be.false;
     type.match(undefined, undefined).should.be.true;
   });
 
-  it('compare()', function() {
+  it('compare()', () => {
     type.compare(new Buffer([97, 98, 99]), new Buffer([97, 98, 99])).should.eql(0);
     type.compare(new Buffer([97, 98, 99]), new Buffer([97, 98, 100])).should.lt(0);
     type.compare(new Buffer([97, 98, 99]), new Buffer([97, 98, 98])).should.gt(0);
@@ -76,27 +76,27 @@ describe('SchemaTypeBuffer', function() {
     type.compare().should.eql(0);
   });
 
-  it('parse()', function() {
-    var buf = new Buffer([97, 98, 99]);
+  it('parse()', () => {
+    const buf = new Buffer([97, 98, 99]);
     type.parse(buf.toString('hex')).should.eql(buf);
     should.not.exist(type.parse());
   });
 
-  it('parse() - custom encoding', function() {
-    var type = new SchemaTypeBuffer('name', {encoding: 'base64'});
-    var buf = new Buffer([97, 98, 99]);
+  it('parse() - custom encoding', () => {
+    const type = new SchemaTypeBuffer('name', {encoding: 'base64'});
+    const buf = new Buffer([97, 98, 99]);
     type.parse(buf.toString('base64')).should.eql(buf);
   });
 
-  it('value()', function() {
-    var buf = new Buffer([97, 98, 99]);
+  it('value()', () => {
+    const buf = new Buffer([97, 98, 99]);
     type.value(buf).should.eql(buf.toString('hex'));
     should.not.exist(type.value());
   });
 
-  it('value() - custom encoding', function() {
-    var type = new SchemaTypeBuffer('name', {encoding: 'base64'});
-    var buf = new Buffer([97, 98, 99]);
+  it('value() - custom encoding', () => {
+    const type = new SchemaTypeBuffer('name', {encoding: 'base64'});
+    const buf = new Buffer([97, 98, 99]);
     type.value(buf).should.eql(buf.toString('base64'));
   });
 });

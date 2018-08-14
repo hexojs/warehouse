@@ -1,11 +1,11 @@
 'use strict';
 
-var chai = require('chai');
+const chai = require('chai');
 
 chai.should();
 chai.use(require('chai-as-promised'));
 
-describe('Warehouse', function() {
+describe('Warehouse', () => {
   require('./scripts/database');
   require('./scripts/document');
   require('./scripts/model');

@@ -1,13 +1,13 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
-var ValidationError = require('../../../lib/error/validation');
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeEnum', function() {
-  var SchemaTypeEnum = require('../../../lib/types/enum');
+describe('SchemaTypeEnum', () => {
+  const SchemaTypeEnum = require('../../../lib/types/enum');
 
-  it('validate()', function() {
-    var type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
+  it('validate()', () => {
+    const type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
 
     type.validate('foo').should.eql('foo');
 
@@ -20,8 +20,8 @@ describe('SchemaTypeEnum', function() {
     }
   });
 
-  it('validate() - required', function() {
-    var type = new SchemaTypeEnum('test', {required: true});
+  it('validate() - required', () => {
+    const type = new SchemaTypeEnum('test', {required: true});
 
     try {
       type.validate();
