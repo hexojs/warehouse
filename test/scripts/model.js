@@ -1256,9 +1256,7 @@ describe('Model', () => {
 
     util.inherits(CacheType, SchemaType);
 
-    CacheType.prototype.value = () => {
-      return;
-    };
+    CacheType.prototype.value = () => {};
 
     const schema = new Schema({
       cache: CacheType
