@@ -1,27 +1,27 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
-var ValidationError = require('../../lib/error/validation');
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../lib/error/validation');
 
-describe('SchemaType', function() {
-  var SchemaType = require('../../lib/schematype');
-  var type = new SchemaType('test');
+describe('SchemaType', () => {
+  const SchemaType = require('../../lib/schematype');
+  const type = new SchemaType('test');
 
-  it('cast()', function() {
+  it('cast()', () => {
     type.cast(123).should.eql(123);
   });
 
-  it('cast() - default', function() {
-    var type = new SchemaType('test', {default: 'foo'});
+  it('cast() - default', () => {
+    const type = new SchemaType('test', {default: 'foo'});
     type.cast().should.eql('foo');
   });
 
-  it('validate()', function() {
+  it('validate()', () => {
     type.validate(123).should.eql(123);
   });
 
-  it('validate() - required', function() {
-    var type = new SchemaType('test', {required: true});
+  it('validate() - required', () => {
+    const type = new SchemaType('test', {required: true});
 
     try {
       type.validate();
@@ -32,26 +32,26 @@ describe('SchemaType', function() {
     }
   });
 
-  it('compare()', function() {
+  it('compare()', () => {
     type.compare(2, 1).should.eql(1);
     type.compare(1, 2).should.eql(-1);
     type.compare(1, 1).should.eql(0);
   });
 
-  it('parse()', function() {
+  it('parse()', () => {
     type.parse(123).should.eql(123);
   });
 
-  it('value()', function() {
+  it('value()', () => {
     type.value(123).should.eql(123);
   });
 
-  it('match()', function() {
+  it('match()', () => {
     type.match(1, 1).should.be.true;
     type.match(1, '1').should.be.false;
   });
 
-  it('q$exist', function() {
+  it('q$exist', () => {
     // array
     type.q$exist(['foo'], true).should.be.true;
     type.q$exist([], true).should.be.true;
@@ -89,56 +89,56 @@ describe('SchemaType', function() {
     type.q$exist(undefined, false).should.be.true;
   });
 
-  it('q$ne', function() {
+  it('q$ne', () => {
     type.q$ne(1, 1).should.be.false;
     type.q$ne(1, '1').should.be.true;
   });
 
-  it('q$lt', function() {
+  it('q$lt', () => {
     type.q$lt(1, 2).should.be.true;
     type.q$lt(1, 1).should.be.false;
     type.q$lt(1, 0).should.be.false;
   });
 
-  it('q$lte', function() {
+  it('q$lte', () => {
     type.q$lte(1, 2).should.be.true;
     type.q$lte(1, 1).should.be.true;
     type.q$lte(1, 0).should.be.false;
   });
 
-  it('q$gt', function() {
+  it('q$gt', () => {
     type.q$gt(1, 2).should.be.false;
     type.q$gt(1, 1).should.be.false;
     type.q$gt(1, 0).should.be.true;
   });
 
-  it('q$gte', function() {
+  it('q$gte', () => {
     type.q$gte(1, 2).should.be.false;
     type.q$gte(1, 1).should.be.true;
     type.q$gte(1, 0).should.be.true;
   });
 
-  it('q$in', function() {
+  it('q$in', () => {
     type.q$in(1, [0, 1, 2]).should.be.true;
     type.q$in(1, ['0', '1', '2']).should.be.false;
   });
 
-  it('q$nin', function() {
+  it('q$nin', () => {
     type.q$nin(1, [0, 2, 4]).should.be.true;
     type.q$nin(1, [0, 1, 2]).should.be.false;
   });
 
-  it('u$set', function() {
+  it('u$set', () => {
     type.u$set(1, 1).should.eql(1);
   });
 
-  it('u$unset', function() {
+  it('u$unset', () => {
     should.not.exist(type.u$unset(1, true));
     type.u$unset(1, false).should.eql(1);
   });
 
-  it('u$rename', function() {
-    var obj = {a: 1};
+  it('u$rename', () => {
+    const obj = {a: 1};
     should.not.exist(type.u$rename(1, 'b', obj));
     obj.b.should.eql(1);
   });

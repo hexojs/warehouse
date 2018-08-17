@@ -2,8 +2,6 @@
     "root": true,
     "extends": "hexo/test",
     "rules": {
-        "no-use-before-define": "off",
-        "no-useless-return": "off",
         "node/no-deprecated-api": "off"
     }
 }

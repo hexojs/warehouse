@@ -1,21 +1,19 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
+const should = require('chai').should(); // eslint-disable-line
 
-describe('SchemaTypeVirtual', function() {
-  var SchemaTypeVirtual = require('../../../lib/types/virtual');
-  var type = new SchemaTypeVirtual('test');
+describe('SchemaTypeVirtual', () => {
+  const SchemaTypeVirtual = require('../../../lib/types/virtual');
+  const type = new SchemaTypeVirtual('test');
 
-  it('get()', function() {
-    var getter = function() {
-      return 'foo';
-    };
+  it('get()', () => {
+    const getter = () => 'foo';
 
     type.get(getter);
     type.getter.should.eql(getter);
   });
 
-  it('get() - type check', function() {
+  it('get() - type check', () => {
     try {
       type.get(123);
     } catch (err) {
@@ -25,8 +23,8 @@ describe('SchemaTypeVirtual', function() {
     }
   });
 
-  it('set()', function() {
-    var setter = function() {
+  it('set()', () => {
+    const setter = function() {
       this.foo = 'foo';
     };
 
@@ -34,7 +32,7 @@ describe('SchemaTypeVirtual', function() {
     type.setter.should.eql(setter);
   });
 
-  it('set() - type check', function() {
+  it('set() - type check', () => {
     try {
       type.set(123);
     } catch (err) {
@@ -44,8 +42,8 @@ describe('SchemaTypeVirtual', function() {
     }
   });
 
-  it('cast()', function() {
-    var obj = {name: 'foo'};
+  it('cast()', () => {
+    const obj = {name: 'foo'};
 
     type.get(function() {
       return this.name.toUpperCase();
@@ -55,8 +53,8 @@ describe('SchemaTypeVirtual', function() {
     obj.test.should.eql('FOO');
   });
 
-  it('validate()', function() {
-    var obj = {};
+  it('validate()', () => {
+    const obj = {};
 
     type.set(function(value) {
       this.name = value.toLowerCase();

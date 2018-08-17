@@ -1,13 +1,13 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
-var ValidationError = require('../../../lib/error/validation');
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeString', function() {
-  var SchemaTypeString = require('../../../lib/types/string');
-  var type = new SchemaTypeString('test');
+describe('SchemaTypeString', () => {
+  const SchemaTypeString = require('../../../lib/types/string');
+  const type = new SchemaTypeString('test');
 
-  it('cast()', function() {
+  it('cast()', () => {
     type.cast('foo').should.eql('foo');
     type.cast(42).should.eql('42');
     type.cast(true).should.eql('true');
@@ -20,8 +20,8 @@ describe('SchemaTypeString', function() {
     }).should.eql('baz');
   });
 
-  it('cast() - default', function() {
-    var type = new SchemaTypeString('test', {default: 'foo'});
+  it('cast() - default', () => {
+    const type = new SchemaTypeString('test', {default: 'foo'});
     type.cast().should.eql('foo');
   });
 
@@ -31,11 +31,11 @@ describe('SchemaTypeString', function() {
     } catch (err) {
       err.should.be
         .instanceOf(ValidationError)
-        .property('message', '`' + value + '` is not a string!');
+        .property('message', `\`${value}\` is not a string!`);
     }
   }
 
-  it('validate()', function() {
+  it('validate()', () => {
     type.validate('foo').should.eql('foo');
     type.validate('').should.eql('');
     shouldThrowError(1);
@@ -46,8 +46,8 @@ describe('SchemaTypeString', function() {
     shouldThrowError({});
   });
 
-  it('validate() - required', function() {
-    var type = new SchemaTypeString('test', {required: true});
+  it('validate() - required', () => {
+    const type = new SchemaTypeString('test', {required: true});
 
     try {
       type.validate();
@@ -58,20 +58,20 @@ describe('SchemaTypeString', function() {
     }
   });
 
-  it('match()', function() {
+  it('match()', () => {
     type.match('foo', 'foo').should.be.true;
     type.match('foo', 'bar').should.be.false;
     type.match(undefined, '').should.be.false;
     type.match(undefined, undefined).should.be.true;
   });
 
-  it('match() - RegExp', function() {
+  it('match() - RegExp', () => {
     type.match('foo', /^f/).should.be.true;
     type.match('bar', /^f/).should.be.false;
     type.match(undefined, /^f/).should.be.false;
   });
 
-  it('q$in()', function() {
+  it('q$in()', () => {
     type.q$in('foo', ['foo', 'bar', 'baz']).should.be.true;
     type.q$in('wat', ['foo', 'bar', 'baz']).should.be.false;
     type.q$in(undefined, ['foo', 'bar', 'baz']).should.be.false;
@@ -79,7 +79,7 @@ describe('SchemaTypeString', function() {
     type.q$in('bar', [/^f/, /^g/]).should.be.false;
   });
 
-  it('q$nin()', function() {
+  it('q$nin()', () => {
     type.q$nin('foo', ['foo', 'bar', 'baz']).should.be.false;
     type.q$nin('wat', ['foo', 'bar', 'baz']).should.be.true;
     type.q$nin(undefined, ['foo', 'bar', 'baz']).should.be.true;
@@ -87,7 +87,7 @@ describe('SchemaTypeString', function() {
     type.q$nin('bar', [/^f/, /^g/]).should.be.true;
   });
 
-  it('q$length()', function() {
+  it('q$length()', () => {
     type.q$length('foo', 3).should.be.true;
     type.q$length('foo', 5).should.be.false;
     type.q$length(undefined, 3).should.be.false;

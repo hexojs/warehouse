@@ -2,8 +2,6 @@
   "root": true,
   "extends": "hexo",
   "rules": {
-    "space-before-blocks": "off",
-    "no-use-before-define": "off",
     "node/no-deprecated-api": "off"
   }
 }

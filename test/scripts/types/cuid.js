@@ -1,23 +1,23 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
-var ValidationError = require('../../../lib/error/validation');
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeCUID', function() {
-  var SchemaTypeCUID = require('../../../lib/types/cuid');
-  var type = new SchemaTypeCUID('test');
+describe('SchemaTypeCUID', () => {
+  const SchemaTypeCUID = require('../../../lib/types/cuid');
+  const type = new SchemaTypeCUID('test');
 
-  it('cast()', function() {
+  it('cast()', () => {
     type.cast('foo').should.eql('foo');
     should.not.exist(type.cast());
   });
 
-  it('cast() - required', function() {
-    var type = new SchemaTypeCUID('test', {required: true});
+  it('cast() - required', () => {
+    const type = new SchemaTypeCUID('test', {required: true});
     type.cast().should.exist;
   });
 
-  it('validate()', function() {
+  it('validate()', () => {
     type.validate('ch72gsb320000udocl363eofy').should.eql('ch72gsb320000udocl363eofy');
 
     try {

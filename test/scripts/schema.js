@@ -1,13 +1,13 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
+const should = require('chai').should(); // eslint-disable-line
 
-describe('Schema', function() {
-  var Database = require('../..');
-  var Schema = Database.Schema;
+describe('Schema', () => {
+  const Database = require('../..');
+  const Schema = Database.Schema;
 
-  it('add()', function() {
-    var schema = new Schema();
+  it('add()', () => {
+    const schema = new Schema();
 
     schema.add({
       str1: String,
@@ -67,39 +67,39 @@ describe('Schema', function() {
     schema.paths.id.options.required.should.be.true;
   });
 
-  it('virtual() - without getter', function() {
-    var schema = new Schema();
+  it('virtual() - without getter', () => {
+    const schema = new Schema();
 
     schema.virtual('test');
     schema.paths.test.should.be.an.instanceOf(Schema.Types.Virtual);
   });
 
-  it('virtual() - with getter', function() {
-    var schema = new Schema();
+  it('virtual() - with getter', () => {
+    const schema = new Schema();
 
-    schema.virtual('test', function() {});
+    schema.virtual('test', () => {});
 
     schema.paths.test.should.be
       .an.instanceOf(Schema.Types.Virtual)
       .have.property('getter');
   });
 
-  it('pre()', function() {
-    var schema = new Schema();
+  it('pre()', () => {
+    const schema = new Schema();
 
     // save
-    schema.pre('save', function() {});
+    schema.pre('save', () => {});
 
     schema.hooks.pre.save.should.have.length(1);
 
     // remove
-    schema.pre('remove', function() {});
+    schema.pre('remove', () => {});
 
     schema.hooks.pre.remove.should.have.length(1);
 
     // incompatible type
     try {
-      schema.pre('wtf', function() {});
+      schema.pre('wtf', () => {});
     } catch (err) {
       err.should.eql(new TypeError('Hook type must be `save` or `remove`!'));
     }
@@ -112,22 +112,22 @@ describe('Schema', function() {
     }
   });
 
-  it('post()', function() {
-    var schema = new Schema();
+  it('post()', () => {
+    const schema = new Schema();
 
     // save
-    schema.post('save', function() {});
+    schema.post('save', () => {});
 
     schema.hooks.post.save.should.have.length(1);
 
     // remove
-    schema.post('remove', function() {});
+    schema.post('remove', () => {});
 
     schema.hooks.post.remove.should.have.length(1);
 
     // incompatible type
     try {
-      schema.post('wtf', function() {});
+      schema.post('wtf', () => {});
     } catch (err) {
       err.should.eql(new TypeError('Hook type must be `save` or `remove`!'));
     }
@@ -140,10 +140,10 @@ describe('Schema', function() {
     }
   });
 
-  it('method()', function() {
-    var schema = new Schema();
+  it('method()', () => {
+    const schema = new Schema();
 
-    schema.method('test', function() {});
+    schema.method('test', () => {});
 
     schema.methods.test.should.exist;
 
@@ -162,10 +162,10 @@ describe('Schema', function() {
     }
   });
 
-  it('static()', function() {
-    var schema = new Schema();
+  it('static()', () => {
+    const schema = new Schema();
 
-    schema.static('test', function() {});
+    schema.static('test', () => {});
 
     schema.statics.test.should.exist;
 

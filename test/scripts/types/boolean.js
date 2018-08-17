@@ -1,13 +1,13 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
-var ValidationError = require('../../../lib/error/validation');
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../lib/error/validation');
 
-describe('SchemaTypeBoolean', function() {
-  var SchemaTypeBoolean = require('../../../lib/types/boolean');
-  var type = new SchemaTypeBoolean('test');
+describe('SchemaTypeBoolean', () => {
+  const SchemaTypeBoolean = require('../../../lib/types/boolean');
+  const type = new SchemaTypeBoolean('test');
 
-  it('cast()', function() {
+  it('cast()', () => {
     type.cast(true).should.eql(true);
     type.cast(false).should.eql(false);
 
@@ -22,8 +22,8 @@ describe('SchemaTypeBoolean', function() {
     type.cast('foo').should.eql(true);
   });
 
-  it('cast() - default', function() {
-    var type = new SchemaTypeBoolean('test', {default: true});
+  it('cast() - default', () => {
+    const type = new SchemaTypeBoolean('test', {default: true});
     type.cast().should.eql(true);
   });
 
@@ -33,11 +33,11 @@ describe('SchemaTypeBoolean', function() {
     } catch (err) {
       err.should.be
         .instanceOf(ValidationError)
-        .property('message', '`' + value + '` is not a boolean!');
+        .property('message', `\`${value}\` is not a boolean!`);
     }
   }
 
-  it('validate()', function() {
+  it('validate()', () => {
     type.validate(true).should.eql(true);
     type.validate(false).should.eql(false);
     shouldThrowError(1);
@@ -48,8 +48,8 @@ describe('SchemaTypeBoolean', function() {
     shouldThrowError({});
   });
 
-  it('validate() - required', function() {
-    var type = new SchemaTypeBoolean('test', {required: true});
+  it('validate() - required', () => {
+    const type = new SchemaTypeBoolean('test', {required: true});
 
     try {
       type.validate();
@@ -60,12 +60,12 @@ describe('SchemaTypeBoolean', function() {
     }
   });
 
-  it('parse()', function() {
+  it('parse()', () => {
     type.parse(1).should.eql(true);
     type.parse(0).should.eql(false);
   });
 
-  it('value()', function() {
+  it('value()', () => {
     type.value(true).should.eql(1);
     type.value(false).should.eql(0);
   });
