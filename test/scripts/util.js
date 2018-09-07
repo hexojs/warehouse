@@ -5,6 +5,17 @@ const should = require('chai').should(); // eslint-disable-line
 describe('util', () => {
   const util = require('../../lib/util');
 
+  it('shuffle()', () => {
+    const src = Array(100).fill(0).map((_, i) => i);
+    const result = util.shuffle(src);
+
+    result.should.not.eql(src);
+    result.should.to.have.members(src);
+    result.length.should.eql(src.length);
+
+    src.should.eql(Array(100).fill(0).map((_, i) => i));
+  });
+
   it('getProp()', () => {
     const obj = {
       a: {
