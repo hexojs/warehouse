@@ -5,6 +5,21 @@ const should = require('chai').should(); // eslint-disable-line
 describe('util', () => {
   const util = require('../../lib/util');
 
+  it('shuffle()', () => {
+    const src = Array(100).fill(0).map((_, i) => i);
+    const result = util.shuffle(src);
+
+    result.should.not.eql(src);
+    result.should.to.have.members(src);
+    result.length.should.eql(src.length);
+
+    src.should.eql(Array(100).fill(0).map((_, i) => i));
+  });
+
+  it('shuffle() - array must be an array', () => {
+    (() => util.shuffle()).should.to.throw('array must be an Array!');
+  });
+
   it('getProp()', () => {
     const obj = {
       a: {
@@ -24,19 +39,11 @@ describe('util', () => {
   });
 
   it('getProp() - obj must be an object', () => {
-    try {
-      util.getProp();
-    } catch (err) {
-      err.should.have.property('message', 'obj must be an object!');
-    }
+    (() => util.getProp()).should.to.throw('obj must be an object!');
   });
 
   it('getProp() - key is required', () => {
-    try {
-      util.getProp({});
-    } catch (err) {
-      err.should.have.property('message', 'key is required!');
-    }
+    (() => util.getProp({})).should.to.throw('key is required!');
   });
 
   it('setProp()', () => {
@@ -63,19 +70,11 @@ describe('util', () => {
   });
 
   it('setProp() - obj must be an object', () => {
-    try {
-      util.setProp();
-    } catch (err) {
-      err.should.have.property('message', 'obj must be an object!');
-    }
+    (() => util.setProp()).should.to.throw('obj must be an object!');
   });
 
   it('setProp() - key is required', () => {
-    try {
-      util.setProp({});
-    } catch (err) {
-      err.should.have.property('message', 'key is required!');
-    }
+    (() => util.setProp({})).should.to.throw('key is required!');
   });
 
   it('delProp()', () => {
@@ -102,19 +101,11 @@ describe('util', () => {
   });
 
   it('delProp() - obj must be an object', () => {
-    try {
-      util.delProp();
-    } catch (err) {
-      err.should.have.property('message', 'obj must be an object!');
-    }
+    (() => util.delProp()).should.to.throw('obj must be an object!');
   });
 
   it('delProp() - key is required', () => {
-    try {
-      util.delProp({});
-    } catch (err) {
-      err.should.have.property('message', 'key is required!');
-    }
+    (() => util.delProp({})).should.to.throw('key is required!');
   });
 
   it('setGetter()', () => {
@@ -148,27 +139,15 @@ describe('util', () => {
   });
 
   it('setGetter() - obj must be an object', () => {
-    try {
-      util.setGetter();
-    } catch (err) {
-      err.should.have.property('message', 'obj must be an object!');
-    }
+    (() => util.setGetter()).should.to.throw('obj must be an object!');
   });
 
   it('setGetter() - key is required', () => {
-    try {
-      util.setGetter({});
-    } catch (err) {
-      err.should.have.property('message', 'key is required!');
-    }
+    (() => util.setGetter({})).should.to.throw('key is required!');
   });
 
   it('setGetter() - fn must be a function', () => {
-    try {
-      util.setGetter({}, 'test');
-    } catch (err) {
-      err.should.have.property('message', 'fn must be a function!');
-    }
+    (() => util.setGetter({}, 'test')).should.to.throw('fn must be a function!');
   });
 
   it('arr2obj()', () => {
@@ -176,11 +155,7 @@ describe('util', () => {
   });
 
   it('arr2obj() - arr must be an array', () => {
-    try {
-      util.arr2obj();
-    } catch (err) {
-      err.should.have.property('message', 'arr must be an array!');
-    }
+    (() => util.arr2obj()).should.to.throw('arr must be an array!');
   });
 
   it('reverse()', () => {
@@ -190,19 +165,7 @@ describe('util', () => {
   });
 
   it('reverse() - arr must be an array', () => {
-    try {
-      util.reverse();
-    } catch (err) {
-      err.should.have.property('message', 'arr must be an array!');
-    }
-  });
-
-  it('parseArgs() - arr must be an array', () => {
-    try {
-      util.parseArgs();
-    } catch (err) {
-      err.should.have.property('message', 'arr must be an array!');
-    }
+    (() => util.reverse()).should.to.throw('arr must be an array!');
   });
 
   it('parseArgs()', () => {
