@@ -3,6 +3,7 @@
 const should = require('chai').should(); // eslint-disable-line
 const sortBy = require('lodash/sortBy');
 const Promise = require('bluebird');
+const Document = require('../../lib/document');
 
 describe('Query', () => {
   const Database = require('../..');
@@ -105,6 +106,12 @@ describe('Query', () => {
   ]).then(data => {
     const query = User.find({}).find({age: 20});
     query.data.should.eql(data.slice(1, 3));
+
+    const { length } = query;
+
+    for (let i = 0; i < length; i++) {
+      query.data[i].should.to.be.an.instanceof(Document);
+    }
     return data;
   }).map(item => User.removeById(item._id)));
 
@@ -166,6 +173,10 @@ describe('Query', () => {
   ]).then(data => {
     const query = User.find({}).find({age: {$gt: 20}}, {lean: true});
     query.should.be.a('array');
+    const { length } = query;
+    for (let i = 0; i < length; i++) {
+      query[i].should.to.not.be.an.instanceof(Document);
+    }
     return data;
   }).map(item => User.removeById(item._id)));
 
@@ -240,7 +251,7 @@ describe('Query', () => {
     {name: 'Jack', age: 30}
   ]).then(data => {
     const query = User.find({}).find({
-      $where: function() {
+      $where() {
         return this.name === 'John';
       }
     });
@@ -256,7 +267,9 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    User.find({}).findOne({age: {$gt: 20}}).should.eql(data[2]);
+    const result = User.find({}).findOne({age: {$gt: 20}});
+    result.should.eql(data[2]);
+    result.should.to.be.an.instanceof(Document);
     return data;
   }).map(item => User.removeById(item._id)));
 
@@ -266,7 +279,9 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    User.find({}).findOne({age: {$gt: 20}}, {lean: true})._id.should.eql(data[2]._id);
+    const result = User.find({}).findOne({age: {$gt: 20}}, {lean: true});
+    result._id.should.eql(data[2]._id);
+    result.should.to.not.be.an.instanceof(Document);
     return data;
   }).map(item => User.removeById(item._id)));
 
