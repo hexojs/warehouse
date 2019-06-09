@@ -10,6 +10,7 @@ cache:
 node_js:
   - "6"
   - "8"
+  - "10"
   - "node"
 
 script:
@@ -26,4 +27,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    node: "6"
+    node: "8"
