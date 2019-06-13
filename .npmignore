@@ -8,3 +8,6 @@ gulpfile.js
 benchmark/
 docs/
 .travis/
+.eslintignore
+.eslintrc
+.jsdoc.json
