@@ -8,23 +8,23 @@ describe('SchemaTypeBoolean', () => {
   const type = new SchemaTypeBoolean('test');
 
   it('cast()', () => {
-    type.cast(true).should.eql(true);
-    type.cast(false).should.eql(false);
+    type.cast(true).should.be.true;
+    type.cast(false).should.be.false;
 
-    type.cast(0).should.eql(false);
-    type.cast('0').should.eql(false);
-    type.cast(1).should.eql(true);
-    type.cast('1').should.eql(true);
+    type.cast(0).should.be.false;
+    type.cast('0').should.be.false;
+    type.cast(1).should.be.true;
+    type.cast('1').should.be.true;
 
-    type.cast('').should.eql(false);
-    type.cast('false').should.eql(false);
-    type.cast('true').should.eql(true);
-    type.cast('foo').should.eql(true);
+    type.cast('').should.be.false;
+    type.cast('false').should.be.false;
+    type.cast('true').should.be.true;
+    type.cast('foo').should.be.true;
   });
 
   it('cast() - default', () => {
     const type = new SchemaTypeBoolean('test', {default: true});
-    type.cast().should.eql(true);
+    type.cast().should.be.true;
   });
 
   function shouldThrowError(value) {
@@ -32,8 +32,8 @@ describe('SchemaTypeBoolean', () => {
   }
 
   it('validate()', () => {
-    type.validate(true).should.eql(true);
-    type.validate(false).should.eql(false);
+    type.validate(true).should.be.true;
+    type.validate(false).should.be.false;
     shouldThrowError(1);
     shouldThrowError(0);
     shouldThrowError('');
@@ -49,8 +49,8 @@ describe('SchemaTypeBoolean', () => {
   });
 
   it('parse()', () => {
-    type.parse(1).should.eql(true);
-    type.parse(0).should.eql(false);
+    type.parse(1).should.be.true;
+    type.parse(0).should.be.false;
   });
 
   it('value()', () => {
