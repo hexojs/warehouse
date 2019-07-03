@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should(); // eslint-disable-line
+const should = require('chai').should();
 const ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeBuffer', () => {
@@ -30,13 +30,7 @@ describe('SchemaTypeBuffer', () => {
   });
 
   function shouldThrowError(value) {
-    try {
-      type.validate(value);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', `\`${value}\` is not a valid buffer!`);
-    }
+    (() => type.validate(value)).should.to.throw(ValidationError, `\`${value}\` is not a valid buffer!`);
   }
 
   it('validate()', () => {
@@ -51,13 +45,7 @@ describe('SchemaTypeBuffer', () => {
   it('validate() - required', () => {
     const type = new SchemaTypeBuffer('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('match()', () => {

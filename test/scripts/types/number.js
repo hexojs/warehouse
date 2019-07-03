@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should(); // eslint-disable-line
+require('chai').should();
 const ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeNumber', () => {
@@ -22,13 +22,7 @@ describe('SchemaTypeNumber', () => {
   });
 
   function shouldThrowError(value) {
-    try {
-      type.validate(value);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', `\`${value}\` is not a number!`);
-    }
+    (() => type.validate(value)).should.to.throw(ValidationError, `\`${value}\` is not a number!`);
   }
 
   it('validate()', () => {
@@ -45,13 +39,7 @@ describe('SchemaTypeNumber', () => {
   it('validate() - required', () => {
     const type = new SchemaTypeNumber('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('u$inc()', () => {

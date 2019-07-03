@@ -14,13 +14,7 @@ describe('SchemaTypeVirtual', () => {
   });
 
   it('get() - type check', () => {
-    try {
-      type.get(123);
-    } catch (err) {
-      err.should.be
-        .instanceOf(TypeError)
-        .property('message', 'Getter must be a function!');
-    }
+    (() => type.get(123)).should.to.throw(TypeError, 'Getter must be a function!');
   });
 
   it('set()', () => {
@@ -33,13 +27,7 @@ describe('SchemaTypeVirtual', () => {
   });
 
   it('set() - type check', () => {
-    try {
-      type.set(123);
-    } catch (err) {
-      err.should.be
-        .instanceOf(TypeError)
-        .property('message', 'Setter must be a function!');
-    }
+    (() => type.set(123)).should.to.throw(TypeError, 'Setter must be a function!');
   });
 
   it('cast()', () => {

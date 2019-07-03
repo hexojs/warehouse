@@ -21,13 +21,7 @@ describe('SchemaTypeDate', () => {
   });
 
   function shouldThrowError(value) {
-    try {
-      type.validate(value);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', `\`${value}\` is not a valid date!`);
-    }
+    (() => type.validate(value)).should.to.throw(ValidationError, `\`${value}\` is not a valid date!`);
   }
 
   it('validate()', () => {
@@ -43,13 +37,7 @@ describe('SchemaTypeDate', () => {
   it('validate() - required', () => {
     const type = new SchemaTypeDate('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('match()', () => {

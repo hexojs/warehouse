@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should(); // eslint-disable-line
+require('chai').should();
 const ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeBoolean', () => {
@@ -28,13 +28,7 @@ describe('SchemaTypeBoolean', () => {
   });
 
   function shouldThrowError(value) {
-    try {
-      type.validate(value);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', `\`${value}\` is not a boolean!`);
-    }
+    (() => type.validate(value)).should.to.throw(ValidationError, `\`${value}\` is not a boolean!`);
   }
 
   it('validate()', () => {
@@ -51,13 +45,7 @@ describe('SchemaTypeBoolean', () => {
   it('validate() - required', () => {
     const type = new SchemaTypeBoolean('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('parse()', () => {
