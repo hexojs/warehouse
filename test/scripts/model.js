@@ -1249,9 +1249,9 @@ describe('Model', () => {
   });
 
   it('_export() - should not save undefined value', () => {
-    const CacheType = class extends SchemaType {
+    class CacheType extends SchemaType {
       value() {}
-    };
+    }
 
     const schema = new Schema({
       cache: CacheType
