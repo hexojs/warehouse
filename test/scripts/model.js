@@ -4,7 +4,6 @@ const should = require('chai').should();
 const sortBy = require('lodash/sortBy');
 const Promise = require('bluebird');
 const sinon = require('sinon');
-const util = require('util');
 const cuid = require('cuid');
 
 describe('Model', () => {
@@ -1250,11 +1249,7 @@ describe('Model', () => {
   });
 
   it('_export() - should not save undefined value', () => {
-    const CacheType = function(...args) {
-      SchemaType.apply(this, args);
-    };
-
-    util.inherits(CacheType, SchemaType);
+    class CacheType extends SchemaType {}
 
     CacheType.prototype.value = () => {};
 
