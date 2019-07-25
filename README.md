@@ -10,33 +10,6 @@ A JSON database with Models, Schemas, and a flexible querying interface. It powe
 $ npm install warehouse
 ```
 
-## 3.0 BREAKING CHANGE
-
-In `warehouse@3`, the constructor has been changed from function declaration to `class` declaration or definition by `class` expression.
-Derived classes of classes defined by `class` declarations and `class` expressions must also be defined in `class` declaration, `class` expression.
-Anyone who created their own SchemaType will need to change.
-
-``` js
-const SchemaType = require('warehouse/schematype');
-
-class MySchemaType extends SchemaType {
-  constructor(name, options = {}) {
-    super(name, Object.assign({ foo: 'foo' }, options));
-  }
-}
-```
-
-It changes to a class declaration or a class expression, but it does not need to deal with other than the definition of the constructor.
-
-``` js
-// It work!
-
-MySchemaType.prototype.cast = function (value, data) {
-  let result = SchemaType.prototype.cast.call(this, value, data);
-  return result ? result : '';
-}
-```
-
 ## Usage
 
 ``` js
