@@ -12,7 +12,7 @@
   "scripts": {
     "eslint": "eslint .",
     "test": "mocha test/index.js",
-    "test-cov": "istanbul cover --print both _mocha -- test/index.js",
+    "test-cov": "nyc npm run test",
     "jsdoc": "jsdoc --configure .jsdoc.json"
   },
   "repository": "hexojs/warehouse",
@@ -37,10 +37,10 @@
     "chai-as-promised": "^7.1.1",
     "eslint": "^5.3.0",
     "eslint-config-hexo": "^3.0.0",
-    "istanbul": "^0.4.2",
     "jsdoc": "^3.4.0",
     "minami": "^1.1.1",
     "mocha": "^6.0.2",
+    "nyc": "^14.1.1",
     "sinon": "^7.1.1"
   },
   "engines": {
