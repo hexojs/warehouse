@@ -1,6 +1,8 @@
 # Warehouse
 
-[![Build Status](https://travis-ci.org/hexojs/warehouse.svg?branch=master)](https://travis-ci.org/hexojs/warehouse)  [![NPM version](https://badge.fury.io/js/warehouse.svg)](http://badge.fury.io/js/warehouse) [![Coverage Status](https://coveralls.io/repos/github/hexojs/warehouse/badge.svg?branch=master)](https://coveralls.io/github/hexojs/warehouse?branch=master)
+[![Build Status](https://travis-ci.org/hexojs/warehouse.svg?branch=master)](https://travis-ci.org/hexojs/warehouse)
+[![NPM version](https://badge.fury.io/js/warehouse.svg)](https://www.npmjs.com/package/warehouse)
+[![Coverage Status](https://coveralls.io/repos/github/hexojs/warehouse/badge.svg?branch=master)](https://coveralls.io/github/hexojs/warehouse?branch=master)
 
 A JSON database with Models, Schemas, and a flexible querying interface. It powers the wildly successful static site generator [Hexo](https://hexo.io).
 
