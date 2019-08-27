@@ -19,7 +19,7 @@ script:
 before_deploy:
   - npm run jsdoc
 
-after_script:
+after_success:
   - npm install coveralls
   - nyc report --reporter=text-lcov | coveralls
 
