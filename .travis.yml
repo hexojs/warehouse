@@ -16,12 +16,12 @@ script:
   - npm run eslint
   - npm run test-cov
 
-before_deploy:
-  - npm run jsdoc
-
 after_success:
   - npm install coveralls
   - nyc report --reporter=text-lcov | coveralls
+
+before_deploy:
+  - npm run jsdoc
 
 deploy:
   provider: pages
