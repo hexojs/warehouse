@@ -149,6 +149,6 @@ describe('Schema', () => {
     (() => schema.static()).should.throw(TypeError, 'Method name is required!');
 
     // without function
-    (() => schema.sttic('wtf')).should.throw(TypeError, 'Static method must be a function!');
+    (() => schema.static('wtf')).should.throw(TypeError, 'Static method must be a function!');
   });
 });
