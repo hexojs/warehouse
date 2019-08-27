@@ -1,6 +1,6 @@
 # Warehouse
 
-[![Build Status](https://travis-ci.org/hexojs/warehouse.svg?branch=master)](https://travis-ci.org/hexojs/warehouse)
+[![Build Status](https://travis-ci.com/hexojs/warehouse.svg?branch=master)](https://travis-ci.com/hexojs/warehouse)
 [![NPM version](https://badge.fury.io/js/warehouse.svg)](https://www.npmjs.com/package/warehouse)
 [![Coverage Status](https://coveralls.io/repos/github/hexojs/warehouse/badge.svg?branch=master)](https://coveralls.io/github/hexojs/warehouse?branch=master)
 
