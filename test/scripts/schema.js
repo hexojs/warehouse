@@ -98,18 +98,10 @@ describe('Schema', () => {
     schema.hooks.pre.remove.should.have.length(1);
 
     // incompatible type
-    try {
-      schema.pre('wtf', () => {});
-    } catch (err) {
-      err.should.eql(new TypeError('Hook type must be `save` or `remove`!'));
-    }
+    (() => schema.pre('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
-    try {
-      schema.pre('save');
-    } catch (err) {
-      err.should.eql(new TypeError('Hook must be a function!'));
-    }
+    (() => schema.pre('save')).should.throw(TypeError, 'Hook must be a function!');
   });
 
   it('post()', () => {
@@ -126,18 +118,10 @@ describe('Schema', () => {
     schema.hooks.post.remove.should.have.length(1);
 
     // incompatible type
-    try {
-      schema.post('wtf', () => {});
-    } catch (err) {
-      err.should.eql(new TypeError('Hook type must be `save` or `remove`!'));
-    }
+    (() => schema.post('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
-    try {
-      schema.post('save');
-    } catch (err) {
-      err.should.eql(new TypeError('Hook must be a function!'));
-    }
+    (() => schema.post('save')).should.throw(TypeError, 'Hook must be a function!');
   });
 
   it('method()', () => {
@@ -148,18 +132,10 @@ describe('Schema', () => {
     schema.methods.test.should.exist;
 
     // without name
-    try {
-      schema.method();
-    } catch (err) {
-      err.should.eql(new TypeError('Method name is required!'));
-    }
+    (() => schema.method()).should.throw(TypeError, 'Method name is required!');
 
     // without function
-    try {
-      schema.method('wtf');
-    } catch (err) {
-      err.should.eql(new TypeError('Instance method must be a function!'));
-    }
+    (() => schema.method('wtf')).should.throw(TypeError, 'Instance method must be a function!');
   });
 
   it('static()', () => {
@@ -170,17 +146,9 @@ describe('Schema', () => {
     schema.statics.test.should.exist;
 
     // without name
-    try {
-      schema.static();
-    } catch (err) {
-      err.should.eql(new TypeError('Method name is required!'));
-    }
+    (() => schema.static()).should.throw(TypeError, 'Method name is required!');
 
     // without function
-    try {
-      schema.sttic('wtf');
-    } catch (err) {
-      err.should.eql(new TypeError('Static method must be a function!'));
-    }
+    (() => schema.sttic('wtf')).should.throw(TypeError, 'Static method must be a function!');
   });
 });
