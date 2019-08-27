@@ -19,11 +19,14 @@ script:
 after_script:
   - npm install coveralls
   - nyc report --reporter=text-lcov | coveralls
+  - npm run jsdoc
 
 deploy:
-  provider: script
-  script: .travis/deploy.sh
+  provider: pages
   skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   on:
-    tags: true
-    node: "8"
+    branch: master
+  local_dir: docs
+  name: "Tommy Chen"
+  email: tommy351@gmail.com
