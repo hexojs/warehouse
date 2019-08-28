@@ -16,14 +16,20 @@ script:
   - npm run eslint
   - npm run test-cov
 
-after_script:
+after_success:
   - npm install coveralls
   - nyc report --reporter=text-lcov | coveralls
 
+before_deploy:
+  - npm run jsdoc
+
 deploy:
-  provider: script
-  script: .travis/deploy.sh
+  provider: pages
   skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   on:
     tags: true
-    node: "8"
+    node: "10"
+  local_dir: docs
+  name: "Tommy Chen"
+  email: tommy351@gmail.com
