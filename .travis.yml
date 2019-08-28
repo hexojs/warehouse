@@ -28,7 +28,8 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   on:
-    branch: master
+    tags: true
+    node: "10"
   local_dir: docs
   name: "Tommy Chen"
   email: tommy351@gmail.com
