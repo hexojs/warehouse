@@ -10,7 +10,7 @@
     "lib/"
   ],
   "scripts": {
-    "eslint": "eslint .",
+    "eslint": "eslint lib test",
     "test": "mocha test/index.js",
     "test-cov": "nyc npm run test",
     "jsdoc": "jsdoc --configure .jsdoc.json"
