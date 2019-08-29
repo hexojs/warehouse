@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should();
+const should = require('chai').use(require('chai-as-promised')).should();
 const sortBy = require('lodash/sortBy');
 const Promise = require('bluebird');
 const sinon = require('sinon');
