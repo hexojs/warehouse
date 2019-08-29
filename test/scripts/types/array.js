@@ -28,13 +28,7 @@ describe('SchemaTypeArray', () => {
   });
 
   function shouldThrowError(value) {
-    try {
-      type.validate(value);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', `\`${value}\` is not an array!`);
-    }
+    (() => type.validate(value)).should.to.throw(ValidationError, `\`${value}\` is not an array!`);
   }
 
   it('validate()', () => {
@@ -51,25 +45,13 @@ describe('SchemaTypeArray', () => {
   it('validate() - required', () => {
     const type = new SchemaTypeArray('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('validate() - child', () => {
     const type = new SchemaTypeArray('test', {child: new SchemaTypeString()});
 
-    try {
-      type.validate([1, 2, 3]);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`1` is not a string!');
-    }
+    (() => type.validate([1, 2, 3])).should.to.throw(ValidationError, '`1` is not a string!');
   });
 
   it('compare()', () => {

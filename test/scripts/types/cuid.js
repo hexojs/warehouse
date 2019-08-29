@@ -20,12 +20,6 @@ describe('SchemaTypeCUID', () => {
   it('validate()', () => {
     type.validate('ch72gsb320000udocl363eofy').should.eql('ch72gsb320000udocl363eofy');
 
-    try {
-      type.validate('foo');
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`foo` is not a valid CUID');
-    }
+    (() => type.validate('foo')).should.to.throw(ValidationError, '`foo` is not a valid CUID');
   });
 });

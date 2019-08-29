@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should(); // eslint-disable-line
+require('chai').should();
 
 describe('Schema', () => {
   const Database = require('../..');
@@ -98,10 +98,10 @@ describe('Schema', () => {
     schema.hooks.pre.remove.should.have.length(1);
 
     // incompatible type
-    (() => schema.pre('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
+    (() => schema.pre('wtf', () => {})).should.to.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
-    (() => schema.pre('save')).should.throw(TypeError, 'Hook must be a function!');
+    (() => schema.pre('save')).should.to.throw(TypeError, 'Hook must be a function!');
   });
 
   it('post()', () => {
@@ -121,7 +121,7 @@ describe('Schema', () => {
     (() => schema.post('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
-    (() => schema.post('save')).should.throw(TypeError, 'Hook must be a function!');
+    (() => schema.post('save')).should.to.throw(TypeError, 'Hook must be a function!');
   });
 
   it('method()', () => {
@@ -132,10 +132,10 @@ describe('Schema', () => {
     schema.methods.test.should.exist;
 
     // without name
-    (() => schema.method()).should.throw(TypeError, 'Method name is required!');
+    schema.method.should.to.throw(TypeError, 'Method name is required!');
 
     // without function
-    (() => schema.method('wtf')).should.throw(TypeError, 'Instance method must be a function!');
+    (() => schema.method('wtf')).should.to.throw(TypeError, 'Instance method must be a function!');
   });
 
   it('static()', () => {
@@ -146,9 +146,9 @@ describe('Schema', () => {
     schema.statics.test.should.exist;
 
     // without name
-    (() => schema.static()).should.throw(TypeError, 'Method name is required!');
+    schema.static.should.to.throw(TypeError, 'Method name is required!');
 
     // without function
-    (() => schema.static('wtf')).should.throw(TypeError, 'Static method must be a function!');
+    (() => schema.static('wtf')).should.to.throw(TypeError, 'Static method must be a function!');
   });
 });
