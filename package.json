@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "eslint": "eslint lib test",
-    "test": "mocha test/**/*.js",
+    "test": "mocha test/scripts/**/*.js",
     "test-cov": "nyc npm run test",
     "jsdoc": "jsdoc --configure .jsdoc.json"
   },
