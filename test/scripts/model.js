@@ -1,10 +1,9 @@
 'use strict';
 
-const should = require('chai').should();
+const should = require('chai').use(require('chai-as-promised')).should();
 const sortBy = require('lodash/sortBy');
 const Promise = require('bluebird');
 const sinon = require('sinon');
-const util = require('util');
 const cuid = require('cuid');
 
 describe('Model', () => {
@@ -85,7 +84,7 @@ describe('Model', () => {
       age: 20
     }).then(data => {
       User.findById(data._id).should.exist;
-      User.length.should.eql(1);
+      User.should.to.have.length(1);
       listener.calledOnce.should.be.true;
       return data;
     }).then(data => User.removeById(data._id));
@@ -198,7 +197,7 @@ describe('Model', () => {
       const user = User.findById(id);
 
       user.age.should.eql(2);
-      User.length.should.eql(1);
+      User.should.to.have.length(1);
 
       return User.removeById(id);
     });
@@ -471,7 +470,7 @@ describe('Model', () => {
   });
 
   it('count()', () => {
-    Post.length.should.eql(Post.count());
+    Post.should.to.have.length(Post.count());
   });
 
   it('forEach()', () => {
@@ -1218,7 +1217,7 @@ describe('Model', () => {
       {_id: 'B', bool: 0}
     ]);
 
-    Test.length.should.eql(2);
+    Test.should.to.have.length(2);
 
     Test.toArray().should.eql([
       Test.new({_id: 'A', bool: true}),
@@ -1250,11 +1249,7 @@ describe('Model', () => {
   });
 
   it('_export() - should not save undefined value', () => {
-    const CacheType = function(...args) {
-      SchemaType.apply(this, args);
-    };
-
-    util.inherits(CacheType, SchemaType);
+    class CacheType extends SchemaType {}
 
     CacheType.prototype.value = () => {};
 

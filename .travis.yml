@@ -8,22 +8,28 @@ cache:
     - node_modules
 
 node_js:
-  - "6"
   - "8"
+  - "10"
   - "node"
 
 script:
   - npm run eslint
   - npm run test-cov
 
-after_script:
+after_success:
   - npm install coveralls
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  - nyc report --reporter=text-lcov | coveralls
+
+before_deploy:
+  - npm run jsdoc
 
 deploy:
-  provider: script
-  script: .travis/deploy.sh
+  provider: pages
   skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   on:
     tags: true
-    node: "6"
+    node: "10"
+  local_dir: docs
+  name: "Tommy Chen"
+  email: tommy351@gmail.com

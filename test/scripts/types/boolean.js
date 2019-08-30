@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should(); // eslint-disable-line
+require('chai').should();
 const ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeBoolean', () => {
@@ -8,38 +8,32 @@ describe('SchemaTypeBoolean', () => {
   const type = new SchemaTypeBoolean('test');
 
   it('cast()', () => {
-    type.cast(true).should.eql(true);
-    type.cast(false).should.eql(false);
+    type.cast(true).should.be.true;
+    type.cast(false).should.be.false;
 
-    type.cast(0).should.eql(false);
-    type.cast('0').should.eql(false);
-    type.cast(1).should.eql(true);
-    type.cast('1').should.eql(true);
+    type.cast(0).should.be.false;
+    type.cast('0').should.be.false;
+    type.cast(1).should.be.true;
+    type.cast('1').should.be.true;
 
-    type.cast('').should.eql(false);
-    type.cast('false').should.eql(false);
-    type.cast('true').should.eql(true);
-    type.cast('foo').should.eql(true);
+    type.cast('').should.be.false;
+    type.cast('false').should.be.false;
+    type.cast('true').should.be.true;
+    type.cast('foo').should.be.true;
   });
 
   it('cast() - default', () => {
     const type = new SchemaTypeBoolean('test', {default: true});
-    type.cast().should.eql(true);
+    type.cast().should.be.true;
   });
 
   function shouldThrowError(value) {
-    try {
-      type.validate(value);
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', `\`${value}\` is not a boolean!`);
-    }
+    (() => type.validate(value)).should.to.throw(ValidationError, `\`${value}\` is not a boolean!`);
   }
 
   it('validate()', () => {
-    type.validate(true).should.eql(true);
-    type.validate(false).should.eql(false);
+    type.validate(true).should.be.true;
+    type.validate(false).should.be.false;
     shouldThrowError(1);
     shouldThrowError(0);
     shouldThrowError('');
@@ -51,18 +45,12 @@ describe('SchemaTypeBoolean', () => {
   it('validate() - required', () => {
     const type = new SchemaTypeBoolean('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('parse()', () => {
-    type.parse(1).should.eql(true);
-    type.parse(0).should.eql(false);
+    type.parse(1).should.be.true;
+    type.parse(0).should.be.false;
   });
 
   it('value()', () => {

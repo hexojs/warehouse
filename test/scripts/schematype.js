@@ -23,13 +23,7 @@ describe('SchemaType', () => {
   it('validate() - required', () => {
     const type = new SchemaType('test', {required: true});
 
-    try {
-      type.validate();
-    } catch (err) {
-      err.should.be
-        .instanceOf(ValidationError)
-        .property('message', '`test` is required!');
-    }
+    type.validate.bind(type).should.to.throw(ValidationError, '`test` is required!');
   });
 
   it('compare()', () => {
