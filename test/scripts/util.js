@@ -11,7 +11,7 @@ describe('util', () => {
 
     result.should.not.eql(src);
     result.should.to.have.members(src);
-    result.length.should.eql(src.length);
+    result.should.to.have.length(src.length);
 
     src.should.eql(Array(100).fill(0).map((_, i) => i));
   });
