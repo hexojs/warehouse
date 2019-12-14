@@ -7,9 +7,9 @@ const sinon = require('sinon');
 describe('Mutex', () => {
   it('mutex test', callback => {
     const mutex = new Mutex();
-    let fn1, fn2;
+    let fn2;
 
-    fn1 = sinon.spy(() => {
+    const fn1 = sinon.spy(() => {
       setTimeout(() => {
         fn2.called.should.be.false;
         mutex.unlock();
