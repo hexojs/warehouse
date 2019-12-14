@@ -1,7 +1,4 @@
 {
     "root": true,
-    "extends": "hexo/test",
-    "rules": {
-        "node/no-deprecated-api": "off"
-    }
+    "extends": "hexo/test"
 }
