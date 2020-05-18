@@ -12,7 +12,7 @@
   "scripts": {
     "eslint": "eslint lib test",
     "test": "mocha \"test/scripts/**/*.js\"",
-    "test-cov": "nyc npm run test",
+    "test-cov": "nyc --reporter=lcov --reporter=text-summary npm test",
     "jsdoc": "jsdoc --configure .jsdoc.json"
   },
   "repository": "hexojs/warehouse",
