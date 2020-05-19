@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "Simple JSON-based database",
   "main": "lib/database",
   "directories": {
