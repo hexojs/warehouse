@@ -2,18 +2,21 @@
   "name": "warehouse",
   "version": "4.0.1",
   "description": "Simple JSON-based database",
-  "main": "lib/database",
+  "main": "built/database",
   "directories": {
-    "lib": "./lib"
+    "lib": "./built"
   },
   "files": [
-    "lib/"
+    "built/"
   ],
   "scripts": {
-    "eslint": "eslint lib test",
+    "pretest": "npm run typescript",
+    "typescript": "tsc --build .tsconfig.json",
+    "eslint": "eslint src test",
     "test": "mocha \"test/scripts/**/*.js\"",
     "test-cov": "nyc --reporter=lcovonly --reporter=text-summary npm test",
-    "jsdoc": "jsdoc --configure .jsdoc.json"
+    "jsdoc": "jsdoc --configure .jsdoc.json",
+    "prepublish": "npm run typescript"
   },
   "repository": "hexojs/warehouse",
   "keywords": [
@@ -33,6 +36,12 @@
     "rfdc": "^1.1.4"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.32",
+    "@types/graceful-fs": "^4.1.3",
+    "@types/jsonstream": "^0.8.30",
+    "@types/node": "^14.0.5",
+    "@typescript-eslint/eslint-plugin": "^3.0.0",
+    "@typescript-eslint/parser": "^3.0.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.1.0",
@@ -42,7 +51,8 @@
     "minami": "^1.1.1",
     "mocha": "^10.0.0",
     "nyc": "^15.0.0",
-    "sinon": "^14.0.0"
+    "sinon": "^14.0.0",
+    "typescript": "^3.9.3"
   },
   "engines": {
     "node": ">=14"

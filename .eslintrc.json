@@ -1,4 +1,17 @@
 {
   "root": true,
-  "extends": "hexo"
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["node", "@typescript-eslint"],
+  "extends": ["hexo", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended"],
+  "ignorePatterns": ["built"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
+  },
+  "rules": {
+    "node/no-unsupported-features/es-syntax": 0
+  }
 }

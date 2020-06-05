@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./built",
+        "allowJs": true,
+        "target": "ES2018",
+        "lib": ["ES2018"],
+        "module": "commonjs",
+        "esModuleInterop": true
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
