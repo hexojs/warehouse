@@ -1,12 +1,10 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import ValidationError = require('../error/validation');
 
 /**
  * Date schema type.
  */
-class SchemaTypeDate extends SchemaType {
+class SchemaTypeDate extends SchemaType<Date> {
 
   /**
    * Casts data.
@@ -15,12 +13,16 @@ class SchemaTypeDate extends SchemaType {
    * @param {Object} data
    * @return {Date}
    */
-  cast(value_, data) {
+  cast(value: Date, data): Date;
+  cast(value: null, data): Date | null;
+  cast(value: undefined, data): Date | undefined;
+  cast(value: unknown, data): Date | null | undefined;
+  cast(value_, data): Date | null | undefined {
     const value = super.cast(value_, data);
 
-    if (value == null || value instanceof Date) return value;
+    if (value == null || value instanceof Date) return value as Date | null | undefined;
 
-    return new Date(value);
+    return new Date(value as any);
   }
 
   /**
@@ -48,7 +50,7 @@ class SchemaTypeDate extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value, query, data) {
+  match(value: Date, query: Date, data): boolean {
     if (!value || !query) {
       return value === query;
     }
@@ -75,10 +77,9 @@ class SchemaTypeDate extends SchemaType {
    * Parses data and transforms it into a date object.
    *
    * @param {*} value
-   * @param {Object} data
    * @return {Date}
    */
-  parse(value, data) {
+  parse(value) {
     if (value) return new Date(value);
   }
 
@@ -154,4 +155,4 @@ class SchemaTypeDate extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeDate;
+export = SchemaTypeDate;

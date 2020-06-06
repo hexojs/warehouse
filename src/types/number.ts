@@ -1,12 +1,10 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import ValidationError = require('../error/validation');
 
 /**
  * Number schema type.
  */
-class SchemaTypeNumber extends SchemaType {
+class SchemaTypeNumber extends SchemaType<number> {
 
   /**
    * Casts a number.
@@ -15,10 +13,10 @@ class SchemaTypeNumber extends SchemaType {
    * @param {Object} data
    * @return {Number}
    */
-  cast(value_, data) {
+  cast(value_, data): number | null | undefined {
     const value = super.cast(value_, data);
 
-    if (value == null || typeof value === 'number') return value;
+    if (value == null || typeof value === 'number') return value as number | null | undefined;
 
     return +value;
   }
@@ -125,4 +123,4 @@ class SchemaTypeNumber extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeNumber;
+export = SchemaTypeNumber;

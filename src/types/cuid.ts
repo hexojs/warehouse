@@ -1,13 +1,11 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const cuid = require('cuid');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import cuid = require('cuid');
+import ValidationError = require('../error/validation');
 
 /**
  * [CUID](https://github.com/ericelliott/cuid) schema type.
  */
-class SchemaTypeCUID extends SchemaType {
+class SchemaTypeCUID extends SchemaType<string> {
 
   /**
    * Casts data. Returns a new CUID only if value is null and the field is
@@ -41,4 +39,4 @@ class SchemaTypeCUID extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeCUID;
+export = SchemaTypeCUID;

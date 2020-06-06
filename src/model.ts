@@ -1,18 +1,25 @@
-'use strict';
-
-const { EventEmitter } = require('events');
-const cloneDeep = require('rfdc')();
-const Promise = require('bluebird');
-const { parseArgs, getProp, setGetter, shuffle } = require('./util');
-const Document = require('./document');
-const Query = require('./query');
-const Schema = require('./schema');
-const Types = require('./types');
-const WarehouseError = require('./error');
-const PopulationError = require('./error/population');
-const Mutex = require('./mutex');
+import { EventEmitter } from 'events';
+import rfdc = require('rfdc');
+const cloneDeep = rfdc();
+import Promise = require('bluebird');
+import util = require('./util');
+const { parseArgs, getProp, setGetter, shuffle } = util;
+import Document = require('./document');
+import Query = require('./query');
+import Schema = require('./schema');
+import Types = require('./types');
+import WarehouseError = require('./error');
+import PopulationError = require('./error/population');
+import Mutex = require('./mutex');
 
 class Model extends EventEmitter {
+  _mutex = new Mutex();
+  data: Record<any, any> = {};
+  schema;
+  length = 0;
+  Document;
+  Query;
+  _database;
 
   /**
    * Model constructor.
@@ -20,7 +27,7 @@ class Model extends EventEmitter {
    * @param {string} name Model name
    * @param {Schema|object} [schema] Schema
    */
-  constructor(name, schema_) {
+  constructor(public name: string, schema_) {
     super();
 
     let schema;
@@ -39,13 +46,11 @@ class Model extends EventEmitter {
       schema.path('_id', {type: Types.CUID, required: true});
     }
 
-    this.name = name;
-    this.data = {};
-    this._mutex = new Mutex();
     this.schema = schema;
-    this.length = 0;
 
     class _Document extends Document {
+      _model!: Model;
+      _schema!: Schema;
       constructor(data) {
         super(data);
 
@@ -59,7 +64,10 @@ class Model extends EventEmitter {
     _Document.prototype._model = this;
     _Document.prototype._schema = schema;
 
-    class _Query extends Query {}
+    class _Query extends Query {
+      _model!: Model;
+      _schema!: Schema;
+    }
 
     this.Query = _Query;
 
@@ -91,7 +99,7 @@ class Model extends EventEmitter {
    *   @param {boolean} [options.lean=false] Returns a plain JavaScript object
    * @return {Document|object}
    */
-  findById(id, options_) {
+  findById(id, options_?) {
     const raw = this.data[id];
     if (!raw) return;
 
@@ -116,11 +124,10 @@ class Model extends EventEmitter {
   /**
    * Acquires write lock.
    *
-   * @param {*} id
    * @return {Promise}
    * @private
    */
-  _acquireWriteLock(id) {
+  _acquireWriteLock(): Promise.Disposer<void> {
     const mutex = this._mutex;
 
     return new Promise((resolve, reject) => {
@@ -175,7 +182,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  insertOne(data, callback) {
+  insertOne(data, callback?) {
     return Promise.using(this._acquireWriteLock(), () => this._insertOne(data)).asCallback(callback);
   }
 
@@ -223,7 +230,7 @@ class Model extends EventEmitter {
    * @return {Promise}
    * @private
    */
-  _updateWithStack(id, stack) {
+  _updateWithStack(id, stack): Promise<any> {
     const schema = this.schema;
 
     const data = this.data[id];
@@ -265,7 +272,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  updateById(id, update, callback) {
+  updateById(id, update, callback?) {
     return Promise.using(this._acquireWriteLock(), () => {
       const stack = this.schema._parseUpdate(update);
       return this._updateWithStack(id, stack);
@@ -280,7 +287,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  update(query, data, callback) {
+  update(query, data, callback?) {
     return this.find(query).update(data, callback);
   }
 
@@ -326,7 +333,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  replaceById(id, data, callback) {
+  replaceById(id, data, callback?) {
     return Promise.using(this._acquireWriteLock(), () => this._replaceById(id, data)).asCallback(callback);
   }
 
@@ -338,7 +345,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  replace(query, data, callback) {
+  replace(query, data, callback?) {
     return this.find(query).replace(data, callback);
   }
 
@@ -414,7 +421,7 @@ class Model extends EventEmitter {
    * @param {function} iterator
    * @param {object} [options] See {@link Model#findById}.
    */
-  forEach(iterator, options) {
+  forEach(iterator, options?) {
     const keys = Object.keys(this.data);
     let num = 0;
 
@@ -430,7 +437,7 @@ class Model extends EventEmitter {
    * @param {Object} [options] See {@link Model#findById}.
    * @return {Array}
    */
-  toArray(options) {
+  toArray(options?) {
     const result = new Array(this.length);
 
     this.forEach((item, i) => {
@@ -450,8 +457,7 @@ class Model extends EventEmitter {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Query|Array}
    */
-  find(query, options_) {
-    const options = options_ || {};
+  find(query, options: { limit?: number; skip?: number; lean?: boolean; } = {}) {
     const filter = this.schema._execQuery(query);
     const keys = Object.keys(this.data);
     const len = keys.length;
@@ -486,9 +492,8 @@ class Model extends EventEmitter {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Document|Object}
    */
-  findOne(query, options_) {
-    const options = options_ || {};
-    options.limit = 1;
+  findOne(query, options_ : { skip?: number; lean?: boolean; } = {}) {
+    const options = Object.assign(options_, { limit: 1 });
 
     const result = this.find(query, options);
     return options.lean ? result[0] : result.data[0];
@@ -516,7 +521,7 @@ class Model extends EventEmitter {
    * @param {Object} [options] See {@link Model#findById}.
    * @return {Document|Object}
    */
-  eq(i_, options) {
+  eq(i_, options?) {
     let index = i_ < 0 ? this.length + i_ : i_;
     const data = this.data;
     const keys = Object.keys(data);
@@ -562,7 +567,7 @@ class Model extends EventEmitter {
    * @param {Number} [end]
    * @return {Query}
    */
-  slice(start_, end_) {
+  slice(start_: number, end_?: number) {
     const total = this.length;
 
     let start = start_ | 0;
@@ -900,7 +905,7 @@ class Model extends EventEmitter {
       arr[i] = this._populate(item, stack);
     });
 
-    return new Query(arr);
+    return new this.Query(arr);
   }
 
   /**
@@ -946,12 +951,16 @@ class Model extends EventEmitter {
     }
     return result;
   }
+  get: Model['findById'];
+  size: Model['count'];
+  each: Model['forEach'];
+  random: Model['shuffle'];
 }
 
 Model.prototype.get = Model.prototype.findById;
 
 function execHooks(schema, type, event, data) {
-  const hooks = schema.hooks[type][event];
+  const hooks = schema.hooks[type][event] as ((data: any) => Promise<void> | void)[];
   if (!hooks.length) return Promise.resolve(data);
 
   return Promise.each(hooks, hook => hook(data)).thenReturn(data);
@@ -963,4 +972,4 @@ Model.prototype.each = Model.prototype.forEach;
 
 Model.prototype.random = Model.prototype.shuffle;
 
-module.exports = Model;
+export = Model;

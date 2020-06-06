@@ -3,7 +3,7 @@
 const should = require('chai').should(); // eslint-disable-line
 const sortBy = require('lodash/sortBy');
 const Promise = require('bluebird');
-const Document = require('../../lib/document');
+const Document = require('../../built/document');
 
 describe('Query', () => {
   const Database = require('../..');

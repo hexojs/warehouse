@@ -1,17 +1,18 @@
-'use strict';
+import Promise = require('bluebird');
+import util = require('./util');
+const { parseArgs, shuffle } = util;
 
-const Promise = require('bluebird');
-const { parseArgs, shuffle } = require('./util');
-
-class Query {
+abstract class Query {
+  length: number;
+  abstract _model;
+  abstract _schema;
 
   /**
    * Query constructor.
    *
    * @param {Array} data
    */
-  constructor(data) {
-    this.data = data;
+  constructor(private data: any[]) {
     this.length = data.length;
   }
 
@@ -20,7 +21,7 @@ class Query {
    *
    * @return Number
    */
-  count() {
+  count(): number {
     return this.length;
   }
 
@@ -29,7 +30,7 @@ class Query {
    *
    * @param {Function} iterator
    */
-  forEach(iterator) {
+  forEach(iterator: (item: any, index: number) => void): void {
     const { data, length } = this;
 
     for (let i = 0; i < length; i++) {
@@ -42,7 +43,7 @@ class Query {
    *
    * @return {Array}
    */
-  toArray() {
+  toArray(): any[] {
     return this.data;
   }
 
@@ -53,7 +54,7 @@ class Query {
    * @param {Number} i
    * @return {Document|Object}
    */
-  eq(i) {
+  eq(i: number) {
     const index = i < 0 ? this.length + i : i;
     return this.data[index];
   }
@@ -83,8 +84,8 @@ class Query {
    * @param {Number} [end]
    * @return {Query}
    */
-  slice(start, end) {
-    return new this.constructor(this.data.slice(start, end));
+  slice(start: number, end?: number): Query {
+    return Reflect.construct(this.constructor, [this.data.slice(start, end)]);
   }
 
   /**
@@ -93,7 +94,7 @@ class Query {
    * @param {Number} i
    * @return {Query}
    */
-  limit(i) {
+  limit(i: number): Query {
     return this.slice(0, i);
   }
 
@@ -103,7 +104,7 @@ class Query {
    * @param {Number} i
    * @return {Query}
    */
-  skip(i) {
+  skip(i: number): Query {
     return this.slice(i);
   }
 
@@ -112,8 +113,8 @@ class Query {
    *
    * @return {Query}
    */
-  reverse() {
-    return new this.constructor(this.data.slice().reverse());
+  reverse(): Query {
+    return Reflect.construct(this.constructor, [this.data.slice().reverse()]);
   }
 
   /**
@@ -121,8 +122,8 @@ class Query {
    *
    * @return {Query}
    */
-  shuffle() {
-    return new this.constructor(shuffle(this.data));
+  shuffle(): Query {
+    return Reflect.construct(this.constructor, [shuffle(this.data)]);
   }
 
   /**
@@ -135,7 +136,7 @@ class Query {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Query|Array}
    */
-  find(query, options = {}) {
+  find(query: any, options: { limit?: number; skip?: number; lean?: boolean; } = {}): any[] | Query {
     const filter = this._schema._execQuery(query);
     const { data, length } = this;
     const { lean = false } = options;
@@ -155,7 +156,7 @@ class Query {
       }
     }
 
-    return lean ? arr : new this.constructor(arr);
+    return lean ? arr : Reflect.construct(this.constructor, [arr]);
   }
 
   /**
@@ -167,11 +168,11 @@ class Query {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Document|Object}
    */
-  findOne(query, options = {}) {
-    options.limit = 1;
+  findOne(query: any, options: { skip?: number; lean?: boolean; } = {}): any {
+    const _options = Object.assign(options, { limit: 1 });
 
-    const result = this.find(query, options);
-    return options.lean ? result[0] : result.data[0];
+    const result = this.find(query, _options);
+    return Array.isArray(result) ? result[0] : result.data[0];
   }
 
   /**
@@ -192,11 +193,11 @@ class Query {
    * @param {String|Number} [order]
    * @return {Query}
    */
-  sort(orderby, order) {
+  sort(orderby, order): Query {
     const sort = parseArgs(orderby, order);
     const fn = this._schema._execSort(sort);
 
-    return new this.constructor(this.data.slice().sort(fn));
+    return Reflect.construct(this.constructor, [this.data.slice().sort(fn)]);
   }
 
   /**
@@ -205,9 +206,9 @@ class Query {
    * @param {Function} iterator
    * @return {Array}
    */
-  map(iterator) {
+  map<T>(iterator: (item: any, index: number) => T): T[] {
     const { data, length } = this;
-    const result = new Array(length);
+    const result: T[] = new Array(length);
 
     for (let i = 0; i < length; i++) {
       result[i] = iterator(data[i], i);
@@ -224,7 +225,7 @@ class Query {
    * @param {*} [initial] By default, the initial value is the first document.
    * @return {*}
    */
-  reduce(iterator, initial) {
+  reduce(iterator, initial?) {
     const { data, length } = this;
     let result, i;
 
@@ -251,7 +252,7 @@ class Query {
    * @param {*} [initial] By default, the initial value is the last document.
    * @return {*}
    */
-  reduceRight(iterator, initial) {
+  reduceRight(iterator, initial?) {
     const { data, length } = this;
     let result, i;
 
@@ -277,7 +278,7 @@ class Query {
    * @param {Function} iterator
    * @return {Query}
    */
-  filter(iterator) {
+  filter(iterator: (item: any, index: number) => boolean): Query {
     const { data, length } = this;
     const arr = [];
 
@@ -286,7 +287,7 @@ class Query {
       if (iterator(item, i)) arr.push(item);
     }
 
-    return new this.constructor(arr);
+    return Reflect.construct(this.constructor, [arr]);
   }
 
   /**
@@ -296,7 +297,7 @@ class Query {
    * @param {Function} iterator
    * @return {Boolean}
    */
-  every(iterator) {
+  every(iterator: (item: any, index: number) => boolean): boolean {
     const { data, length } = this;
 
     for (let i = 0; i < length; i++) {
@@ -313,7 +314,7 @@ class Query {
    * @param {Function} iterator
    * @return {Boolean}
    */
-  some(iterator) {
+  some(iterator: (item: any, index: number) => boolean): boolean {
     const { data, length } = this;
 
     for (let i = 0; i < length; i++) {
@@ -330,7 +331,7 @@ class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  update(data, callback) {
+  update(data: any, callback?: (err?: any) => void): Promise<any> {
     const model = this._model;
     const stack = this._schema._parseUpdate(data);
 
@@ -344,7 +345,7 @@ class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  replace(data, callback) {
+  replace(data: any, callback?: (err?: any) => void): Promise<any> {
     const model = this._model;
 
     return Promise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
@@ -368,7 +369,7 @@ class Query {
    * @param {String|Object} expr
    * @return {Query}
    */
-  populate(expr) {
+  populate(expr: any): Query {
     const stack = this._schema._parsePopulate(expr);
     const { data, length } = this;
     const model = this._model;
@@ -379,6 +380,10 @@ class Query {
 
     return this;
   }
+
+  size: Query['count'];
+  each: Query['forEach'];
+  random: Query['shuffle'];
 }
 
 Query.prototype.size = Query.prototype.count;
@@ -387,4 +392,4 @@ Query.prototype.each = Query.prototype.forEach;
 
 Query.prototype.random = Query.prototype.shuffle;
 
-module.exports = Query;
+export = Query;

@@ -1,12 +1,12 @@
-'use strict';
-
 class Mutex {
+  private _locked: boolean;
+  private readonly _queue: (() => void)[];
   constructor() {
     this._locked = false;
     this._queue = [];
   }
 
-  lock(fn) {
+  lock(fn: () => void) {
     if (this._locked) {
       this._queue.push(fn);
       return;
@@ -29,4 +29,4 @@ class Mutex {
   }
 }
 
-module.exports = Mutex;
+export = Mutex;

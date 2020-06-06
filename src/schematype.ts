@@ -1,7 +1,6 @@
-'use strict';
-
-const { setProp } = require('./util');
-const ValidationError = require('./error/validation');
+import util = require('./util');
+const { setProp } = util;
+import ValidationError = require('./error/validation');
 
 /**
  * This is the basic schema type.
@@ -46,7 +45,9 @@ const ValidationError = require('./error/validation');
  *
  * The return value will replace the original data.
  */
-class SchemaType {
+class SchemaType<T> {
+  options: { required: boolean; default?: (() => T) | T; }
+  default: () => T;
 
   /**
    * SchemaType constructor.
@@ -56,9 +57,7 @@ class SchemaType {
    *   @param {Boolean} [options.required=false]
    *   @param {*} [options.default]
    */
-  constructor(name, options) {
-    this.name = name || '';
-
+  constructor(public name = '', options?: { required?: boolean; default?: (() => T) | T; }) {
     this.options = Object.assign({
       required: false
     }, options);
@@ -66,7 +65,7 @@ class SchemaType {
     const default_ = this.options.default;
 
     if (typeof default_ === 'function') {
-      this.default = default_;
+      this.default = default_ as unknown as () => T;
     } else {
       this.default = () => default_;
     }
@@ -80,7 +79,7 @@ class SchemaType {
    * @param {Object} data
    * @return {*}
    */
-  cast(value, data) {
+  cast(value: unknown, data: unknown): unknown {
     if (value == null) {
       return this.default();
     }
@@ -95,7 +94,7 @@ class SchemaType {
    * @param {Object} data
    * @return {*|Error}
    */
-  validate(value, data) {
+  validate(value: unknown, data: unknown): unknown {
     if (this.options.required && value == null) {
       throw new ValidationError(`\`${this.name}\` is required!`);
     }
@@ -110,7 +109,7 @@ class SchemaType {
    * @param {*} b
    * @return {Number}
    */
-  compare(a, b) {
+  compare(a: unknown, b: unknown): number {
     if (a > b) {
       return 1;
     } else if (a < b) {
@@ -127,7 +126,7 @@ class SchemaType {
    * @param {Object} data
    * @return {*}
    */
-  parse(value, data) {
+  parse(value: unknown): any {
     return value;
   }
 
@@ -138,7 +137,7 @@ class SchemaType {
    * @param {Object} data
    * @return {*}
    */
-  value(value, data) {
+  value(value: unknown, data: unknown): any {
     return value;
   }
 
@@ -150,7 +149,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value, query, data) {
+  match(value: T, query: unknown, data: unknown): boolean {
     return value === query;
   }
 
@@ -162,7 +161,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$exist(value, query, data) {
+  q$exist(value: unknown, query: unknown, data: unknown): boolean {
     return (value != null) === query;
   }
 
@@ -174,7 +173,7 @@ class SchemaType {
    * @param {Object} data
    * @return {boolean}
    */
-  q$ne(value, query, data) {
+  q$ne(value: T, query: unknown, data: unknown): boolean {
     return !this.match(value, query, data);
   }
 
@@ -186,7 +185,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$lt(value, query, data) {
+  q$lt(value: unknown, query: unknown, data: unknown): boolean {
     return value < query;
   }
 
@@ -198,7 +197,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$lte(value, query, data) {
+  q$lte(value: unknown, query: unknown, data: unknown): boolean {
     return value <= query;
   }
 
@@ -210,7 +209,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$gt(value, query, data) {
+  q$gt(value: unknown, query: unknown, data: unknown): boolean {
     return value > query;
   }
 
@@ -222,7 +221,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$gte(value, query, data) {
+  q$gte(value: unknown, query: unknown, data: unknown): boolean {
     return value >= query;
   }
 
@@ -234,7 +233,7 @@ class SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value, query, data) {
+  q$in(value: unknown, query: unknown[], data: unknown): boolean {
     return query.includes(value);
   }
 
@@ -280,10 +279,14 @@ class SchemaType {
    * @param {Object} data
    * @return {*}
    */
-  u$rename(value, update, data) {
+  u$rename(value, update, data): void {
     if (value !== undefined) setProp(data, update, value);
     return undefined;
   }
+
+  q$exists: SchemaType<T>['q$exist'];
+  q$max: SchemaType<T>['q$lte'];
+  q$min: SchemaType<T>['q$gte'];
 }
 
 SchemaType.prototype.q$exists = SchemaType.prototype.q$exist;
@@ -292,4 +295,4 @@ SchemaType.prototype.q$max = SchemaType.prototype.q$lte;
 
 SchemaType.prototype.q$min = SchemaType.prototype.q$gte;
 
-module.exports = SchemaType;
+export = SchemaType;

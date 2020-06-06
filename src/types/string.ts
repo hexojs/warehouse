@@ -1,12 +1,10 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import ValidationError = require('../error/validation');
 
 /**
  * String schema type.
  */
-class SchemaTypeString extends SchemaType {
+class SchemaTypeString extends SchemaType<string> {
 
   /**
    * Casts a string.
@@ -100,4 +98,4 @@ class SchemaTypeString extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeString;
+export = SchemaTypeString;

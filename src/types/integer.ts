@@ -1,7 +1,5 @@
-'use strict';
-
-const SchemaTypeNumber = require('./number');
-const ValidationError = require('../error/validation');
+import SchemaTypeNumber = require('./number');
+import ValidationError = require('../error/validation');
 
 /**
  * Integer schema type.
@@ -15,10 +13,10 @@ class SchemaTypeInteger extends SchemaTypeNumber {
    * @param {Object} data
    * @return {Number}
    */
-  cast(value_, data) {
+  cast(value_, data): number {
     const value = super.cast(value_, data);
 
-    return parseInt(value, 10);
+    return parseInt(value as any, 10);
   }
 
   /**
@@ -28,7 +26,7 @@ class SchemaTypeInteger extends SchemaTypeNumber {
    * @param {Object} data
    * @return {Number|Error}
    */
-  validate(value_, data) {
+  validate(value_, data): number {
     const value = super.validate(value_, data);
 
     if (value % 1 !== 0) {
@@ -39,4 +37,4 @@ class SchemaTypeInteger extends SchemaTypeNumber {
   }
 }
 
-module.exports = SchemaTypeInteger;
+export = SchemaTypeInteger;

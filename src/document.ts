@@ -1,8 +1,10 @@
-'use strict';
+import rfdc = require('rfdc');
+const cloneDeep = rfdc();
 
-const cloneDeep = require('rfdc')();
-
-class Document {
+abstract class Document {
+  abstract _model;
+  _id!: any;
+  abstract _schema;
 
   /**
    * Document constructor.
@@ -101,4 +103,4 @@ function isGetter(obj, key) {
   return Object.getOwnPropertyDescriptor(obj, key).get;
 }
 
-module.exports = Document;
+export = Document;

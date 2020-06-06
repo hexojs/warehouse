@@ -1,12 +1,11 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import ValidationError = require('../error/validation');
 
 /**
  * Enum schema type.
  */
-class SchemaTypeEnum extends SchemaType {
+class SchemaTypeEnum extends SchemaType<any[]> {
+  options: SchemaType<any[]>['options'] & { elements: any[] };
 
   /**
    *
@@ -41,4 +40,4 @@ class SchemaTypeEnum extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeEnum;
+export = SchemaTypeEnum;

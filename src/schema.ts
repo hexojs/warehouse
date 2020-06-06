@@ -1,11 +1,12 @@
-'use strict';
-
-const SchemaType = require('./schematype');
-const Types = require('./types');
-const Promise = require('bluebird');
-const { getProp, setProp, delProp } = require('./util');
-const PopulationError = require('./error/population');
-const { isPlainObject } = require('is-plain-object');
+import SchemaType = require('./schematype');
+import Types = require('./types');
+import Promise = require('bluebird');
+import util = require('./util');
+const { getProp, setProp, delProp } = util;
+import PopulationError = require('./error/population');
+import SchemaTypeVirtual = require('./types/virtual');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const isPlainObject: (o: any) => boolean = require('is-plain-object');
 
 /**
  * @callback queryFilterCallback
@@ -101,9 +102,8 @@ class UpdateParser {
     };
   }
 
-  constructor(paths) {
-    this.paths = paths;
-  }
+  // eslint-disable-next-line no-useless-constructor
+  constructor(private paths) {}
 
   /**
    * Parses updating expressions and returns a stack.
@@ -159,9 +159,8 @@ class UpdateParser {
  * @private
  */
 class QueryParser {
-  constructor(paths) {
-    this.paths = paths;
-  }
+  // eslint-disable-next-line no-useless-constructor
+  constructor(private paths) {}
 
   /**
    *
@@ -384,17 +383,18 @@ class QueryParser {
 }
 
 class Schema {
+  paths: Record<string, SchemaType<any>> = {};
+  statics: Record<string, any> = {};
+  methods: Record<string, any> = {};
+  hooks;
+  stacks;
 
   /**
    * Schema constructor.
    *
-   * @param {Object} schema
+   * @param {Object} [schema]
    */
-  constructor(schema) {
-    this.paths = {};
-    this.statics = {};
-    this.methods = {};
-
+  constructor(schema?) {
     this.hooks = {
       pre: {
         save: [],
@@ -424,7 +424,7 @@ class Schema {
    * @param {Object} schema
    * @param {String} prefix
    */
-  add(schema, prefix = '') {
+  add(schema: Record<string, any>, prefix = ''): void {
     const keys = Object.keys(schema);
     const len = keys.length;
 
@@ -445,7 +445,9 @@ class Schema {
    * @param {*} obj
    * @return {SchemaType | undefined}
    */
-  path(name, obj) {
+  path(name: string): SchemaType<any>;
+  path(name: string, obj: SchemaType<unknown> | ((...args: any[]) => any) | { type: any; } | Record<string, unknown> | any[]): void;
+  path(name: string, obj?: SchemaType<unknown> | ((...args: any[]) => any) | { type: any; } | Record<string, unknown> | any[]): SchemaType<any> | void {
     if (obj == null) {
       return this.paths[name];
     }
@@ -462,12 +464,12 @@ class Schema {
           break;
 
         case 'object':
-          if (obj.type) {
-            type = getSchemaType(name, obj);
-          } else if (Array.isArray(obj)) {
+          if (Array.isArray(obj)) {
             type = new Types.Array(name, {
               child: obj.length ? getSchemaType(name, obj[0]) : new SchemaType(name)
             });
+          } else if (obj.type) {
+            type = getSchemaType(name, obj);
           } else {
             type = new Types.Object();
             nested = Object.keys(obj).length > 0;
@@ -493,7 +495,7 @@ class Schema {
    * @param {SchemaType} type
    * @private
    */
-  _updateStack(name, type) {
+  _updateStack(name: string, type: SchemaType<unknown>) {
     const { stacks } = this;
 
     stacks.getter.push(data => {
@@ -518,7 +520,7 @@ class Schema {
 
     stacks.import.push(data => {
       const value = getProp(data, name);
-      const result = type.parse(value, data);
+      const result = type.parse(value);
 
       if (result !== undefined) {
         setProp(data, name, result);
@@ -544,7 +546,7 @@ class Schema {
    * @param {Function} [getter]
    * @return {SchemaType.Virtual}
    */
-  virtual(name, getter) {
+  virtual(name: string, getter?: () => any): SchemaTypeVirtual {
     const virtual = new Types.Virtual(name, {});
     if (getter) virtual.get(getter);
 
@@ -601,7 +603,7 @@ class Schema {
    * @param {String} name
    * @param {Function} fn
    */
-  static(name, fn) {
+  static(name: string, fn) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {
@@ -745,6 +747,7 @@ class Schema {
    * @return {PopulateResult[]}
    * @private
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   _parsePopulate(expr) {
     const { paths } = this;
     const arr = [];
@@ -775,6 +778,8 @@ class Schema {
 
       if (!item.model) {
         const path = paths[key];
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         const ref = path.child ? path.child.options.ref : path.options.ref;
 
         if (!ref) {
@@ -787,9 +792,10 @@ class Schema {
 
     return arr;
   }
+  Types: typeof Types;
+  static Types = Types;
 }
 
 Schema.prototype.Types = Types;
-Schema.Types = Schema.prototype.Types;
 
-module.exports = Schema;
+export = Schema;

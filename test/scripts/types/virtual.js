@@ -3,7 +3,7 @@
 const should = require('chai').should(); // eslint-disable-line
 
 describe('SchemaTypeVirtual', () => {
-  const SchemaTypeVirtual = require('../../../lib/types/virtual');
+  const SchemaTypeVirtual = require('../../../built/types/virtual');
   const type = new SchemaTypeVirtual('test');
 
   it('get()', () => {

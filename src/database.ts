@@ -1,20 +1,20 @@
-'use strict';
-
-const JSONStream = require('JSONStream');
-const Promise = require('bluebird');
-const fs = require('graceful-fs');
-const Model = require('./model');
-const Schema = require('./schema');
-const SchemaType = require('./schematype');
-const WarehouseError = require('./error');
+import JSONStream = require('JSONStream');
+import Bluebird = require('bluebird');
+import { writev, promises as fsPromises, createReadStream } from 'graceful-fs';
+import { pipeline, Stream } from 'stream';
+import Model = require('./model');
+import Schema = require('./schema');
+import SchemaType = require('./schematype');
+import WarehouseError = require('./error');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../package.json');
-const { open } = fs.promises;
-const pipeline = Promise.promisify(require('stream').pipeline);
 const log = require('hexo-log')();
+const { open } = fsPromises;
+const pipelineAsync = Bluebird.promisify(pipeline) as (...args: Stream[]) => Bluebird<unknown>;
 
-let _writev;
+let _writev: (handle: fsPromises.FileHandle, buffers: Buffer[]) => Promise<unknown>;
 
-if (typeof fs.writev === 'function') {
+if (typeof writev === 'function') {
   _writev = (handle, buffers) => handle.writev(buffers);
 } else {
   _writev = async (handle, buffers) => {
@@ -22,7 +22,7 @@ if (typeof fs.writev === 'function') {
   };
 }
 
-async function exportAsync(database, path) {
+async function exportAsync(database: Database, path: string) {
   const handle = await open(path, 'w');
 
   try {
@@ -69,7 +69,17 @@ async function exportAsync(database, path) {
   }
 }
 
+type DatabaseOptions = {
+  version: number,
+  path: string,
+  onUpgrade: (...args: any[]) => any,
+  onDowngrade: (...args: any[]) => any
+};
+
 class Database {
+  options: DatabaseOptions;
+  _models: any;
+  Model: typeof Model;
 
   /**
    * Database constructor.
@@ -80,13 +90,15 @@ class Database {
    *   @param {function} [options.onUpgrade] Triggered when the database is upgraded
    *   @param {function} [options.onDowngrade] Triggered when the database is downgraded
    */
-  constructor(options) {
-    this.options = Object.assign({
+  constructor(options: { path: string } & Partial<DatabaseOptions>) {
+    this.options = {
       version: 0,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onUpgrade() {},
-
-      onDowngrade() {}
-    }, options);
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onDowngrade() {},
+      ...options
+    };
 
     this._models = {};
 
@@ -104,7 +116,7 @@ class Database {
    * @param {Schema|object} [schema]
    * @return {Model}
    */
-  model(name, schema) {
+  model(name: string, schema?: any) {
     if (this._models[name]) {
       return this._models[name];
     }
@@ -143,9 +155,9 @@ class Database {
       this.model(data.key)._import(data.value);
     });
 
-    const rs = fs.createReadStream(path, 'utf8');
+    const rs = createReadStream(path, 'utf8');
 
-    return pipeline(rs, parseStream).then(() => {
+    return pipelineAsync(rs, parseStream).then(() => {
       if (newVersion > oldVersion) {
         return onUpgrade(oldVersion, newVersion);
       } else if (newVersion < oldVersion) {
@@ -164,7 +176,7 @@ class Database {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
-    return Promise.resolve(exportAsync(this, path)).asCallback(callback);
+    return Bluebird.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
   toJSON() {
@@ -182,12 +194,15 @@ class Database {
       }, models
     };
   }
+  static Schema = Schema;
+  Schema: typeof Schema;
+  static SchemaType = SchemaType;
+  SchemaType: typeof SchemaType;
+  static version: number;
 }
 
 Database.prototype.Schema = Schema;
-Database.Schema = Database.prototype.Schema;
 Database.prototype.SchemaType = SchemaType;
-Database.SchemaType = Database.prototype.SchemaType;
 Database.version = pkg.version;
 
-module.exports = Database;
+export = Database;

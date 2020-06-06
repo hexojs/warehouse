@@ -1,14 +1,14 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import ValidationError = require('../error/validation');
 
 const { isArray } = Array;
 
 /**
  * Array schema type.
  */
-class SchemaTypeArray extends SchemaType {
+class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
+  options: SchemaType<I[]>['options'] & { child?: T; };
+  child: T;
 
   /**
    *
@@ -18,12 +18,12 @@ class SchemaTypeArray extends SchemaType {
    *   @param {Array|Function} [options.default=[]]
    *   @param {SchemaType} [options.child]
    */
-  constructor(name, options) {
+  constructor(name: string, options?: Partial<SchemaType<I[]>['options']> & { child?: T; }) {
     super(name, Object.assign({
       default: []
     }, options));
 
-    this.child = this.options.child || new SchemaType(name);
+    this.child = this.options.child || new SchemaType<any>(name) as T;
   }
 
   /**
@@ -33,11 +33,11 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  cast(value_, data) {
-    let value = super.cast(value_, data);
-    if (value == null) return value;
+  cast(value_: unknown, data: unknown): I[] | null | undefined {
+    value_ = super.cast(value_, data);
+    if (value_ == null) return value_ as null | undefined;
 
-    if (!isArray(value)) value = [value];
+    const value = isArray(value_) ? value_ : value_ = [value_];
     if (!value.length) return value;
 
     const child = this.child;
@@ -56,7 +56,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array|Error}
    */
-  validate(value_, data) {
+  validate(value_: unknown, data: unknown): I[] {
     const value = super.validate(value_, data);
 
     if (!isArray(value)) {
@@ -68,7 +68,7 @@ class SchemaTypeArray extends SchemaType {
     const child = this.child;
 
     for (let i = 0, len = value.length; i < len; i++) {
-      value[i] = child.validate(value[i], data);
+      value[i] = child.validate(value[i], data) as I;
     }
 
     return value;
@@ -81,7 +81,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Array} b
    * @return {Number}
    */
-  compare(a, b) {
+  compare(a: I[], b: I[]): number {
     if (a) {
       if (!b) return 1;
     } else {
@@ -105,10 +105,9 @@ class SchemaTypeArray extends SchemaType {
    * Parses data.
    *
    * @param {Array} value
-   * @param {Object} data
    * @return {Array}
    */
-  parse(value, data) {
+  parse(value: unknown[]) {
     if (!value) return value;
 
     const len = value.length;
@@ -118,7 +117,7 @@ class SchemaTypeArray extends SchemaType {
     const child = this.child;
 
     for (let i = 0; i < len; i++) {
-      result[i] = child.parse(value[i], data);
+      result[i] = child.parse(value[i]);
     }
 
     return result;
@@ -131,7 +130,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  value(value, data) {
+  value(value: unknown[], data: unknown): any[] {
     if (!value) return value;
 
     const len = value.length;
@@ -155,7 +154,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value, query, data) {
+  match(value: I[], query: unknown[], data: unknown): boolean {
     if (!value || !query) {
       return value === query;
     }
@@ -182,7 +181,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$size(value, query, data) {
+  q$size(value: unknown[], query: unknown, data: unknown): boolean {
     return (value ? value.length : 0) === query;
   }
 
@@ -194,7 +193,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value, query, data) {
+  q$in(value: unknown[], query: unknown[], data: unknown): boolean {
     if (!value) return false;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -212,7 +211,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data) {
+  q$nin(value: unknown[], query: unknown[], data: unknown): boolean {
     if (!value) return true;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -230,7 +229,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$all(value, query, data) {
+  q$all(value: unknown[], query: unknown[], data: unknown): boolean {
     if (!value) return false;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -248,7 +247,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$push(value, update, data) {
+  u$push<T>(value: T[], update: T, data: unknown): T[] {
     if (isArray(update)) {
       return value ? value.concat(update) : update;
     }
@@ -269,7 +268,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$unshift(value, update, data) {
+  u$unshift(value: unknown[], update: unknown, data: unknown): any[] {
     if (isArray(update)) {
       return value ? update.concat(value) : update;
     }
@@ -290,7 +289,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$pull(value, update, data) {
+  u$pull(value: unknown[], update: unknown, data: unknown): any[] {
     if (!value) return value;
 
     if (isArray(update)) {
@@ -350,7 +349,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$addToSet(value, update, data) {
+  u$addToSet(value: any[], update, data) {
     if (isArray(update)) {
       if (!value) return update;
 
@@ -370,6 +369,9 @@ class SchemaTypeArray extends SchemaType {
 
     return value;
   }
+  q$length: SchemaTypeArray<I, T>['q$size'];
+  u$append: SchemaTypeArray<I, T>['u$push'];
+  u$prepend: SchemaTypeArray<I, T>['u$unshift'];
 }
 
 SchemaTypeArray.prototype.q$length = SchemaTypeArray.prototype.q$size;
@@ -378,4 +380,4 @@ SchemaTypeArray.prototype.u$append = SchemaTypeArray.prototype.u$push;
 
 SchemaTypeArray.prototype.u$prepend = SchemaTypeArray.prototype.u$unshift;
 
-module.exports = SchemaTypeArray;
+export = SchemaTypeArray;

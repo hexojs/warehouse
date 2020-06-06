@@ -1,12 +1,10 @@
-'use strict';
-
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import SchemaType = require('../schematype');
+import ValidationError = require('../error/validation');
 
 /**
  * Boolean schema type.
  */
-class SchemaTypeBoolean extends SchemaType {
+class SchemaTypeBoolean extends SchemaType<boolean> {
 
   /**
    * Casts a boolean.
@@ -15,7 +13,7 @@ class SchemaTypeBoolean extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  cast(value_, data) {
+  cast(value_: unknown, data: unknown): boolean {
     const value = super.cast(value_, data);
 
     if (value === 'false' || value === '0') return false;
@@ -30,14 +28,14 @@ class SchemaTypeBoolean extends SchemaType {
    * @param {Object} data
    * @return {Boolean|Error}
    */
-  validate(value_, data) {
+  validate(value_: unknown, data: unknown): boolean {
     const value = super.validate(value_, data);
 
     if (value != null && typeof value !== 'boolean') {
       throw new ValidationError(`\`${value}\` is not a boolean!`);
     }
 
-    return value;
+    return value as boolean;
   }
 
   /**
@@ -47,7 +45,7 @@ class SchemaTypeBoolean extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  parse(value, data) {
+  parse(value: unknown): boolean {
     return Boolean(value);
   }
 
@@ -58,9 +56,9 @@ class SchemaTypeBoolean extends SchemaType {
    * @param {Object} data
    * @return {Number}
    */
-  value(value, data) {
+  value(value: unknown, data: unknown): number {
     return +value;
   }
 }
 
-module.exports = SchemaTypeBoolean;
+export = SchemaTypeBoolean;
