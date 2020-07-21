@@ -28,7 +28,7 @@
     "bluebird": "^3.2.2",
     "cuid": "^2.1.4",
     "graceful-fs": "^4.1.3",
-    "is-plain-object": "^3.0.0",
+    "is-plain-object": "^4.0.0",
     "rfdc": "^1.1.4"
   },
   "devDependencies": {
