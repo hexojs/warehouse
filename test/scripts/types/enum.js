@@ -1,10 +1,10 @@
 'use strict';
 
 require('chai').should();
-const ValidationError = require('../../../lib/error/validation');
+const ValidationError = require('../../../dist/error/validation');
 
 describe('SchemaTypeEnum', () => {
-  const SchemaTypeEnum = require('../../../lib/types/enum');
+  const SchemaTypeEnum = require('../../../dist/types/enum');
 
   it('validate()', () => {
     const type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});

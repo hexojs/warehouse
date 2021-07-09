@@ -11,7 +11,7 @@ const DB_VERSION = 1;
 
 describe('Database', () => {
   const Database = require('../..');
-  const Model = require('../../lib/model');
+  const Model = require('../../dist/model');
   const Schema = Database.Schema;
   const db = new Database({path: DB_PATH, version: DB_VERSION});
 

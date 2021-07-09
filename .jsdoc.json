@@ -12,7 +12,7 @@
   "plugins": ["plugins/markdown"],
   "source": {
     "include": ["lib", "README.md"],
-    "includePattern": ".js$"
+    "includePattern": ".ts$"
   },
   "templates": {
     "cleverLinks": false,
