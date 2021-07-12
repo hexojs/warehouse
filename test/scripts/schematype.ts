@@ -1,10 +1,10 @@
 'use strict';
 
 const should = require('chai').should(); // eslint-disable-line
-const ValidationError = require('../../dist/error/validation');
+const ValidationError = require('../../lib/error/validation');
 
 describe('SchemaType', () => {
-  const SchemaType = require('../../dist/schematype');
+  const SchemaType = require('../../lib/schematype');
   const type = new SchemaType('test');
 
   it('cast()', () => {

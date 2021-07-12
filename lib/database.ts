@@ -1,15 +1,15 @@
 'use strict';
 
 const JSONStream = require('JSONStream');
-const Promise = require('bluebird');
+import { Promise as bPromise } from 'bluebird';
 const fs = require('graceful-fs');
 const Model = require('./model');
 const Schema = require('./schema');
 const SchemaType = require('./schematype');
 const WarehouseError = require('./error');
 const pkg = require('../package.json');
-const { open } = fs.promises;
-const pipeline = Promise.promisify(require('stream').pipeline);
+const { open } = fs.Promises;
+const pipeline = bPromise.promisify(require('stream').pipeline);
 
 let _writev;
 
@@ -107,7 +107,7 @@ class Database {
    * Loads database.
    *
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   load(callback) {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
@@ -147,13 +147,13 @@ class Database {
    * Saves database.
    *
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   save(callback) {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
-    return Promise.resolve(exportAsync(this, path)).asCallback(callback);
+    return bPromise.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
   toJSON() {

@@ -1,10 +1,10 @@
 'use strict';
 
 require('chai').should();
-const ValidationError = require('../../../dist/error/validation');
+const ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeInteger', () => {
-  const SchemaTypeInteger = require('../../../dist/types/integer');
+  const SchemaTypeInteger = require('../../../lib/types/integer');
   const type = new SchemaTypeInteger('test');
 
   it('cast()', () => {

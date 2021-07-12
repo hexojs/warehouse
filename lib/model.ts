@@ -2,7 +2,7 @@
 
 const { EventEmitter } = require('events');
 const cloneDeep = require('rfdc')();
-const Promise = require('bluebird');
+import { Promise as bPromise } from 'bluebird';
 const { parseArgs, getProp, setGetter, shuffle } = require('./util');
 const Document = require('./document');
 const Query = require('./query');
@@ -117,13 +117,13 @@ class Model extends EventEmitter {
    * Acquires write lock.
    *
    * @param {*} id
-   * @return {Promise}
+   * @return {bPromise}
    * @private
    */
   _acquireWriteLock(id) {
     const mutex = this._mutex;
 
-    return new Promise((resolve, reject) => {
+    return new bPromise((resolve, reject) => {
       mutex.lock(resolve);
     }).disposer(() => {
       mutex.unlock();
@@ -134,7 +134,7 @@ class Model extends EventEmitter {
    * Inserts a document.
    *
    * @param {Document|object} data
-   * @return {Promise}
+   * @return {bPromise}
    * @private
    */
   _insertOne(data_) {
@@ -146,11 +146,11 @@ class Model extends EventEmitter {
 
     // Check ID
     if (!id) {
-      return Promise.reject(new WarehouseError('ID is not defined', WarehouseError.ID_UNDEFINED));
+      return bPromise.reject(new WarehouseError('ID is not defined', WarehouseError.ID_UNDEFINED));
     }
 
     if (this.has(id)) {
-      return Promise.reject(new WarehouseError('ID `' + id + '` has been used', WarehouseError.ID_EXIST));
+      return bPromise.reject(new WarehouseError('ID `' + id + '` has been used', WarehouseError.ID_EXIST));
     }
 
     // Apply setters
@@ -173,10 +173,10 @@ class Model extends EventEmitter {
    *
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   insertOne(data, callback) {
-    return Promise.using(this._acquireWriteLock(), () => this._insertOne(data)).asCallback(callback);
+    return bPromise.using(this._acquireWriteLock(), () => this._insertOne(data)).asCallback(callback);
   }
 
   /**
@@ -184,11 +184,11 @@ class Model extends EventEmitter {
    *
    * @param {object|array} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   insert(data, callback) {
     if (Array.isArray(data)) {
-      return Promise.mapSeries(data, item => this.insertOne(item)).asCallback(callback);
+      return bPromise.mapSeries(data, item => this.insertOne(item)).asCallback(callback);
     }
 
     return this.insertOne(data, callback);
@@ -199,14 +199,14 @@ class Model extends EventEmitter {
    *
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   save(data, callback) {
     const id = data._id;
 
     if (!id) return this.insertOne(data, callback);
 
-    return Promise.using(this._acquireWriteLock(), () => {
+    return bPromise.using(this._acquireWriteLock(), () => {
       if (this.has(id)) {
         return this._replaceById(id, data);
       }
@@ -220,7 +220,7 @@ class Model extends EventEmitter {
    *
    * @param {*} id
    * @param {array} stack
-   * @return {Promise}
+   * @return {bPromise}
    * @private
    */
   _updateWithStack(id, stack) {
@@ -229,7 +229,7 @@ class Model extends EventEmitter {
     const data = this.data[id];
 
     if (!data) {
-      return Promise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
+      return bPromise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
     }
 
     // Clone data
@@ -263,10 +263,10 @@ class Model extends EventEmitter {
    * @param {*} id
    * @param {object} update
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   updateById(id, update, callback) {
-    return Promise.using(this._acquireWriteLock(), () => {
+    return bPromise.using(this._acquireWriteLock(), () => {
       const stack = this.schema._parseUpdate(update);
       return this._updateWithStack(id, stack);
     }).asCallback(callback);
@@ -278,7 +278,7 @@ class Model extends EventEmitter {
    * @param {object} query
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   update(query, data, callback) {
     return this.find(query).update(data, callback);
@@ -289,14 +289,14 @@ class Model extends EventEmitter {
    *
    * @param {*} id
    * @param  {object} data
-   * @return {Promise}
+   * @return {bPromise}
    * @private
    */
   _replaceById(id, data_) {
     const schema = this.schema;
 
     if (!this.has(id)) {
-      return Promise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
+      return bPromise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
     }
 
     data_._id = id;
@@ -324,10 +324,10 @@ class Model extends EventEmitter {
    * @param {*} id
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   replaceById(id, data, callback) {
-    return Promise.using(this._acquireWriteLock(), () => this._replaceById(id, data)).asCallback(callback);
+    return bPromise.using(this._acquireWriteLock(), () => this._replaceById(id, data)).asCallback(callback);
   }
 
   /**
@@ -336,7 +336,7 @@ class Model extends EventEmitter {
    * @param {object} query
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   replace(query, data, callback) {
     return this.find(query).replace(data, callback);
@@ -347,7 +347,7 @@ class Model extends EventEmitter {
    *
    * @param {*} id
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    * @private
    */
   _removeById(id) {
@@ -356,7 +356,7 @@ class Model extends EventEmitter {
     const data = this.data[id];
 
     if (!data) {
-      return Promise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
+      return bPromise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
     }
 
     // Pre-hooks
@@ -375,10 +375,10 @@ class Model extends EventEmitter {
    *
    * @param {*} id
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   removeById(id, callback) {
-    return Promise.using(this._acquireWriteLock(), () => this._removeById(id)).asCallback(callback);
+    return bPromise.using(this._acquireWriteLock(), () => this._removeById(id)).asCallback(callback);
   }
 
   /**
@@ -386,7 +386,7 @@ class Model extends EventEmitter {
    *
    * @param {object} query
    * @param {object} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   remove(query, callback) {
     return this.find(query).remove(callback);
@@ -952,9 +952,9 @@ Model.prototype.get = Model.prototype.findById;
 
 function execHooks(schema, type, event, data) {
   const hooks = schema.hooks[type][event];
-  if (!hooks.length) return Promise.resolve(data);
+  if (!hooks.length) return bPromise.resolve(data);
 
-  return Promise.each(hooks, hook => hook(data)).thenReturn(data);
+  return bPromise.each(hooks, hook => hook(data)).thenReturn(data);
 }
 
 Model.prototype.size = Model.prototype.count;

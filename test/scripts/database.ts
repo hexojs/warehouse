@@ -2,16 +2,16 @@
 
 const should = require('chai').should(); // eslint-disable-line
 const path = require('path');
-const Promise = require('bluebird');
+import { Promise as bPromise } from 'bluebird';
 const sinon = require('sinon');
-const fs = Promise.promisifyAll(require('fs'));
+const fs = bPromise.promisifyAll(require('fs'));
 
 const DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
 const DB_VERSION = 1;
 
 describe('Database', () => {
   const Database = require('../..');
-  const Model = require('../../dist/model');
+  const Model = require('../../lib/model');
   const Schema = Database.Schema;
   const db = new Database({path: DB_PATH, version: DB_VERSION});
 

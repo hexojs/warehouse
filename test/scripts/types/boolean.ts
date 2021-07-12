@@ -1,10 +1,10 @@
 'use strict';
 
 require('chai').should();
-const ValidationError = require('../../../dist/error/validation');
+const ValidationError = require('../../../lib/error/validation');
 
 describe('SchemaTypeBoolean', () => {
-  const SchemaTypeBoolean = require('../../../dist/types/boolean');
+  const SchemaTypeBoolean = require('../../../lib/types/boolean');
   const type = new SchemaTypeBoolean('test');
 
   it('cast()', () => {

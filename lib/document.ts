@@ -19,7 +19,7 @@ class Document {
    * Saves the document.
    *
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   save(callback) {
     return this._model.save(this, callback);
@@ -30,7 +30,7 @@ class Document {
    *
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   update(data, callback) {
     return this._model.updateById(this._id, data, callback);
@@ -41,7 +41,7 @@ class Document {
    *
    * @param {object} data
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   replace(data, callback) {
     return this._model.replaceById(this._id, data, callback);
@@ -51,7 +51,7 @@ class Document {
    * Removes the document.
    *
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {bPromise}
    */
   remove(callback) {
     return this._model.removeById(this._id, callback);

@@ -4,7 +4,7 @@ const should = require('chai').should(); // eslint-disable-line
 
 describe('Document', () => {
   const Database = require('../..');
-  const Document = require('../../dist/document');
+  const Document = require('../../lib/document');
   const db = new Database();
   const Schema = Database.Schema;
 

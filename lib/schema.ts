@@ -2,7 +2,7 @@
 
 const SchemaType = require('./schematype');
 const Types = require('./types');
-const Promise = require('bluebird');
+import { Promise as bPromise } from 'bluebird';
 const { getProp, setProp, delProp } = require('./util');
 const PopulationError = require('./error/population');
 const { isPlainObject } = require('is-plain-object');
@@ -53,10 +53,10 @@ const checkHookType = type => {
 
 const hookWrapper = fn => {
   if (fn.length > 1) {
-    return Promise.promisify(fn);
+    return bPromise.promisify(fn);
   }
 
-  return Promise.method(fn);
+  return bPromise.method(fn);
 };
 
 /**

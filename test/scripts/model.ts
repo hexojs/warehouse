@@ -1,8 +1,8 @@
 'use strict';
 
-const should = require('chai').use(require('chai-as-promised')).should();
+const should = require('chai').use(require('chai-as-bPromised')).should();
 const sortBy = require('lodash/sortBy');
-const Promise = require('bluebird');
+import { Promise as bPromise } from 'bluebird';
 const sinon = require('sinon');
 const cuid = require('cuid');
 
@@ -160,7 +160,7 @@ describe('Model', () => {
 
     Test = db.model('Test', testSchema);
 
-    return Promise.all([
+    return bPromise.all([
       Test.insert({id: 1}),
       Test.insert({id: 1})
     ]).should.eventually.be.rejected;
@@ -190,7 +190,7 @@ describe('Model', () => {
   it('save() - sync problem', () => {
     const id = cuid();
 
-    return Promise.all([
+    return bPromise.all([
       User.save({_id: id, age: 1}),
       User.save({_id: id, age: 2})
     ]).then(() => {
@@ -955,7 +955,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().user_id.should.eql(user);
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Post.removeById(post._id)
       ]);
@@ -985,7 +985,7 @@ describe('Model', () => {
       query.should.be.an.instanceOf(Post.Query);
       query.toArray().should.eql(posts);
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1018,7 +1018,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().posts.toArray().should.eql(posts.slice(0, 2));
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1057,7 +1057,7 @@ describe('Model', () => {
         posts[0]
       ]);
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1100,7 +1100,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().posts.toArray().should.eql(posts.slice(1, 3));
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1162,7 +1162,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().posts.toArray().should.eql(posts.slice(2));
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),

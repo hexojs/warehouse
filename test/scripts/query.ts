@@ -2,8 +2,8 @@
 
 const should = require('chai').should(); // eslint-disable-line
 const sortBy = require('lodash/sortBy');
-const Promise = require('bluebird');
-const Document = require('../../dist/document');
+import { Promise as bPromise } from 'bluebird';
+const Document = require('../../lib/document');
 
 describe('Query', () => {
   const Database = require('../..');
@@ -515,7 +515,7 @@ describe('Query', () => {
     }).then(result => {
       result.first().author.should.eql(user);
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Comment.removeById(comment._id)
       ]);
@@ -542,7 +542,7 @@ describe('Query', () => {
     }).then(result => {
       result.first().comments.toArray().should.eql(comments);
 
-      return Promise.all([
+      return bPromise.all([
         User.removeById(user._id),
         Comment.removeById(comments[0]._id),
         Comment.removeById(comments[1]._id),
