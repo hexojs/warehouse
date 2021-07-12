@@ -1,7 +1,9 @@
 .DS_Store
+.editorconfig
 node_modules/
 .idea/
 .nyc_output/
 *.log
 docs/
 coverage/
+dist/
