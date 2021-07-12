@@ -1,7 +1,7 @@
 'use strict';
 
 const { setProp } = require('./util');
-const ValidationError = require('./error/validation');
+import ValidationError from './error/validation';
 
 /**
  * This is the basic schema type.
@@ -56,7 +56,7 @@ class SchemaType {
    *   @param {Boolean} [options.required=false]
    *   @param {*} [options.default]
    */
-  constructor(name, options) {
+  constructor(name, options?) {
     this.name = name || '';
 
     this.options = Object.assign({
@@ -292,4 +292,4 @@ SchemaType.prototype.q$max = SchemaType.prototype.q$lte;
 
 SchemaType.prototype.q$min = SchemaType.prototype.q$gte;
 
-module.exports = SchemaType;
+export default SchemaType;

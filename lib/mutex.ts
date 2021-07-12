@@ -29,4 +29,4 @@ class Mutex {
   }
 }
 
-module.exports = Mutex;
+export default Mutex;

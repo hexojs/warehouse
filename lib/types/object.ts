@@ -1,6 +1,6 @@
 'use strict';
 
-const SchemaType = require('../schematype');
+import SchemaType from '../schematype';
 
 /**
  * Object schema type.
@@ -14,9 +14,9 @@ class SchemaTypeObject extends SchemaType {
    *   @param {Boolean} [options.required=false]
    *   @param {Object|Function} [options.default={}]
    */
-  constructor(name, options) {
+  constructor(name:string, options:any) {
     super(name, Object.assign({ default: {} }, options));
   }
 }
 
-module.exports = SchemaTypeObject;
+export default SchemaTypeObject;

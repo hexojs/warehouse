@@ -1,7 +1,7 @@
 'use strict';
 
 const should = require('chai').should();
-const ValidationError = require('../../../lib/error/validation');
+import ValidationError from '../../../lib/error/validation';
 
 describe('SchemaTypeBuffer', () => {
   const SchemaTypeBuffer = require('../../../lib/types/buffer');

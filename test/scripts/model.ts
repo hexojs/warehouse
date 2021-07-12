@@ -1,10 +1,10 @@
 'use strict';
 
-const should = require('chai').use(require('chai-as-bPromised')).should();
-const sortBy = require('lodash/sortBy');
-import { Promise as bPromise } from 'bluebird';
-const sinon = require('sinon');
-const cuid = require('cuid');
+const should = require('chai').use(require('chai-as-Promised')).should();
+import Promise from 'bluebird';
+import cuid from 'cuid';
+import sortBy from 'lodash/sortBy';
+import sinon from 'sinon';
 
 describe('Model', () => {
   const Database = require('../..');
@@ -160,7 +160,7 @@ describe('Model', () => {
 
     Test = db.model('Test', testSchema);
 
-    return bPromise.all([
+    return Promise.all([
       Test.insert({id: 1}),
       Test.insert({id: 1})
     ]).should.eventually.be.rejected;
@@ -190,7 +190,7 @@ describe('Model', () => {
   it('save() - sync problem', () => {
     const id = cuid();
 
-    return bPromise.all([
+    return Promise.all([
       User.save({_id: id, age: 1}),
       User.save({_id: id, age: 2})
     ]).then(() => {
@@ -955,7 +955,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().user_id.should.eql(user);
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Post.removeById(post._id)
       ]);
@@ -985,7 +985,7 @@ describe('Model', () => {
       query.should.be.an.instanceOf(Post.Query);
       query.toArray().should.eql(posts);
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1018,7 +1018,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().posts.toArray().should.eql(posts.slice(0, 2));
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1057,7 +1057,7 @@ describe('Model', () => {
         posts[0]
       ]);
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1100,7 +1100,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().posts.toArray().should.eql(posts.slice(1, 3));
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),
@@ -1162,7 +1162,7 @@ describe('Model', () => {
     }).then(result => {
       result.first().posts.toArray().should.eql(posts.slice(2));
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Post.removeById(posts[0]._id),
         Post.removeById(posts[1]._id),

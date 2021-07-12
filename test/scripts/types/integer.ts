@@ -1,7 +1,7 @@
 'use strict';
 
 require('chai').should();
-const ValidationError = require('../../../lib/error/validation');
+import ValidationError from '../../../lib/error/validation';
 
 describe('SchemaTypeInteger', () => {
   const SchemaTypeInteger = require('../../../lib/types/integer');

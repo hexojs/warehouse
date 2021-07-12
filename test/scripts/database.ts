@@ -1,10 +1,11 @@
 'use strict';
 
 const should = require('chai').should(); // eslint-disable-line
-const path = require('path');
-import { Promise as bPromise } from 'bluebird';
-const sinon = require('sinon');
-const fs = bPromise.promisifyAll(require('fs'));
+import Promise from 'bluebird';
+import x from 'fs';
+import path from 'path';
+import sinon from 'sinon';
+const fs = Promise.promisifyAll(x);
 
 const DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
 const DB_VERSION = 1;
@@ -85,7 +86,7 @@ describe('Database', () => {
     });
   });
 
-  it('save()', () => db.save().then(() => fs.readFileAsync(DB_PATH, 'utf8')).then(data => {
+  it('save()', () => db.save().then(() => fs.readFileAsync(DB_PATH)).then(data => {
     const json = JSON.parse(data);
 
     json.meta.should.eql({

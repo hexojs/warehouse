@@ -1,7 +1,7 @@
 'use strict';
 
-import { Promise as bPromise } from 'bluebird';
-const { parseArgs, shuffle } = require('./util');
+import Promise from 'bluebird';
+import { parseArgs, shuffle } from './util';
 
 class Query {
 
@@ -328,13 +328,13 @@ class Query {
    *
    * @param {Object} data
    * @param {Function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   update(data, callback) {
     const model = this._model;
     const stack = this._schema._parseUpdate(data);
 
-    return bPromise.mapSeries(this.data, item => model._updateWithStack(item._id, stack)).asCallback(callback);
+    return Promise.mapSeries(this.data, item => model._updateWithStack(item._id, stack)).asCallback(callback);
   }
 
   /**
@@ -342,24 +342,24 @@ class Query {
    *
    * @param {Object} data
    * @param {Function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   replace(data, callback) {
     const model = this._model;
 
-    return bPromise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
+    return Promise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
   }
 
   /**
    * Remove all documents.
    *
    * @param {Function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   remove(callback) {
     const model = this._model;
 
-    return bPromise.mapSeries(this.data, item => model.removeById(item._id)).asCallback(callback);
+    return Promise.mapSeries(this.data, item => model.removeById(item._id)).asCallback(callback);
   }
 
   /**
@@ -387,4 +387,4 @@ Query.prototype.each = Query.prototype.forEach;
 
 Query.prototype.random = Query.prototype.shuffle;
 
-module.exports = Query;
+export default Query;

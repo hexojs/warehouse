@@ -1,7 +1,7 @@
 'use strict';
 
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import ValidationError from '../error/validation';
+import SchemaType from '../schematype';
 
 /**
  * String schema type.
@@ -15,11 +15,11 @@ class SchemaTypeString extends SchemaType {
    * @param {Object} data
    * @return {String}
    */
-  cast(value_, data) {
+  cast(value_:any, data:any):string {
     const value = super.cast(value_, data);
 
     if (value == null || typeof value === 'string') return value;
-    if (typeof value.toString === 'function') return value.toString();
+    if (typeof value.toString === 'function')return value.toString();
   }
 
   /**
@@ -29,7 +29,7 @@ class SchemaTypeString extends SchemaType {
    * @param {Object} data
    * @return {String|Error}
    */
-  validate(value_, data) {
+  validate(value_: any, data: any):string|Error {
     const value = super.validate(value_, data);
 
     if (value !== undefined && typeof value !== 'string') {
@@ -67,7 +67,7 @@ class SchemaTypeString extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value, query, data) {
+  q$in(value:string, query:any, data:any):boolean {
     for (let i = 0, len = query.length; i < len; i++) {
       if (this.match(value, query[i], data)) return true;
     }
@@ -83,7 +83,7 @@ class SchemaTypeString extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data) {
+  q$nin(value:string, query:any, data:any):boolean {
     return !this.q$in(value, query, data);
   }
 
@@ -95,9 +95,9 @@ class SchemaTypeString extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$length(value, query, data) {
+  q$length(value:string, query:number, data:Record<string, unknown>):boolean {
     return (value ? value.length : 0) === query;
   }
 }
 
-module.exports = SchemaTypeString;
+export default SchemaTypeString;

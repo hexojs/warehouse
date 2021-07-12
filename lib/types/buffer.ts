@@ -1,7 +1,7 @@
 'use strict';
 
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import ValidationError from '../error/validation';
+import SchemaType from '../schematype';
 
 /**
  * Boolean schema type.
@@ -107,4 +107,4 @@ class SchemaTypeBuffer extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeBuffer;
+export default SchemaTypeBuffer;

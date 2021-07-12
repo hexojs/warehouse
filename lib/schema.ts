@@ -1,11 +1,11 @@
 'use strict';
 
-const SchemaType = require('./schematype');
-const Types = require('./types');
-import { Promise as bPromise } from 'bluebird';
-const { getProp, setProp, delProp } = require('./util');
-const PopulationError = require('./error/population');
-const { isPlainObject } = require('is-plain-object');
+import Promise from 'bluebird';
+import { isPlainObject } from 'is-plain-object';
+import PopulationError from './error/population';
+import SchemaType from './schematype';
+import Types from './types';
+import { delProp, getProp, setProp } from './util';
 
 /**
  * @callback queryFilterCallback
@@ -53,10 +53,10 @@ const checkHookType = type => {
 
 const hookWrapper = fn => {
   if (fn.length > 1) {
-    return bPromise.promisify(fn);
+    return Promise.promisify(fn);
   }
 
-  return bPromise.method(fn);
+  return Promise.method(fn);
 };
 
 /**
@@ -390,7 +390,7 @@ class Schema {
    *
    * @param {Object} schema
    */
-  constructor(schema) {
+  constructor(schema: object) {
     this.paths = {};
     this.statics = {};
     this.methods = {};
@@ -424,7 +424,7 @@ class Schema {
    * @param {Object} schema
    * @param {String} prefix
    */
-  add(schema, prefix = '') {
+  add(schema: object, prefix = '') {
     const keys = Object.keys(schema);
     const len = keys.length;
 
@@ -445,7 +445,7 @@ class Schema {
    * @param {*} obj
    * @return {SchemaType | undefined}
    */
-  path(name, obj) {
+  path(name: string, obj: any): SchemaType | undefined {
     if (obj == null) {
       return this.paths[name];
     }
@@ -544,7 +544,7 @@ class Schema {
    * @param {Function} [getter]
    * @return {SchemaType.Virtual}
    */
-  virtual(name, getter) {
+  virtual(name:string, getter: Function): SchemaType.Virtual {
     const virtual = new Types.Virtual(name, {});
     if (getter) virtual.get(getter);
 
@@ -792,4 +792,4 @@ class Schema {
 Schema.prototype.Types = Types;
 Schema.Types = Schema.prototype.Types;
 
-module.exports = Schema;
+export default Schema;

@@ -1,15 +1,19 @@
 'use strict';
 
-const cloneDeep = require('rfdc')();
+import rfdc = require('rfdc');
+const cloneDeep = rfdc();
 
-class Document {
+abstract class Document {
+  abstract _model;
+  _id!: any;
+  abstract _schema;
 
   /**
    * Document constructor.
    *
    * @param {object} data
    */
-  constructor(data) {
+  constructor(data: Record<string, unknown>) {
     if (data) {
       Object.assign(this, data);
     }
@@ -19,9 +23,9 @@ class Document {
    * Saves the document.
    *
    * @param {function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
-  save(callback) {
+  save(callback:any) {
     return this._model.save(this, callback);
   }
 
@@ -30,7 +34,7 @@ class Document {
    *
    * @param {object} data
    * @param {function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   update(data, callback) {
     return this._model.updateById(this._id, data, callback);
@@ -41,7 +45,7 @@ class Document {
    *
    * @param {object} data
    * @param {function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   replace(data, callback) {
     return this._model.replaceById(this._id, data, callback);
@@ -51,7 +55,7 @@ class Document {
    * Removes the document.
    *
    * @param {function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   remove(callback) {
     return this._model.removeById(this._id, callback);
@@ -101,4 +105,4 @@ function isGetter(obj, key) {
   return Object.getOwnPropertyDescriptor(obj, key).get;
 }
 
-module.exports = Document;
+export default Document;

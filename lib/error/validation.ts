@@ -1,9 +1,9 @@
 'use strict';
 
-const WarehouseError = require('../error');
+import WarehouseError from '../error';
 
 class ValidationError extends WarehouseError {}
 
 ValidationError.prototype.name = 'ValidationError';
 
-module.exports = ValidationError;
+export default ValidationError;

@@ -1,7 +1,7 @@
 'use strict';
 
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import ValidationError from '../error/validation';
+import SchemaType from '../schematype';
 
 const { isArray } = Array;
 
@@ -9,6 +9,11 @@ const { isArray } = Array;
  * Array schema type.
  */
 class SchemaTypeArray extends SchemaType {
+  child: any;
+  options: any;
+  q$length!: (value: any, query: any, data: any) => boolean;
+  u$append!: (value: any, update: any, data: any) => any;
+  u$prepend!: (value: any, update: any, data: any) => any;
 
   /**
    *
@@ -18,7 +23,7 @@ class SchemaTypeArray extends SchemaType {
    *   @param {Array|Function} [options.default=[]]
    *   @param {SchemaType} [options.child]
    */
-  constructor(name, options) {
+  constructor(name:string, options) {
     super(name, Object.assign({
       default: []
     }, options));
@@ -33,7 +38,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  cast(value_, data) {
+  cast(value_:any, data:Record<string, unknown>):Array<any> {
     let value = super.cast(value_, data);
     if (value == null) return value;
 
@@ -56,7 +61,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array|Error}
    */
-  validate(value_, data) {
+  validate(value_:any, data:Record<string, unknown>):Array<any>|Error {
     const value = super.validate(value_, data);
 
     if (!isArray(value)) {
@@ -81,7 +86,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Array} b
    * @return {Number}
    */
-  compare(a, b) {
+  compare(a:any, b:any):number {
     if (a) {
       if (!b) return 1;
     } else {
@@ -108,7 +113,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  parse(value, data) {
+  parse(value:any, data:any):any {
     if (!value) return value;
 
     const len = value.length;
@@ -131,7 +136,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  value(value, data) {
+  value(value:any, data:any):any {
     if (!value) return value;
 
     const len = value.length;
@@ -155,7 +160,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value, query, data) {
+  match(value:any, query:any, data:any):boolean {
     if (!value || !query) {
       return value === query;
     }
@@ -182,7 +187,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$size(value, query, data) {
+  q$size(value:any, query:number, data:any):boolean {
     return (value ? value.length : 0) === query;
   }
 
@@ -212,7 +217,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data) {
+  q$nin(value:any, query:any, data:any):boolean {
     if (!value) return true;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -230,7 +235,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$all(value, query, data) {
+  q$all(value:any, query:any, data:any):boolean {
     if (!value) return false;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -248,7 +253,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$push(value, update, data) {
+  u$push(value:any, update:any, data:any):any {
     if (isArray(update)) {
       return value ? value.concat(update) : update;
     }
@@ -269,7 +274,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$unshift(value, update, data) {
+  u$unshift(value:any, update:any, data:any):any {
     if (isArray(update)) {
       return value ? update.concat(value) : update;
     }
@@ -290,7 +295,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$pull(value, update, data) {
+  u$pull(value:any, update:any, data:any):any {
     if (!value) return value;
 
     if (isArray(update)) {
@@ -308,7 +313,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$shift(value, update, data) {
+  u$shift(value:any, update:number|boolean, data:any):any {
     if (!value || !update) return value;
 
     if (update === true) {
@@ -328,7 +333,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$pop(value, update, data) {
+  u$pop(value:any, update:number|boolean, data:any):any {
     if (!value || !update) return value;
 
     const length = value.length;
@@ -350,7 +355,7 @@ class SchemaTypeArray extends SchemaType {
    * @param {Object} data
    * @return {Array}
    */
-  u$addToSet(value, update, data) {
+  u$addToSet(value:any, update:any, data:any):any {
     if (isArray(update)) {
       if (!value) return update;
 
@@ -378,4 +383,4 @@ SchemaTypeArray.prototype.u$append = SchemaTypeArray.prototype.u$push;
 
 SchemaTypeArray.prototype.u$prepend = SchemaTypeArray.prototype.u$unshift;
 
-module.exports = SchemaTypeArray;
+export default SchemaTypeArray;

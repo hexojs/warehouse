@@ -1,9 +1,9 @@
 'use strict';
 
-const WarehouseError = require('../error');
+import WarehouseError from '../error';
 
 class PopulationError extends WarehouseError {}
 
 PopulationError.prototype.name = 'PopulationError';
 
-module.exports = PopulationError;
+export default PopulationError;

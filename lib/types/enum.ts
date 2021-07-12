@@ -1,12 +1,13 @@
 'use strict';
 
-const SchemaType = require('../schematype');
-const ValidationError = require('../error/validation');
+import ValidationError from '../error/validation';
+import SchemaType from '../schematype';
 
 /**
  * Enum schema type.
  */
 class SchemaTypeEnum extends SchemaType {
+  options: any;
 
   /**
    *
@@ -16,7 +17,7 @@ class SchemaTypeEnum extends SchemaType {
    *   @param {Array} options.elements
    *   @param {*} [options.default]
    */
-  constructor(name, options) {
+  constructor(name:string, options) {
     super(name, Object.assign({
       elements: []
     }, options));
@@ -29,7 +30,7 @@ class SchemaTypeEnum extends SchemaType {
    * @param {Object} data
    * @return {*}
    */
-  validate(value_, data) {
+  validate(value_, data: any): any {
     const value = super.validate(value_, data);
     const elements = this.options.elements;
 
@@ -41,4 +42,4 @@ class SchemaTypeEnum extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeEnum;
+export default SchemaTypeEnum;

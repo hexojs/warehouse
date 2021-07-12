@@ -1,9 +1,9 @@
 'use strict';
 
 const should = require('chai').should(); // eslint-disable-line
-const sortBy = require('lodash/sortBy');
-import { Promise as bPromise } from 'bluebird';
-const Document = require('../../lib/document');
+import Promise from 'bluebird';
+import sortBy from 'lodash/sortBy';
+import Document from '../../lib/document';
 
 describe('Query', () => {
   const Database = require('../..');
@@ -515,7 +515,7 @@ describe('Query', () => {
     }).then(result => {
       result.first().author.should.eql(user);
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Comment.removeById(comment._id)
       ]);
@@ -542,7 +542,7 @@ describe('Query', () => {
     }).then(result => {
       result.first().comments.toArray().should.eql(comments);
 
-      return bPromise.all([
+      return Promise.all([
         User.removeById(user._id),
         Comment.removeById(comments[0]._id),
         Comment.removeById(comments[1]._id),

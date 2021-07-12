@@ -1,7 +1,7 @@
 'use strict';
 
-const SchemaType = require('../schematype');
-const { setGetter } = require('../util');
+import SchemaType from '../schematype';
+import { setGetter } from '../util';
 
 /**
  * Virtual schema type.
@@ -77,4 +77,4 @@ class SchemaTypeVirtual extends SchemaType {
   }
 }
 
-module.exports = SchemaTypeVirtual;
+export default SchemaTypeVirtual;

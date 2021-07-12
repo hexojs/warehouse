@@ -1,19 +1,20 @@
 'use strict';
 
-const JSONStream = require('JSONStream');
-import { Promise as bPromise } from 'bluebird';
-const fs = require('graceful-fs');
-const Model = require('./model');
-const Schema = require('./schema');
-const SchemaType = require('./schematype');
-const WarehouseError = require('./error');
-const pkg = require('../package.json');
-const { open } = fs.Promises;
-const pipeline = bPromise.promisify(require('stream').pipeline);
+import Bluebird from 'bluebird';
+import { createReadStream, promises as fsPromises, writev } from 'graceful-fs';
+import JSONStream from 'JSONStream';
+import { pipeline, Stream } from 'stream';
+import pkg from '../package.json';
+import WarehouseError from './error';
+import Model from './model';
+import Schema from './schema';
+import SchemaType from './schematype';
+const { open } = fsPromises;
+const pipelineAsync = Bluebird.promisify(pipeline) as (...args: Stream[]) => Bluebird<unknown>;
 
-let _writev;
+let _writev: (handle: fsPromises.FileHandle, buffers: Buffer[]) => Promise<unknown>;
 
-if (typeof fs.writev === 'function') {
+if (typeof writev === 'function') {
   _writev = (handle, buffers) => handle.writev(buffers);
 } else {
   _writev = async (handle, buffers) => {
@@ -72,8 +73,9 @@ class Database {
   constructor(options) {
     this.options = Object.assign({
       version: 0,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onUpgrade() {},
-
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onDowngrade() {}
     }, options);
 
@@ -107,7 +109,7 @@ class Database {
    * Loads database.
    *
    * @param {function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   load(callback) {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
@@ -132,9 +134,9 @@ class Database {
       this.model(data.key)._import(data.value);
     });
 
-    const rs = fs.createReadStream(path, 'utf8');
+    const rs = createReadStream(path, 'utf8');
 
-    return pipeline(rs, parseStream).then(() => {
+    return pipelineAsync(rs, parseStream).then(() => {
       if (newVersion > oldVersion) {
         return onUpgrade(oldVersion, newVersion);
       } else if (newVersion < oldVersion) {
@@ -147,13 +149,13 @@ class Database {
    * Saves database.
    *
    * @param {function} [callback]
-   * @return {bPromise}
+   * @return {Promise}
    */
   save(callback) {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
-    return bPromise.resolve(exportAsync(this, path)).asCallback(callback);
+    return Bluebird.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
   toJSON() {
