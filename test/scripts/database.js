@@ -85,6 +85,16 @@ describe('Database', () => {
     });
   });
 
+  it('load() - without dump', () => {
+    const db = new Database({path: DB_PATH, dump: false});
+
+    return db.load().then(() => {
+      const Test = db.model('Test');
+
+      Test.toArray().should.eql([]);
+    });
+  });
+
   it('save()', () => db.save().then(() => fs.readFileAsync(DB_PATH, 'utf8')).then(data => {
     const json = JSON.parse(data);
 
@@ -101,4 +111,12 @@ describe('Database', () => {
       ]
     });
   }));
+
+  it('save() - without dump', () => {
+    const DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db-without-dump.json');
+    const db = new Database({path: DB_PATH, dump: false});
+
+    db.save();
+    fs.existsSync(DB_PATH).should.eql(false);
+  });
 });
