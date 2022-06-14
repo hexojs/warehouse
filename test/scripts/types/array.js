@@ -1,13 +1,13 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
-const ValidationError = require('../../../lib/error/validation');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line 
+import ValidationError from '../../../lib/error/validation.js';
+import SchemaTypeArray from '../../../lib/types/array.js';
+import SchemaTypeString from '../../../lib/types/string.js';
+import SchemaTypeDate from '../../../lib/types/date.js';
+import SchemaTypeBoolean from '../../../lib/types/boolean.js';
 
 describe('SchemaTypeArray', () => {
-  const SchemaTypeArray = require('../../../lib/types/array');
-  const SchemaTypeString = require('../../../lib/types/string');
-  const SchemaTypeDate = require('../../../lib/types/date');
-  const SchemaTypeBoolean = require('../../../lib/types/boolean');
+
   const type = new SchemaTypeArray('test');
 
   it('cast()', () => {

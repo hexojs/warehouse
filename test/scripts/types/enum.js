@@ -1,11 +1,9 @@
-'use strict';
-
-require('chai').should();
-const ValidationError = require('../../../lib/error/validation');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import ValidationError from '../../../lib/error/validation.js';
+import SchemaTypeEnum from '../../../lib/types/enum.js';
 
 describe('SchemaTypeEnum', () => {
-  const SchemaTypeEnum = require('../../../lib/types/enum');
-
   it('validate()', () => {
     const type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
 

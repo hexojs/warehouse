@@ -2,7 +2,8 @@
   "name": "warehouse",
   "version": "4.0.1",
   "description": "Simple JSON-based database",
-  "main": "lib/database",
+  "type": "module",
+  "exports": "./lib/database.js",
   "directories": {
     "lib": "./lib"
   },
@@ -33,7 +34,7 @@
     "rfdc": "^1.1.4"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.1.0",
     "eslint-config-hexo": "^5.0.0",

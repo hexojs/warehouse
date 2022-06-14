@@ -1,10 +1,9 @@
-'use strict';
-
-const should = require('chai').should();
-const ValidationError = require('../../../lib/error/validation');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import ValidationError from '../../../lib/error/validation.js';
+import SchemaTypeBuffer from '../../../lib/types/buffer.js';
 
 describe('SchemaTypeBuffer', () => {
-  const SchemaTypeBuffer = require('../../../lib/types/buffer');
   const type = new SchemaTypeBuffer('test');
 
   it('cast()', () => {

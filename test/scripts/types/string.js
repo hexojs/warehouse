@@ -1,10 +1,9 @@
-'use strict';
-
-require('chai').should();
-const ValidationError = require('../../../lib/error/validation');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import ValidationError from '../../../lib/error/validation.js';
+import SchemaTypeString from '../../../lib/types/string.js';
 
 describe('SchemaTypeString', () => {
-  const SchemaTypeString = require('../../../lib/types/string');
   const type = new SchemaTypeString('test');
 
   it('cast()', () => {

@@ -1,12 +1,13 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
-const sortBy = require('lodash/sortBy');
-const Promise = require('bluebird');
-const Document = require('../../lib/document');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import lodash from 'lodash';
+const { sortBy } = lodash;
+import Promise from 'bluebird';
+import Document from '../../lib/document.js';
+import Database from '../../lib/database.js';
 
 describe('Query', () => {
-  const Database = require('../..');
+
   const db = new Database();
   const Schema = Database.Schema;
 
