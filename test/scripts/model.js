@@ -1,5 +1,9 @@
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
+
+import chaiAsPromised  from 'chai-as-promised';
+chai.use(chaiAsPromised );
+
 import lodash from 'lodash';
 const { sortBy } = lodash;
 import Promise from 'bluebird';
