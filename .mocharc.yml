@@ -1,1 +1,4 @@
 color: true
+reporter: spec
+opts: false
+spec: "test/scripts/**/*.js"
