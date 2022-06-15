@@ -13,7 +13,7 @@
   "scripts": {
     "eslint": "eslint lib test",
     "test": "mocha",
-    "test-cov": "nyc --reporter=lcovonly npm run test",
+    "test-cov": "c8 --reporter=lcovonly npm run test",
     "jsdoc": "jsdoc --configure .jsdoc.json"
   },
   "repository": "hexojs/warehouse",
@@ -37,6 +37,7 @@
     "@babel/core": "^7.18.5",
     "@babel/eslint-parser": "^7.18.2",
     "@babel/plugin-syntax-import-assertions": "^7.17.12",
+    "c8": "^7.11.3",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.17.0",
@@ -45,7 +46,6 @@
     "lodash": "^4.17.15",
     "minami": "^1.1.1",
     "mocha": "^10.0.0",
-    "nyc": "^15.0.0",
     "sinon": "^14.0.0"
   },
   "engines": {
