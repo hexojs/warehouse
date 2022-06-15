@@ -8,9 +8,10 @@ import Model from '../../lib/model.js';
 import fs from 'fs';
 const promisifyFs = Promise.promisifyAll(fs);
 
-import url from "url";
+import url from 'url';
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
 const DB_VERSION = 1;
 

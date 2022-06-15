@@ -34,6 +34,9 @@
     "rfdc": "^1.1.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.5",
+    "@babel/eslint-parser": "^7.18.2",
+    "@babel/plugin-syntax-import-assertions": "^7.17.12",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.17.0",

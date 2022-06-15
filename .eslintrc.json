@@ -1,4 +1,19 @@
 {
   "root": true,
-  "extends": "hexo"
+  "extends": "hexo",
+  // TODO: should remove `@babel/core`, `@babel/eslint-parser` and `@babel/plugin-syntax-import-assertions`
+  //       after the ESLint supports `import.meta.url` and `assert { type: "json" }`
+  // https://github.com/eslint/eslint/discussions/15305
+  // https://github.com/babel/babel/blob/ad194013881727ca6b17a0e72cfea2d552eed049/eslint/babel-eslint-parser/README.md
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+    "sourceType": "module",
+    "ecmaVersion": "2020",
+    "babelOptions": {
+      "plugins": [
+        "@babel/plugin-syntax-import-assertions"
+      ]
+    }
+  }
 }
