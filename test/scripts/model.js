@@ -1,8 +1,8 @@
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 
-import chaiAsPromised  from 'chai-as-promised';
-chai.use(chaiAsPromised );
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised ); // eslint-disable-line
 
 import lodash from 'lodash';
 const { sortBy } = lodash;
