@@ -1,4 +1,4 @@
-import rfdc = require('rfdc');
+import rfdc from 'rfdc';
 const cloneDeep = rfdc();
 
 abstract class Document {
