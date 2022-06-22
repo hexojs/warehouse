@@ -4,8 +4,7 @@ import Promise from 'bluebird';
 import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const isPlainObject: (o: any) => boolean = require('is-plain-object');
+import { isPlainObject } from 'is-plain-object';
 
 /**
  * @callback queryFilterCallback
