@@ -1,9 +1,10 @@
-import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
-import ValidationError from '../../../lib/error/validation';
-import SchemaTypeDate from '../../../lib/types/date';
+'use strict';
+
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../built/error/validation');
 
 describe('SchemaTypeDate', () => {
+  const SchemaTypeDate = require('../../../built/types/date');
   const type = new SchemaTypeDate('test');
 
   it('cast()', () => {

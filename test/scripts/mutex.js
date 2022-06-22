@@ -1,7 +1,8 @@
-import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
-import Mutex from '../../lib/mutex';
-import sinon from 'sinon';
+'use strict';
+
+const should = require('chai').should(); // eslint-disable-line
+const Mutex = require('../../built/mutex');
+const sinon = require('sinon');
 
 describe('Mutex', () => {
   it('mutex test', callback => {

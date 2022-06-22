@@ -1,9 +1,10 @@
-import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
-import ValidationError from '../../../lib/error/validation';
-import SchemaTypeCUID from '../../../lib/types/cuid';
+'use strict';
+
+const should = require('chai').should(); // eslint-disable-line
+const ValidationError = require('../../../built/error/validation');
 
 describe('SchemaTypeCUID', () => {
+  const SchemaTypeCUID = require('../../../built/types/cuid');
   const type = new SchemaTypeCUID('test');
 
   it('cast()', () => {

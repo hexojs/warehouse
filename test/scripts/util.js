@@ -1,8 +1,10 @@
-import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
-import * as util from '../../lib/util';
+'use strict';
+
+const should = require('chai').should(); // eslint-disable-line
 
 describe('util', () => {
+  const util = require('../../built/util');
+
   it('shuffle()', () => {
     const src = Array(100).fill(0).map((_, i) => i);
     const result = util.shuffle(src);
