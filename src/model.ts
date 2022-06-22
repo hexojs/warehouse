@@ -7,7 +7,7 @@ const { parseArgs, getProp, setGetter, shuffle } = util;
 import Document from './document';
 import Query from './query';
 import Schema from './schema';
-import Types from './types/index';
+import * as Types from './types/index';
 import WarehouseError from './error';
 import PopulationError from './error/population';
 import Mutex from './mutex';

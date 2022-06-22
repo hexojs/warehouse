@@ -1,5 +1,5 @@
 import SchemaType from './schematype';
-import Types from './types/index';
+import * as Types from './types/index';
 import Promise from 'bluebird';
 import util from './util';
 const { getProp, setProp, delProp } = util;

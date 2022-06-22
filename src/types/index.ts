@@ -1,27 +1,27 @@
-import Mixed = require('../schematype');
-import String = require('./string');
-import Number = require('./number');
-import Boolean = require('./boolean');
-import Array = require('./array');
-import Object = require('./object');
-import Date = require('./date');
-import Virtual = require('./virtual');
-import CUID = require('./cuid');
-import Enum = require('./enum');
-import Integer = require('./integer');
-import Buffer = require('./buffer');
+import SchemaType from '../schematype';
+import SchemaTypeString from './string';
+import SchemaTypeNumber from './number';
+import SchemaTypeBoolean from './boolean';
+import SchemaTypeArray from './array';
+import SchemaTypeObject from './object';
+import SchemaTypeDate from './date';
+import SchemaTypeVirtual from './virtual';
+import SchemaTypeCUID from './cuid';
+import SchemaTypeEnum from './enum';
+import SchemaTypeInteger from './integer';
+import SchemaTypeBuffer from './buffer';
 
-export = {
-  Mixed,
-  String,
-  Number,
-  Boolean,
-  Array,
-  Object,
-  Date,
-  Virtual,
-  CUID,
-  Enum,
-  Integer,
-  Buffer
+export {
+  SchemaType as Mixed,
+  SchemaTypeString as String,
+  SchemaTypeNumber as Number,
+  SchemaTypeBoolean as Boolean,
+  SchemaTypeArray as Array,
+  SchemaTypeObject as Object,
+  SchemaTypeDate as Date,
+  SchemaTypeVirtual as Virtual,
+  SchemaTypeCUID as CUID,
+  SchemaTypeEnum as Enum,
+  SchemaTypeInteger as Integer,
+  SchemaTypeBuffer as Buffer
 };
