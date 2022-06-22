@@ -1,13 +1,19 @@
 {
   "compilerOptions": {
     "outDir": "./built",
-    "allowJs": true,
-    "target": "ES2018",
-    "lib": ["ES2018"],
     "module": "commonjs",
-    "esModuleInterop": true
+    "target": "es6",
+    "sourceMap": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
