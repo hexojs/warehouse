@@ -103,4 +103,4 @@ function isGetter(obj, key) {
   return Object.getOwnPropertyDescriptor(obj, key).get;
 }
 
-export = Document;
+export default Document;

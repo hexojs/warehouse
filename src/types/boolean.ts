@@ -61,4 +61,4 @@ class SchemaTypeBoolean extends SchemaType<boolean> {
   }
 }
 
-export = SchemaTypeBoolean;
+export default SchemaTypeBoolean;

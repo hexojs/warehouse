@@ -21,4 +21,4 @@ class WarehouseError extends Error {
 
 WarehouseError.prototype.name = 'WarehouseError';
 
-export = WarehouseError;
+export default WarehouseError;

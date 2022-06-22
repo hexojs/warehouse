@@ -380,4 +380,4 @@ SchemaTypeArray.prototype.u$append = SchemaTypeArray.prototype.u$push;
 
 SchemaTypeArray.prototype.u$prepend = SchemaTypeArray.prototype.u$unshift;
 
-export = SchemaTypeArray;
+export default SchemaTypeArray;

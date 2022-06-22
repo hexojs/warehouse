@@ -205,4 +205,4 @@ Database.prototype.Schema = Schema;
 Database.prototype.SchemaType = SchemaType;
 Database.version = pkg.version;
 
-export = Database;
+export default Database;

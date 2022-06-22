@@ -37,4 +37,4 @@ class SchemaTypeInteger extends SchemaTypeNumber {
   }
 }
 
-export = SchemaTypeInteger;
+export default SchemaTypeInteger;

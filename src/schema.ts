@@ -798,4 +798,4 @@ class Schema {
 
 Schema.prototype.Types = Types;
 
-export = Schema;
+export default Schema;

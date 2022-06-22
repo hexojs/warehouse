@@ -295,4 +295,4 @@ SchemaType.prototype.q$max = SchemaType.prototype.q$lte;
 
 SchemaType.prototype.q$min = SchemaType.prototype.q$gte;
 
-export = SchemaType;
+export default SchemaType;

@@ -972,4 +972,4 @@ Model.prototype.each = Model.prototype.forEach;
 
 Model.prototype.random = Model.prototype.shuffle;
 
-export = Model;
+export default Model;

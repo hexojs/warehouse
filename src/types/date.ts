@@ -155,4 +155,4 @@ class SchemaTypeDate extends SchemaType<Date> {
   }
 }
 
-export = SchemaTypeDate;
+export default SchemaTypeDate;

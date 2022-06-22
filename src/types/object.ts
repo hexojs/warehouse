@@ -17,4 +17,4 @@ class SchemaTypeObject extends SchemaType<Record<string, any>> {
   }
 }
 
-export = SchemaTypeObject;
+export default SchemaTypeObject;

@@ -392,4 +392,4 @@ Query.prototype.each = Query.prototype.forEach;
 
 Query.prototype.random = Query.prototype.shuffle;
 
-export = Query;
+export default Query;

@@ -105,4 +105,4 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
   }
 }
 
-export = SchemaTypeBuffer;
+export default SchemaTypeBuffer;

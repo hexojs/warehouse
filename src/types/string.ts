@@ -98,4 +98,4 @@ class SchemaTypeString extends SchemaType<string> {
   }
 }
 
-export = SchemaTypeString;
+export default SchemaTypeString;

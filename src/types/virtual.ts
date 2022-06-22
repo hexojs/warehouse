@@ -78,4 +78,4 @@ class SchemaTypeVirtual extends SchemaType<any> {
   }
 }
 
-export = SchemaTypeVirtual;
+export default SchemaTypeVirtual;

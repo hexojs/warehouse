@@ -40,4 +40,4 @@ class SchemaTypeEnum extends SchemaType<any[]> {
   }
 }
 
-export = SchemaTypeEnum;
+export default SchemaTypeEnum;

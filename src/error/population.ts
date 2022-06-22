@@ -4,4 +4,4 @@ class PopulationError extends WarehouseError {}
 
 PopulationError.prototype.name = 'PopulationError';
 
-export = PopulationError;
+export default PopulationError;

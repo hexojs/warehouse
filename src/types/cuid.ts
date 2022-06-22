@@ -39,4 +39,4 @@ class SchemaTypeCUID extends SchemaType<string> {
   }
 }
 
-export = SchemaTypeCUID;
+export default SchemaTypeCUID;

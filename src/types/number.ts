@@ -123,4 +123,4 @@ class SchemaTypeNumber extends SchemaType<number> {
   }
 }
 
-export = SchemaTypeNumber;
+export default SchemaTypeNumber;

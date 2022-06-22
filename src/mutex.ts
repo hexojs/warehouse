@@ -29,4 +29,4 @@ class Mutex {
   }
 }
 
-export = Mutex;
+export default Mutex;
