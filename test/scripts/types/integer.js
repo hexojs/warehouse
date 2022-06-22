@@ -1,10 +1,9 @@
-'use strict';
-
-require('chai').should();
-const ValidationError = require('../../../built/error/validation');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import ValidationError from '../../../lib/error/validation';
+import SchemaTypeInteger from '../../../lib/types/integer';
 
 describe('SchemaTypeInteger', () => {
-  const SchemaTypeInteger = require('../../../built/types/integer');
   const type = new SchemaTypeInteger('test');
 
   it('cast()', () => {

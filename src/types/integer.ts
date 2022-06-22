@@ -1,5 +1,5 @@
-import SchemaTypeNumber = require('./number');
-import ValidationError = require('../error/validation');
+import SchemaTypeNumber from './number';
+import ValidationError from '../error/validation';
 
 /**
  * Integer schema type.

@@ -1,16 +1,16 @@
 import { EventEmitter } from 'events';
-import rfdc = require('rfdc');
+import rfdc from 'rfdc';
 const cloneDeep = rfdc();
-import Promise = require('bluebird');
-import util = require('./util');
+import Promise from 'bluebird';
+import util from './util';
 const { parseArgs, getProp, setGetter, shuffle } = util;
-import Document = require('./document');
-import Query = require('./query');
-import Schema = require('./schema');
-import Types = require('./types');
-import WarehouseError = require('./error');
-import PopulationError = require('./error/population');
-import Mutex = require('./mutex');
+import Document from './document';
+import Query from './query';
+import Schema from './schema';
+import Types from './types/index';
+import WarehouseError from './error';
+import PopulationError from './error/population';
+import Mutex from './mutex';
 
 class Model extends EventEmitter {
   _mutex = new Mutex();

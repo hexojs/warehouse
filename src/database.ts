@@ -1,14 +1,14 @@
-import JSONStream = require('JSONStream');
-import Bluebird = require('bluebird');
+import JSONStream from 'JSONStream';
+import Bluebird from 'bluebird';
 import { writev, promises as fsPromises, createReadStream } from 'graceful-fs';
 import { pipeline, Stream } from 'stream';
-import Model = require('./model');
-import Schema = require('./schema');
-import SchemaType = require('./schematype');
-import WarehouseError = require('./error');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import Model from './model';
+import Schema from './schema';
+import SchemaType from './schematype';
+import WarehouseError from './error';
+import log from 'hexo-log';
+
 const pkg = require('../package.json');
-const log = require('hexo-log')();
 const { open } = fsPromises;
 const pipelineAsync = Bluebird.promisify(pipeline) as (...args: Stream[]) => Bluebird<unknown>;
 

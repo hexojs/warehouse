@@ -1,10 +1,10 @@
-import SchemaType = require('./schematype');
-import Types = require('./types');
-import Promise = require('bluebird');
-import util = require('./util');
+import SchemaType from './schematype';
+import Types from './types/index';
+import Promise from 'bluebird';
+import util from './util';
 const { getProp, setProp, delProp } = util;
-import PopulationError = require('./error/population');
-import SchemaTypeVirtual = require('./types/virtual');
+import PopulationError from './error/population';
+import SchemaTypeVirtual from './types/virtual';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isPlainObject: (o: any) => boolean = require('is-plain-object');
 

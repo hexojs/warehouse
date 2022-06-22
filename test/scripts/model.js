@@ -1,13 +1,14 @@
-'use strict';
-
-const should = require('chai').use(require('chai-as-promised')).should();
-const sortBy = require('lodash/sortBy');
-const Promise = require('bluebird');
-const sinon = require('sinon');
-const cuid = require('cuid');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import lodash from 'lodash';
+const { sortBy } = lodash;
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import cuid from 'cuid';
+import Database from '../../lib/database';
 
 describe('Model', () => {
-  const Database = require('../..');
+
   const Schema = Database.Schema;
   const SchemaType = Database.SchemaType;
 

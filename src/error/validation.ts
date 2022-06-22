@@ -1,4 +1,4 @@
-import WarehouseError = require('../error');
+import WarehouseError from '../error';
 
 class ValidationError extends WarehouseError {}
 

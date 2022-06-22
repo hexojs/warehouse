@@ -1,5 +1,5 @@
-import SchemaType = require('../schematype');
-import ValidationError = require('../error/validation');
+import SchemaType from '../schematype';
+import ValidationError from '../error/validation';
 
 /**
  * Boolean schema type.

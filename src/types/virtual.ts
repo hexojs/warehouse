@@ -1,5 +1,5 @@
-import SchemaType = require('../schematype');
-import util = require('../util');
+import SchemaType from '../schematype';
+import util from '../util';
 const { setGetter } = util;
 
 /**

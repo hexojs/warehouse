@@ -1,6 +1,6 @@
-import util = require('./util');
+import util from './util';
 const { setProp } = util;
-import ValidationError = require('./error/validation');
+import ValidationError from './error/validation';
 
 /**
  * This is the basic schema type.

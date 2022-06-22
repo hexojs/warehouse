@@ -1,5 +1,5 @@
-import Promise = require('bluebird');
-import util = require('./util');
+import Promise from 'bluebird';
+import util from './util';
 const { parseArgs, shuffle } = util;
 
 abstract class Query {

@@ -1,4 +1,4 @@
-import SchemaType = require('../schematype');
+import SchemaType from '../schematype';
 
 /**
  * Object schema type.

@@ -1,6 +1,6 @@
-import SchemaType = require('../schematype');
-import cuid = require('cuid');
-import ValidationError = require('../error/validation');
+import SchemaType from '../schematype';
+import cuid from 'cuid';
+import ValidationError from '../error/validation';
 
 /**
  * [CUID](https://github.com/ericelliott/cuid) schema type.

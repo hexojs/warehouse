@@ -1,17 +1,20 @@
-'use strict';
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import path from 'path';
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import Database from '../../lib/database';
+import Model from '../../lib/model';
+import fs from 'fs';
+const promisifyFs = Promise.promisifyAll(fs);
 
-const should = require('chai').should(); // eslint-disable-line
-const path = require('path');
-const Promise = require('bluebird');
-const sinon = require('sinon');
-const fs = Promise.promisifyAll(require('fs'));
-
+import url from "url";
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
 const DB_VERSION = 1;
 
 describe('Database', () => {
-  const Database = require('../../built/database');
-  const Model = require('../../built/model');
   const Schema = Database.Schema;
   const db = new Database({path: DB_PATH, version: DB_VERSION});
 
@@ -85,7 +88,7 @@ describe('Database', () => {
     });
   });
 
-  it('save()', () => db.save().then(() => fs.readFileAsync(DB_PATH, 'utf8')).then(data => {
+  it('save()', () => db.save().then(() => promisifyFs.readFileAsync(DB_PATH, 'utf8')).then(data => {
     const json = JSON.parse(data);
 
     json.meta.should.eql({

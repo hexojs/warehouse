@@ -1,10 +1,9 @@
-'use strict';
-
-require('chai').should();
-const ValidationError = require('../../../built/error/validation');
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import ValidationError from '../../../lib/error/validation';
+import SchemaTypeBoolean from '../../../lib/types/boolean';
 
 describe('SchemaTypeBoolean', () => {
-  const SchemaTypeBoolean = require('../../../built/types/boolean');
   const type = new SchemaTypeBoolean('test');
 
   it('cast()', () => {
