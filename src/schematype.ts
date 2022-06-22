@@ -46,7 +46,7 @@ import ValidationError from './error/validation';
  * The return value will replace the original data.
  */
 class SchemaType<T> {
-  options: { required: boolean; default?: (() => T) | T; }
+  options: { required: boolean; default?: (() => T) | T; };
   default: () => T;
 
   /**
