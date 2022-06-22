@@ -90,7 +90,7 @@ class Database {
    *   @param {function} [options.onUpgrade] Triggered when the database is upgraded
    *   @param {function} [options.onDowngrade] Triggered when the database is downgraded
    */
-  constructor(options: { path: string } & Partial<DatabaseOptions>) {
+  constructor(options?: { path: string } & Partial<DatabaseOptions>) {
     this.options = {
       version: 0,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -132,7 +132,7 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  load(callback) {
+  load(callback?) {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
@@ -172,7 +172,7 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(callback) {
+  save(callback?) {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
