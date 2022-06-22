@@ -13,7 +13,7 @@
     "pretest": "npm run typescript",
     "typescript": "tsc --build .tsconfig.json",
     "eslint": "eslint src test",
-    "test": "mocha \"test/scripts/**/*.js\"",
+    "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
     "test-cov": "nyc --reporter=lcovonly --reporter=text-summary npm test",
     "jsdoc": "jsdoc --configure .jsdoc.json",
     "prepublish": "npm run typescript"
@@ -37,9 +37,12 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.36",
+    "@types/chai": "^4.3.1",
     "@types/graceful-fs": "^4.1.5",
     "@types/jsonstream": "^0.8.30",
+    "@types/mocha": "^9.1.1",
     "@types/node": "^18.0.0",
+    "@types/sinon": "^10.0.11",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "chai": "^4.3.6",
@@ -52,6 +55,7 @@
     "mocha": "^10.0.0",
     "nyc": "^15.0.0",
     "sinon": "^14.0.0",
+    "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
   },
   "engines": {

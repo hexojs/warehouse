@@ -1,9 +1,9 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
+// @ts-nocheck
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import SchemaTypeVirtual from '../../../dist/types/virtual';
 
 describe('SchemaTypeVirtual', () => {
-  const SchemaTypeVirtual = require('../../../dist/types/virtual');
   const type = new SchemaTypeVirtual('test');
 
   it('get()', () => {

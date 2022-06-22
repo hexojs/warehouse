@@ -1,8 +1,8 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
-const Mutex = require('../../dist/mutex');
-const sinon = require('sinon');
+// @ts-nocheck
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import Mutex from '../../dist/mutex';
+import sinon from 'sinon';
 
 describe('Mutex', () => {
   it('mutex test', callback => {

@@ -1,13 +1,18 @@
-'use strict';
+// @ts-nocheck
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised ); // eslint-disable-line
 
-const should = require('chai').use(require('chai-as-promised')).should();
-const sortBy = require('lodash/sortBy');
-const Promise = require('bluebird');
-const sinon = require('sinon');
-const cuid = require('cuid');
+import lodash from 'lodash';
+const { sortBy } = lodash;
+import Promise from 'bluebird';
+import sinon from 'sinon';
+import cuid from 'cuid';
+import Database from '../../dist/database';
 
 describe('Model', () => {
-  const Database = require('../..');
+
   const Schema = Database.Schema;
   const SchemaType = Database.SchemaType;
 
@@ -163,6 +168,7 @@ describe('Model', () => {
     return Promise.all([
       Test.insert({id: 1}),
       Test.insert({id: 1})
+      // @ts-ignore
     ]).should.eventually.be.rejected;
   });
 
@@ -1249,6 +1255,7 @@ describe('Model', () => {
   });
 
   it('_export() - should not save undefined value', () => {
+    // @ts-ignore
     class CacheType extends SchemaType {
       value() {}
     }

@@ -1,11 +1,10 @@
-'use strict';
-
-require('chai').should();
-const ValidationError = require('../../../dist/error/validation');
+// @ts-nocheck
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import ValidationError from '../../../dist/error/validation';
+import SchemaTypeEnum from '../../../dist/types/enum';
 
 describe('SchemaTypeEnum', () => {
-  const SchemaTypeEnum = require('../../../dist/types/enum');
-
   it('validate()', () => {
     const type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
 
