@@ -1,7 +1,7 @@
 'use strict';
 
 const should = require('chai').should(); // eslint-disable-line
-const Mutex = require('../../built/mutex');
+const Mutex = require('../../dist/mutex');
 const sinon = require('sinon');
 
 describe('Mutex', () => {

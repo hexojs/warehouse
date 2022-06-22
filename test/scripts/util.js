@@ -3,7 +3,7 @@
 const should = require('chai').should(); // eslint-disable-line
 
 describe('util', () => {
-  const util = require('../../built/util');
+  const util = require('../../dist/util');
 
   it('shuffle()', () => {
     const src = Array(100).fill(0).map((_, i) => i);

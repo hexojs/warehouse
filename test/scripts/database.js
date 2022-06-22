@@ -10,8 +10,8 @@ const DB_PATH = path.join(path.dirname(__dirname), 'fixtures', 'db.json');
 const DB_VERSION = 1;
 
 describe('Database', () => {
-  const Database = require('../../built/database');
-  const Model = require('../../built/model');
+  const Database = require('../../dist/database');
+  const Model = require('../../dist/model');
   const Schema = Database.Schema;
   const db = new Database({path: DB_PATH, version: DB_VERSION});
 

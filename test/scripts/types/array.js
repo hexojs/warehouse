@@ -1,13 +1,13 @@
 'use strict';
 
 const should = require('chai').should(); // eslint-disable-line
-const ValidationError = require('../../../built/error/validation');
+const ValidationError = require('../../../dist/error/validation');
 
 describe('SchemaTypeArray', () => {
-  const SchemaTypeArray = require('../../../built/types/array');
-  const SchemaTypeString = require('../../../built/types/string');
-  const SchemaTypeDate = require('../../../built/types/date');
-  const SchemaTypeBoolean = require('../../../built/types/boolean');
+  const SchemaTypeArray = require('../../../dist/types/array');
+  const SchemaTypeString = require('../../../dist/types/string');
+  const SchemaTypeDate = require('../../../dist/types/date');
+  const SchemaTypeBoolean = require('../../../dist/types/boolean');
   const type = new SchemaTypeArray('test');
 
   it('cast()', () => {

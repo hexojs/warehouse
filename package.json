@@ -2,12 +2,12 @@
   "name": "warehouse",
   "version": "4.0.1",
   "description": "Simple JSON-based database",
-  "main": "built/database",
+  "main": "dist/database",
   "directories": {
-    "lib": "./built"
+    "lib": "./dist"
   },
   "files": [
-    "built/"
+    "dist/"
   ],
   "scripts": {
     "pretest": "npm run typescript",

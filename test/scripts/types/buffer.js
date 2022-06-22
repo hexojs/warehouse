@@ -1,10 +1,10 @@
 'use strict';
 
 const should = require('chai').should();
-const ValidationError = require('../../../built/error/validation');
+const ValidationError = require('../../../dist/error/validation');
 
 describe('SchemaTypeBuffer', () => {
-  const SchemaTypeBuffer = require('../../../built/types/buffer');
+  const SchemaTypeBuffer = require('../../../dist/types/buffer');
   const type = new SchemaTypeBuffer('test');
 
   it('cast()', () => {

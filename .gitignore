@@ -5,4 +5,4 @@ node_modules/
 *.log
 docs/
 coverage/
-built
+dist
