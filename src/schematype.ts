@@ -1,5 +1,4 @@
-import util from './util';
-const { setProp } = util;
+import { setProp } from './util';
 import ValidationError from './error/validation';
 
 /**

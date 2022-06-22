@@ -1,8 +1,7 @@
 import SchemaType from './schematype';
 import * as Types from './types/index';
 import Promise from 'bluebird';
-import util from './util';
-const { getProp, setProp, delProp } = util;
+import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
 // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
-import util from './util';
-const { parseArgs, shuffle } = util;
+import { parseArgs, shuffle } from './util';
 
 abstract class Query {
   length: number;

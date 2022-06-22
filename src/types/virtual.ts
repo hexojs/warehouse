@@ -1,6 +1,5 @@
 import SchemaType from '../schematype';
-import util from '../util';
-const { setGetter } = util;
+import { setGetter } from '../util';
 
 /**
  * Virtual schema type.
