@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "pretest": "npm run typescript",
-    "typescript": "tsc --build .tsconfig.json",
     "eslint": "eslint src",
+    "typescript": "tsc --build tsconfig.json",
     "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
     "test-cov": "nyc --reporter=lcovonly --reporter=text-summary npm test",
     "jsdoc": "jsdoc --configure .jsdoc.json",
