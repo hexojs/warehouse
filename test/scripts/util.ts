@@ -37,7 +37,7 @@ describe('util', () => {
   });
 
   it('getProp() - obj must be an object', () => {
-    (() => util.getProp("", "")).should.to.throw('obj must be an object!');
+    (() => util.getProp('', null)).should.to.throw('obj must be an object!');
   });
 
   it('getProp() - key is required', () => {
@@ -68,7 +68,7 @@ describe('util', () => {
   });
 
   it('setProp() - obj must be an object', () => {
-    (() => util.setProp("", "", "")).should.to.throw('obj must be an object!');
+    (() => util.setProp('', null, null)).should.to.throw('obj must be an object!');
   });
 
   it('setProp() - key is required', () => {
@@ -99,7 +99,7 @@ describe('util', () => {
   });
 
   it('delProp() - obj must be an object', () => {
-    (() => util.delProp("", null)).should.to.throw('obj must be an object!');
+    (() => util.delProp('', null)).should.to.throw('obj must be an object!');
   });
 
   it('delProp() - key is required', () => {
@@ -138,7 +138,7 @@ describe('util', () => {
   });
 
   it('setGetter() - obj must be an object', () => {
-    (() => util.setGetter("", null, null)).should.to.throw('obj must be an object!');
+    (() => util.setGetter('', null, null)).should.to.throw('obj must be an object!');
   });
 
   it('setGetter() - key is required', () => {

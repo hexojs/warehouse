@@ -85,11 +85,11 @@ describe('SchemaTypeDate', () => {
 
   it('u$inc()', () => {
     type.u$inc(new Date(1e8), 1).should.eql(new Date(1e8 + 1));
-    should.not.exist(undefined, "1");
+    should.not.exist(undefined, '1');
   });
 
   it('u$dec()', () => {
     type.u$dec(new Date(1e8), 1).should.eql(new Date(1e8 - 1));
-    should.not.exist(undefined, "1");
+    should.not.exist(undefined, '1');
   });
 });
