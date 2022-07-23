@@ -1,9 +1,8 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import SchemaTypeObject from '../../../lib/types/object.js';
 
 describe('SchemaTypeObject', () => {
-  const SchemaTypeObject = require('../../../lib/types/object');
   const type = new SchemaTypeObject('test');
 
   it('cast() - default', () => {

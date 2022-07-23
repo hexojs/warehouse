@@ -1,10 +1,8 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import * as util from '../../lib/util.js';
 
 describe('util', () => {
-  const util = require('../../lib/util');
-
   it('shuffle()', () => {
     const src = Array(100).fill(0).map((_, i) => i);
     const result = util.shuffle(src);

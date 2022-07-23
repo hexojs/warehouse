@@ -2,7 +2,8 @@
   "name": "warehouse",
   "version": "4.0.1",
   "description": "Simple JSON-based database",
-  "main": "lib/database",
+  "type": "module",
+  "exports": "./lib/database.js",
   "directories": {
     "lib": "./lib"
   },
@@ -11,8 +12,8 @@
   ],
   "scripts": {
     "eslint": "eslint lib test",
-    "test": "mocha \"test/scripts/**/*.js\"",
-    "test-cov": "nyc --reporter=lcovonly --reporter=text-summary npm test",
+    "test": "mocha",
+    "test-cov": "c8 --reporter=lcovonly npm run test",
     "jsdoc": "jsdoc --configure .jsdoc.json"
   },
   "repository": "hexojs/warehouse",
@@ -33,15 +34,18 @@
     "rfdc": "^1.1.4"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "@babel/core": "^7.18.5",
+    "@babel/eslint-parser": "^7.18.2",
+    "@babel/plugin-syntax-import-assertions": "^7.17.12",
+    "c8": "^7.11.3",
+    "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^8.1.0",
+    "eslint": "^8.17.0",
     "eslint-config-hexo": "^5.0.0",
     "jsdoc": "^3.4.0",
     "lodash": "^4.17.15",
     "minami": "^1.1.1",
     "mocha": "^10.0.0",
-    "nyc": "^15.0.0",
     "sinon": "^14.0.0"
   },
   "engines": {

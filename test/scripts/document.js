@@ -1,10 +1,10 @@
-'use strict';
-
-const should = require('chai').should(); // eslint-disable-line
+import chai from 'chai';
+const should = chai.should(); // eslint-disable-line
+import Database from '../../lib/database.js';
+import Document from '../../lib/document.js';
 
 describe('Document', () => {
-  const Database = require('../..');
-  const Document = require('../../lib/document');
+
   const db = new Database();
   const Schema = Database.Schema;
 
