@@ -173,7 +173,7 @@ export function reverse(arr) {
   return arr;
 }
 
-export function parseArgs(orderby, order) {
+export function parseArgs(orderby, order?) {
   let result;
 
   if (order) {

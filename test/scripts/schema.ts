@@ -1,4 +1,3 @@
-// @ts-nocheck
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import Database from '../../dist/database';
@@ -49,10 +48,13 @@ describe('Schema', () => {
 
     // array
     schema.paths.arr1.should.be.an.instanceOf(Schema.Types.Array);
+    // @ts-ignore
     schema.paths.arr1.child.should.be.an.instanceOf(Schema.Types.Mixed);
     schema.paths.arr2.should.be.an.instanceOf(Schema.Types.Array);
+    // @ts-ignore
     schema.paths.arr2.child.should.be.an.instanceOf(Schema.Types.String);
     schema.paths.arr3.should.be.an.instanceOf(Schema.Types.Array);
+    // @ts-ignore
     schema.paths.arr3.child.should.be.an.instanceOf(Schema.Types.String);
 
     // object
@@ -101,7 +103,7 @@ describe('Schema', () => {
     (() => schema.pre('wtf', () => {})).should.to.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
-    (() => schema.pre('save')).should.to.throw(TypeError, 'Hook must be a function!');
+    (() => schema.pre('save', {})).should.to.throw(TypeError, 'Hook must be a function!');
   });
 
   it('post()', () => {
@@ -121,7 +123,7 @@ describe('Schema', () => {
     (() => schema.post('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
-    (() => schema.post('save')).should.to.throw(TypeError, 'Hook must be a function!');
+    (() => schema.post('save', {})).should.to.throw(TypeError, 'Hook must be a function!');
   });
 
   it('method()', () => {
@@ -135,7 +137,7 @@ describe('Schema', () => {
     schema.method.should.to.throw(TypeError, 'Method name is required!');
 
     // without function
-    (() => schema.method('wtf')).should.to.throw(TypeError, 'Instance method must be a function!');
+    (() => schema.method('wtf', {})).should.to.throw(TypeError, 'Instance method must be a function!');
   });
 
   it('static()', () => {
@@ -149,6 +151,6 @@ describe('Schema', () => {
     schema.static.should.to.throw(TypeError, 'Method name is required!');
 
     // without function
-    (() => schema.static('wtf')).should.to.throw(TypeError, 'Static method must be a function!');
+    (() => schema.static('wtf', {})).should.to.throw(TypeError, 'Static method must be a function!');
   });
 });

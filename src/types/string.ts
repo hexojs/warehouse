@@ -13,7 +13,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {String}
    */
-  cast(value_, data) {
+  cast(value_?, data?) {
     const value = super.cast(value_, data);
 
     if (value == null || typeof value === 'string') return value;
@@ -27,7 +27,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {String|Error}
    */
-  validate(value_, data) {
+  validate(value_?, data?) {
     const value = super.validate(value_, data);
 
     if (value !== undefined && typeof value !== 'string') {
@@ -45,7 +45,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value, query, data) {
+  match(value, query, data?) {
     if (!value || !query) {
       return value === query;
     }
@@ -65,7 +65,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value, query, data) {
+  q$in(value, query, data?) {
     for (let i = 0, len = query.length; i < len; i++) {
       if (this.match(value, query[i], data)) return true;
     }
@@ -81,7 +81,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data) {
+  q$nin(value, query, data?) {
     return !this.q$in(value, query, data);
   }
 
@@ -90,10 +90,9 @@ class SchemaTypeString extends SchemaType<string> {
    *
    * @param {String} value
    * @param {Number} query
-   * @param {Object} data
    * @return {Boolean}
    */
-  q$length(value, query, data) {
+  q$length(value, query) {
     return (value ? value.length : 0) === query;
   }
 }

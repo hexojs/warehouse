@@ -78,7 +78,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  cast(value: unknown, data: unknown): unknown {
+  cast(value?: unknown, data?: unknown): unknown {
     if (value == null) {
       return this.default();
     }
@@ -93,7 +93,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*|Error}
    */
-  validate(value: unknown, data: unknown): unknown {
+  validate(value: unknown, data?: unknown): unknown {
     if (this.options.required && value == null) {
       throw new ValidationError(`\`${this.name}\` is required!`);
     }
@@ -136,7 +136,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  value(value: unknown, data: unknown): any {
+  value(value: unknown, data?: unknown): any {
     return value;
   }
 
@@ -148,7 +148,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value: T, query: unknown, data: unknown): boolean {
+  match(value: T, query: unknown, data?: unknown): boolean {
     return value === query;
   }
 
@@ -160,7 +160,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$exist(value: unknown, query: unknown, data: unknown): boolean {
+  q$exist(value: unknown, query: unknown, data?: unknown): boolean {
     return (value != null) === query;
   }
 
@@ -172,7 +172,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {boolean}
    */
-  q$ne(value: T, query: unknown, data: unknown): boolean {
+  q$ne(value: T, query: unknown, data?: unknown): boolean {
     return !this.match(value, query, data);
   }
 
@@ -184,7 +184,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$lt(value: unknown, query: unknown, data: unknown): boolean {
+  q$lt(value: unknown, query: unknown, data?: unknown): boolean {
     return value < query;
   }
 
@@ -196,7 +196,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$lte(value: unknown, query: unknown, data: unknown): boolean {
+  q$lte(value: unknown, query: unknown, data?: unknown): boolean {
     return value <= query;
   }
 
@@ -208,7 +208,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$gt(value: unknown, query: unknown, data: unknown): boolean {
+  q$gt(value: unknown, query: unknown, data?: unknown): boolean {
     return value > query;
   }
 
@@ -220,7 +220,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$gte(value: unknown, query: unknown, data: unknown): boolean {
+  q$gte(value: unknown, query: unknown, data?: unknown): boolean {
     return value >= query;
   }
 
@@ -232,7 +232,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value: unknown, query: unknown[], data: unknown): boolean {
+  q$in(value: unknown, query: unknown[], data?: unknown): boolean {
     return query.includes(value);
   }
 
@@ -244,7 +244,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data) {
+  q$nin(value, query, data?) {
     return !query.includes(value);
   }
 
@@ -256,7 +256,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  u$set(value, update, data) {
+  u$set(value, update, data?) {
     return update;
   }
 
@@ -268,7 +268,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  u$unset(value, update, data) { return update ? undefined : value; }
+  u$unset(value, update, data?) { return update ? undefined : value; }
 
   /**
    * Renames a field.

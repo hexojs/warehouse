@@ -13,7 +13,7 @@ class SchemaTypeInteger extends SchemaTypeNumber {
    * @param {Object} data
    * @return {Number}
    */
-  cast(value_, data): number {
+  cast(value_?, data?): number {
     const value = super.cast(value_, data);
 
     return parseInt(value as any, 10);
@@ -26,7 +26,7 @@ class SchemaTypeInteger extends SchemaTypeNumber {
    * @param {Object} data
    * @return {Number|Error}
    */
-  validate(value_, data): number {
+  validate(value_?, data?): number {
     const value = super.validate(value_, data);
 
     if (value % 1 !== 0) {

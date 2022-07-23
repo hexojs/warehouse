@@ -1,4 +1,3 @@
-// @ts-nocheck
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import * as util from '../../dist/util';
@@ -16,7 +15,7 @@ describe('util', () => {
   });
 
   it('shuffle() - array must be an array', () => {
-    (() => util.shuffle()).should.to.throw('array must be an Array!');
+    (() => util.shuffle({})).should.to.throw('array must be an Array!');
   });
 
   it('getProp()', () => {
@@ -38,11 +37,11 @@ describe('util', () => {
   });
 
   it('getProp() - obj must be an object', () => {
-    (() => util.getProp()).should.to.throw('obj must be an object!');
+    (() => util.getProp("", "")).should.to.throw('obj must be an object!');
   });
 
   it('getProp() - key is required', () => {
-    (() => util.getProp({})).should.to.throw('key is required!');
+    (() => util.getProp({}, null)).should.to.throw('key is required!');
   });
 
   it('setProp()', () => {
@@ -69,11 +68,11 @@ describe('util', () => {
   });
 
   it('setProp() - obj must be an object', () => {
-    (() => util.setProp()).should.to.throw('obj must be an object!');
+    (() => util.setProp("", "", "")).should.to.throw('obj must be an object!');
   });
 
   it('setProp() - key is required', () => {
-    (() => util.setProp({})).should.to.throw('key is required!');
+    (() => util.setProp({}, null, null)).should.to.throw('key is required!');
   });
 
   it('delProp()', () => {
@@ -100,11 +99,11 @@ describe('util', () => {
   });
 
   it('delProp() - obj must be an object', () => {
-    (() => util.delProp()).should.to.throw('obj must be an object!');
+    (() => util.delProp("", null)).should.to.throw('obj must be an object!');
   });
 
   it('delProp() - key is required', () => {
-    (() => util.delProp({})).should.to.throw('key is required!');
+    (() => util.delProp({}, null)).should.to.throw('key is required!');
   });
 
   it('setGetter()', () => {
@@ -134,19 +133,20 @@ describe('util', () => {
 
     util.setGetter(obj, 'a.c.h', () => 'ach');
 
+    // @ts-ignore
     obj.a.c.h.should.eql('ach');
   });
 
   it('setGetter() - obj must be an object', () => {
-    (() => util.setGetter()).should.to.throw('obj must be an object!');
+    (() => util.setGetter("", null, null)).should.to.throw('obj must be an object!');
   });
 
   it('setGetter() - key is required', () => {
-    (() => util.setGetter({})).should.to.throw('key is required!');
+    (() => util.setGetter({}, null, null)).should.to.throw('key is required!');
   });
 
   it('setGetter() - fn must be a function', () => {
-    (() => util.setGetter({}, 'test')).should.to.throw('fn must be a function!');
+    (() => util.setGetter({}, 'test', {})).should.to.throw('fn must be a function!');
   });
 
   it('arr2obj()', () => {
@@ -154,7 +154,7 @@ describe('util', () => {
   });
 
   it('arr2obj() - arr must be an array', () => {
-    (() => util.arr2obj()).should.to.throw('arr must be an array!');
+    (() => util.arr2obj({}, null)).should.to.throw('arr must be an array!');
   });
 
   it('reverse()', () => {
@@ -164,7 +164,7 @@ describe('util', () => {
   });
 
   it('reverse() - arr must be an array', () => {
-    (() => util.reverse()).should.to.throw('arr must be an array!');
+    (() => util.reverse({})).should.to.throw('arr must be an array!');
   });
 
   it('parseArgs()', () => {

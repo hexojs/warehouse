@@ -33,7 +33,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  cast(value_: unknown, data: unknown): I[] | null | undefined {
+  cast(value_?: unknown, data?: unknown): I[] | null | undefined {
     value_ = super.cast(value_, data);
     if (value_ == null) return value_ as null | undefined;
 
@@ -56,7 +56,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array|Error}
    */
-  validate(value_: unknown, data: unknown): I[] {
+  validate(value_?: unknown, data?: unknown): I[] {
     const value = super.validate(value_, data);
 
     if (!isArray(value)) {
@@ -81,7 +81,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Array} b
    * @return {Number}
    */
-  compare(a: I[], b: I[]): number {
+  compare(a?: I[], b?: I[]): number {
     if (a) {
       if (!b) return 1;
     } else {
@@ -107,7 +107,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Array} value
    * @return {Array}
    */
-  parse(value: unknown[]) {
+  parse(value?: unknown[]) {
     if (!value) return value;
 
     const len = value.length;
@@ -130,7 +130,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  value(value: unknown[], data: unknown): any[] {
+  value(value?: unknown[], data?: unknown): any[] {
     if (!value) return value;
 
     const len = value.length;
@@ -154,7 +154,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value: I[], query: unknown[], data: unknown): boolean {
+  match(value?: I[], query?: unknown[], data?: unknown): boolean {
     if (!value || !query) {
       return value === query;
     }
@@ -181,7 +181,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$size(value: unknown[], query: unknown, data: unknown): boolean {
+  q$size(value?: unknown[], query?: unknown, data?: unknown): boolean {
     return (value ? value.length : 0) === query;
   }
 
@@ -193,7 +193,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value: unknown[], query: unknown[], data: unknown): boolean {
+  q$in(value?: unknown[], query?: unknown[], data?: unknown): boolean {
     if (!value) return false;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -211,7 +211,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value: unknown[], query: unknown[], data: unknown): boolean {
+  q$nin(value?: unknown[], query?: unknown[], data?: unknown): boolean {
     if (!value) return true;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -229,7 +229,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$all(value: unknown[], query: unknown[], data: unknown): boolean {
+  q$all(value?: unknown[], query?: unknown[], data?: unknown): boolean {
     if (!value) return false;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -247,7 +247,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$push<T>(value: T[], update: T, data: unknown): T[] {
+  u$push<T>(value?: T[], update?: T | T[], data?: unknown): T[] {
     if (isArray(update)) {
       return value ? value.concat(update) : update;
     }
@@ -268,7 +268,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$unshift(value: unknown[], update: unknown, data: unknown): any[] {
+  u$unshift(value?: unknown[], update?: unknown, data?: unknown): any[] {
     if (isArray(update)) {
       return value ? update.concat(value) : update;
     }
@@ -289,7 +289,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$pull(value: unknown[], update: unknown, data: unknown): any[] {
+  u$pull(value?: unknown[], update?: unknown, data?: unknown): any[] {
     if (!value) return value;
 
     if (isArray(update)) {
@@ -307,7 +307,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$shift(value, update, data) {
+  u$shift(value?, update?, data?) {
     if (!value || !update) return value;
 
     if (update === true) {
@@ -327,7 +327,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$pop(value, update, data) {
+  u$pop(value?, update?, data?) {
     if (!value || !update) return value;
 
     const length = value.length;
@@ -349,7 +349,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$addToSet(value: any[], update, data) {
+  u$addToSet(value?: any[], update?, data?) {
     if (isArray(update)) {
       if (!value) return update;
 

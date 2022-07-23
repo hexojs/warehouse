@@ -1,4 +1,3 @@
-// @ts-nocheck
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import Database from '../../dist/database';

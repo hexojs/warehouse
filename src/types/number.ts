@@ -13,7 +13,7 @@ class SchemaTypeNumber extends SchemaType<number> {
    * @param {Object} data
    * @return {Number}
    */
-  cast(value_, data): number | null | undefined {
+  cast(value_?, data?): number | null | undefined {
     const value = super.cast(value_, data);
 
     if (value == null || typeof value === 'number') return value as number | null | undefined;
@@ -28,7 +28,7 @@ class SchemaTypeNumber extends SchemaType<number> {
    * @param {Object} data
    * @return {Number|Error}
    */
-  validate(value_, data) {
+  validate(value_?, data?) {
     const value = super.validate(value_, data);
 
     if (value !== undefined && (typeof value !== 'number' || isNaN(value))) {
@@ -43,10 +43,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$inc(value, update, data) {
+  u$inc(value, update) {
     return value ? value + update : update;
   }
 
@@ -55,10 +54,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$dec(value, update, data) {
+  u$dec(value, update) {
     return value ? value - update : -update;
   }
 
@@ -67,10 +65,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$mul(value, update, data) {
+  u$mul(value, update) {
     return value ? value * update : 0;
   }
 
@@ -79,10 +76,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$div(value, update, data) {
+  u$div(value, update) {
     return value ? value / update : 0;
   }
 
@@ -91,10 +87,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$mod(value, update, data) {
+  u$mod(value, update) {
     return value ? value % update : 0;
   }
 
@@ -103,10 +98,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$max(value, update, data) {
+  u$max(value, update) {
     return update > value ? update : value;
   }
 
@@ -115,10 +109,9 @@ class SchemaTypeNumber extends SchemaType<number> {
    *
    * @param {Number} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Number}
    */
-  u$min(value, update, data) {
+  u$min(value, update) {
     return update < value ? update : value;
   }
 }

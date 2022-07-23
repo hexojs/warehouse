@@ -28,7 +28,7 @@ class SchemaTypeEnum extends SchemaType<any[]> {
    * @param {Object} data
    * @return {*}
    */
-  validate(value_, data) {
+  validate(value_, data?) {
     const value = super.validate(value_, data);
     const elements = this.options.elements;
 

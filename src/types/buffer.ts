@@ -14,7 +14,7 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    *   @param {boolean|Function} [options.default]
    *   @param {string} [options.encoding=hex]
    */
-  constructor(name: string, options) {
+  constructor(name: string, options?) {
     super(name, Object.assign({
       encoding: 'hex'
     }, options));
@@ -27,7 +27,7 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * @param {Object} data
    * @return {Buffer}
    */
-  cast(value_: unknown, data): Buffer | null | undefined {
+  cast(value_?: unknown, data?): Buffer | null | undefined {
     const value = super.cast(value_, data);
 
     if (value == null || Buffer.isBuffer(value)) return value as Buffer | null | undefined;
@@ -42,7 +42,7 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * @param {Object} data
    * @return {Buffer}
    */
-  validate(value_: unknown, data): Buffer {
+  validate(value_: unknown, data?): Buffer {
     const value = super.validate(value_, data);
 
     if (!Buffer.isBuffer(value)) {
@@ -59,7 +59,7 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * @param {Buffer} b
    * @return {Number}
    */
-  compare(a: Buffer, b: Buffer): number {
+  compare(a?: Buffer, b?: Buffer): number {
     if (Buffer.isBuffer(a)) {
       return Buffer.isBuffer(b) ? a.compare(b) : 1;
     }
@@ -73,7 +73,7 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * @param {*} value
    * @return {Boolean}
    */
-  parse(value) {
+  parse(value?) {
     return value ? Buffer.from(value, this.options.encoding) : value;
   }
 
@@ -81,10 +81,9 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * Transforms data into number to compress the size of database files.
    *
    * @param {Buffer} value
-   * @param {Object} data
    * @return {Number}
    */
-  value(value: Buffer, data) {
+  value(value?: Buffer) {
     return Buffer.isBuffer(value) ? value.toString(this.options.encoding) : value;
   }
 
@@ -93,10 +92,9 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    *
    * @param {Buffer} value
    * @param {Buffer} query
-   * @param {Object} data
    * @return {Boolean}
    */
-  match(value: Buffer, query: Buffer, data): boolean {
+  match(value: Buffer, query: Buffer): boolean {
     if (Buffer.isBuffer(value) && Buffer.isBuffer(query)) {
       return value.equals(query);
     }

@@ -1,4 +1,3 @@
-// @ts-nocheck 
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import ValidationError from '../../dist/error/validation';
@@ -134,6 +133,7 @@ describe('SchemaType', () => {
   it('u$rename', () => {
     const obj = {a: 1};
     should.not.exist(type.u$rename(1, 'b', obj));
+    // @ts-ignore
     obj.b.should.eql(1);
   });
 });

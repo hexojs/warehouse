@@ -1,4 +1,3 @@
-// @ts-nocheck 
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import ValidationError from '../../../dist/error/validation';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import SchemaTypeVirtual from '../../../dist/types/virtual';
@@ -38,6 +37,7 @@ describe('SchemaTypeVirtual', () => {
     });
 
     type.cast(undefined, obj);
+    // @ts-ignore
     obj.test.should.eql('FOO');
   });
 
@@ -49,6 +49,7 @@ describe('SchemaTypeVirtual', () => {
     });
 
     type.validate('FOO', obj);
+    // @ts-ignore
     obj.name.should.eql('foo');
   });
 });

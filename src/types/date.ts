@@ -10,15 +10,14 @@ class SchemaTypeDate extends SchemaType<Date> {
    * Casts data.
    *
    * @param {*} value
-   * @param {Object} data
-   * @return {Date}
+   * @return {Date | null | undefined}
    */
-  cast(value: Date, data): Date;
-  cast(value: null, data): Date | null;
-  cast(value: undefined, data): Date | undefined;
-  cast(value: unknown, data): Date | null | undefined;
-  cast(value_, data): Date | null | undefined {
-    const value = super.cast(value_, data);
+  cast(value_?): Date | null | undefined;
+  cast(value_: Date): Date;
+  cast(value_: null): Date | null;
+  cast(value_: undefined): Date | undefined;
+  cast(value_: unknown): Date | null | undefined {
+    const value = super.cast(value_, null);
 
     if (value == null || value instanceof Date) return value as Date | null | undefined;
 
@@ -32,7 +31,7 @@ class SchemaTypeDate extends SchemaType<Date> {
    * @param {Object} data
    * @return {Date|Error}
    */
-  validate(value_, data) {
+  validate(value_, data?) {
     const value = super.validate(value_, data);
 
     if (value != null && (!(value instanceof Date) || isNaN(value.getTime()))) {
@@ -47,10 +46,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    *
    * @param {Date} value
    * @param {Date} query
-   * @param {Object} data
    * @return {Boolean}
    */
-  match(value: Date, query: Date, data): boolean {
+  match(value: Date, query: Date): boolean {
     if (!value || !query) {
       return value === query;
     }
@@ -65,7 +63,7 @@ class SchemaTypeDate extends SchemaType<Date> {
    * @param {Date} b
    * @return {Number}
    */
-  compare(a, b) {
+  compare(a?, b?) {
     if (a) {
       return b ? a - b : 1;
     }
@@ -79,7 +77,7 @@ class SchemaTypeDate extends SchemaType<Date> {
    * @param {*} value
    * @return {Date}
    */
-  parse(value) {
+  parse(value?) {
     if (value) return new Date(value);
   }
 
@@ -87,10 +85,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    * Transforms a date object to a string.
    *
    * @param {Date} value
-   * @param {Object} data
    * @return {String}
    */
-  value(value, data) {
+  value(value?) {
     return value ? value.toISOString() : value;
   }
 
@@ -99,10 +96,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    *
    * @param {Date} value
    * @param {Number} query
-   * @param {Object} data
    * @return {Boolean}
    */
-  q$day(value, query, data) {
+  q$day(value, query) {
     return value ? value.getDate() === query : false;
   }
 
@@ -111,10 +107,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    *
    * @param {Date} value
    * @param {Number} query
-   * @param {Object} data
    * @return {Boolean}
    */
-  q$month(value, query, data) {
+  q$month(value, query) {
     return value ? value.getMonth() === query : false;
   }
 
@@ -123,10 +118,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    *
    * @param {Date} value
    * @param {Number} query
-   * @param {Object} data
    * @return {Boolean}
    */
-  q$year(value, query, data) {
+  q$year(value, query) {
     return value ? value.getFullYear() === query : false;
   }
 
@@ -135,10 +129,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    *
    * @param {Date} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Date}
    */
-  u$inc(value, update, data) {
+  u$inc(value, update) {
     if (value) return new Date(value.getTime() + update);
   }
 
@@ -147,10 +140,9 @@ class SchemaTypeDate extends SchemaType<Date> {
    *
    * @param {Date} value
    * @param {Number} update
-   * @param {Object} data
    * @return {Date}
    */
-  u$dec(value, update, data) {
+  u$dec(value, update) {
     if (value) return new Date(value.getTime() - update);
   }
 }
