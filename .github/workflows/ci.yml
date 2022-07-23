@@ -24,6 +24,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        # NOTE: The `Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close` error occurs with Node 18.6 (current latest version).
         node-version: ['14.x', '16.x', '18.4']
       fail-fast: false
     steps:
