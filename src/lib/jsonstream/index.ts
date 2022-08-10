@@ -1,7 +1,5 @@
-'use strict';
-
-const through2 = require('through2');
-const Parser = require('jsonparse');
+import through2 from 'through2';
+import Parser from 'jsonparse';
 
 /**
  * Check whether a x and y are equal, or x matches y, or x(y) is truthy.
@@ -29,7 +27,7 @@ const check = (x, y) => {
   return false;
 };
 
-module.exports.parse = function(path, map) {
+export function parse(path, map = null) {
   let header, footer;
 
   const parser = new Parser();

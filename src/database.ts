@@ -1,4 +1,4 @@
-const { parse: createJsonParseStream } = require('./jsonstream');
+import { parse as createJsonParseStream } from './lib/jsonstream';
 import Bluebird from 'bluebird';
 import { writev, promises as fsPromises, createReadStream } from 'graceful-fs';
 import { pipeline, Stream } from 'stream';
