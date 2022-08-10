@@ -197,4 +197,4 @@ export function parse(path, map = null) {
       footer[key] = value;
     }
   }
-};
+}
