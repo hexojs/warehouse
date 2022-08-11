@@ -27,6 +27,7 @@
   "author": "Tommy Chen <tommy351@gmail.com> (http://zespia.tw)",
   "license": "MIT",
   "dependencies": {
+    "@types/through2": "^2.0.36",
     "bluebird": "^3.7.2",
     "cuid": "^2.1.8",
     "graceful-fs": "^4.2.10",
