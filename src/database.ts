@@ -69,12 +69,12 @@ async function exportAsync(database: Database, path: string) {
   }
 }
 
-type DatabaseOptions = {
+interface DatabaseOptions {
   version: number,
   path: string,
   onUpgrade: (...args: any[]) => any,
   onDowngrade: (...args: any[]) => any
-};
+}
 
 class Database {
   options: DatabaseOptions;
