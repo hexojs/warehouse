@@ -48,6 +48,7 @@ export function parse(path, map = null) {
       }
 
       if (parser.tState !== Parser.C.START || parser.stack.length > 0) {
+        // @ts-ignore
         cb(new Error('Incomplete JSON'));
         return;
       }
@@ -78,6 +79,7 @@ export function parse(path, map = null) {
   }
 
   parser.onValue = function(value) {
+    // @ts-ignore
     if (!this.root) { stream.root = value; }
 
     if (!path) return;
@@ -167,9 +169,12 @@ export function parse(path, map = null) {
   parser.onToken = function(token, value) {
     parser._onToken(token, value);
     if (this.stack.length === 0) {
+      // @ts-ignore
       if (stream.root) {
+        // @ts-ignore
         if (!path) { stream.push(stream.root); }
 
+        // @ts-ignore
         stream.root = null;
       }
     }
