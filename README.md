@@ -2,7 +2,6 @@
 
 ![Tester](https://github.com/hexojs/warehouse/workflows/.github/workflows/ci.yml/badge.svg)
 ![Pages Deployer](https://github.com/hexojs/warehouse/workflows/.github/workflows/pages.yml/badge.svg)
-![Release Drafter](https://github.com/hexojs/warehouse/workflows/Release%20Drafter/badge.svg)
 [![NPM version](https://badge.fury.io/js/warehouse.svg)](https://www.npmjs.com/package/warehouse)
 [![Coverage Status](https://coveralls.io/repos/github/hexojs/warehouse/badge.svg?branch=master)](https://coveralls.io/github/hexojs/warehouse?branch=master)
 
