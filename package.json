@@ -2,18 +2,21 @@
   "name": "warehouse",
   "version": "4.0.1",
   "description": "Simple JSON-based database",
-  "main": "lib/database",
+  "main": "dist/database",
   "directories": {
-    "lib": "./lib"
+    "lib": "./dist"
   },
   "files": [
-    "lib/"
+    "dist/"
   ],
   "scripts": {
-    "eslint": "eslint lib test",
-    "test": "mocha \"test/scripts/**/*.js\"",
+    "pretest": "npm run typescript",
+    "typescript": "tsc --build tsconfig.json",
+    "eslint": "eslint src test",
+    "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
     "test-cov": "nyc --reporter=lcovonly --reporter=text-summary npm test",
-    "jsdoc": "jsdoc --configure .jsdoc.json"
+    "jsdoc": "jsdoc --configure .jsdoc.json",
+    "prepublish": "npm run typescript"
   },
   "repository": "hexojs/warehouse",
   "keywords": [
@@ -24,26 +27,38 @@
   "author": "Tommy Chen <tommy351@gmail.com> (http://zespia.tw)",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.2.2",
-    "cuid": "^2.1.4",
-    "graceful-fs": "^4.1.3",
+    "@types/through2": "^2.0.36",
+    "bluebird": "^3.7.2",
+    "cuid": "^2.1.8",
+    "graceful-fs": "^4.2.10",
     "hexo-log": "^3.0.0",
     "is-plain-object": "^5.0.0",
     "jsonparse": "^1.3.1",
-    "rfdc": "^1.1.4",
+    "rfdc": "^1.3.0",
     "through2": "^4.0.2"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "@types/bluebird": "^3.5.36",
+    "@types/chai": "^4.3.1",
+    "@types/graceful-fs": "^4.1.5",
+    "@types/jsonstream": "^0.8.30",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.0.0",
+    "@types/sinon": "^10.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^8.1.0",
+    "eslint": "^8.18.0",
     "eslint-config-hexo": "^5.0.0",
-    "jsdoc": "^3.4.0",
-    "lodash": "^4.17.15",
-    "minami": "^1.1.1",
+    "jsdoc": "^3.6.10",
+    "lodash": "^4.17.21",
+    "minami": "^1.2.3",
     "mocha": "^10.0.0",
     "nyc": "^15.0.0",
-    "sinon": "^14.0.0"
+    "sinon": "^14.0.0",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
   },
   "engines": {
     "node": ">=14"
