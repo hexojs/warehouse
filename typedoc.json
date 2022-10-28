@@ -1,0 +1,8 @@
+{
+  "exclude": ["**/node_modules/**", "**/test/**"],
+  "excludeExternals": true,
+  "hideGenerator": true,
+  "name": "hexojs/warehouse",
+  "out": "docs",
+  "readme": "README.md"
+}

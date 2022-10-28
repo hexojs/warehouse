@@ -15,7 +15,7 @@
     "eslint": "eslint src test",
     "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
     "test-cov": "nyc --reporter=lcovonly --reporter=text-summary npm test",
-    "jsdoc": "jsdoc --configure .jsdoc.json",
+    "typedoc": "typedoc --entryPointStrategy expand ./src",
     "prepublish": "npm run typescript"
   },
   "repository": "hexojs/warehouse",
@@ -51,13 +51,13 @@
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.18.0",
     "eslint-config-hexo": "^5.0.0",
-    "jsdoc": "^3.6.10",
     "lodash": "^4.17.21",
-    "minami": "^1.2.3",
     "mocha": "^10.0.0",
     "nyc": "^15.0.0",
     "sinon": "^14.0.0",
     "ts-node": "^10.8.1",
+    "typedoc": "^0.23.19",
+    "typedoc-plugin-rename-defaults": "^0.6.4",
     "typescript": "^4.7.4"
   },
   "engines": {
