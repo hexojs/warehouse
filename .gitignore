@@ -1,7 +1,6 @@
 .DS_Store
 node_modules/
 .idea/
-.nyc_output/
 *.log
 docs/
 coverage/
