@@ -13,7 +13,7 @@ jobs:
           node-version: '16'
       - run: npm install
       - name: Create Pages
-        run: npm run jsdoc
+        run: npm run typedoc
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
