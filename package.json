@@ -24,7 +24,7 @@
     "json",
     "db"
   ],
-  "author": "Tommy Chen <tommy351@gmail.com> (http://zespia.tw)",
+  "author": "Tommy Chen <tommy351@gmail.com> (https://zespia.tw)",
   "license": "MIT",
   "dependencies": {
     "@types/through2": "^2.0.36",
