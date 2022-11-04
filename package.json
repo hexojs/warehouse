@@ -10,13 +10,15 @@
     "dist/"
   ],
   "scripts": {
-    "pretest": "npm run typescript",
-    "typescript": "tsc --build tsconfig.json",
+    "prepublish ": "npm run clean && npm run build",
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "preeslint": "npm run clean && npm run build",
     "eslint": "eslint src test",
+    "pretest": "npm run clean && npm run build",
     "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
     "test-cov": "c8 --reporter=lcovonly --reporter=text-summary npm test",
-    "typedoc": "typedoc --entryPointStrategy expand ./src",
-    "prepublish": "npm run typescript"
+    "typedoc": "typedoc --entryPointStrategy expand ./src"
   },
   "repository": "hexojs/warehouse",
   "keywords": [
