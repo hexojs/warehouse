@@ -6,8 +6,9 @@ import Model from './model';
 import Schema from './schema';
 import SchemaType from './schematype';
 import WarehouseError from './error';
-import log from 'hexo-log';
+import { logger } from 'hexo-log';
 
+const log = logger();
 const pkg = require('../package.json');
 const { open } = fsPromises;
 const pipelineAsync = Bluebird.promisify(pipeline) as (...args: Stream[]) => Bluebird<unknown>;
