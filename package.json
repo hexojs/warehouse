@@ -10,7 +10,7 @@
     "dist/"
   ],
   "scripts": {
-    "prepublish ": "npm run clean && npm run build",
+    "prepublish ": "npm install && npm run clean && npm run build",
     "build": "tsc -b",
     "clean": "tsc -b --clean",
     "preeslint": "npm run clean && npm run build",
