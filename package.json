@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Simple JSON-based database",
   "main": "dist/database",
   "directories": {
@@ -10,7 +10,7 @@
     "dist/"
   ],
   "scripts": {
-    "prepublish ": "npm run clean && npm run build",
+    "prepublish ": "npm install && npm run clean && npm run build",
     "build": "tsc -b",
     "clean": "tsc -b --clean",
     "preeslint": "npm run clean && npm run build",
