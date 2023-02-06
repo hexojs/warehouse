@@ -29,8 +29,8 @@
   "author": "Tommy Chen <tommy351@gmail.com> (https://zespia.tw)",
   "license": "MIT",
   "dependencies": {
+    "@paralleldrive/cuid2": "^2.0.1",
     "bluebird": "^3.7.2",
-    "cuid": "^2.1.8",
     "graceful-fs": "^4.2.10",
     "hexo-log": "^4.0.1",
     "is-plain-object": "^5.0.0",
