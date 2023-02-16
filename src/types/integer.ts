@@ -29,11 +29,11 @@ class SchemaTypeInteger extends SchemaTypeNumber {
   validate(value_?, data?): number {
     const value = super.validate(value_, data);
 
-    if (value % 1 !== 0) {
+    if (!Number.isInteger(value)) {
       throw new ValidationError(`\`${value}\` is not an integer!`);
     }
 
-    return value;
+    return value as number;
   }
 }
 
