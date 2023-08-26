@@ -725,6 +725,10 @@ describe('Model', () => {
     return data;
   }).map(item => Post.removeById(item._id)));
 
+  it('eq() - no data', () => {
+    (typeof Post.eq(1)).should.eql('undefined');
+  });
+
   it('first()', () => Post.insert(Array(5).fill({})).then(data => {
     Post.first().should.eql(data[0]);
 
@@ -944,6 +948,46 @@ describe('Model', () => {
 
     return data;
   }).map(item => User.removeById(item._id)));
+
+  it('populate() - error', () => {
+    try {
+      Post.populate();
+    } catch (err) {
+      err.message.should.eql('path is required');
+    }
+  });
+
+  it('populate() - not exist', () => {
+    let posts, user;
+
+    return Post.insert([
+      {title: 'ABCD'},
+      {title: 'ACD'},
+      {title: 'CDE'},
+      {title: 'XYZ'}
+    ]).then(posts_ => {
+      posts = posts_;
+
+      return User.insert({
+        posts: posts.map(post => post._id)
+      });
+    }).then(user_ => {
+      user = user_;
+      return User.populate({
+        path: 'posts',
+        model: 'ppp'
+      });
+    }).catch(err => {
+      err.message.should.eql('Model `ppp` does not exist');
+      return Promise.all([
+        User.removeById(user._id),
+        Post.removeById(posts[0]._id),
+        Post.removeById(posts[1]._id),
+        Post.removeById(posts[2]._id),
+        Post.removeById(posts[3]._id)
+      ]);
+    });
+  });
 
   it('populate() - object', () => {
     let user, post;

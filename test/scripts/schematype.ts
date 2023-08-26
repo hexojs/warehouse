@@ -15,6 +15,11 @@ describe('SchemaType', () => {
     type.cast().should.eql('foo');
   });
 
+  it('cast() - default - function', () => {
+    const type = new SchemaType('test', {default: () => 'foo'});
+    type.cast().should.eql('foo');
+  });
+
   it('validate()', () => {
     type.validate(123).should.eql(123);
   });
