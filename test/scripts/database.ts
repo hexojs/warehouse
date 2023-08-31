@@ -103,4 +103,19 @@ describe('Database', () => {
       ]
     });
   }));
+
+  it('toJSON()', () => {
+    const db = new Database({
+      path: DB_PATH,
+      version: 0
+    });
+
+    return db.load().then(() => {
+      const model = db.model('Test');
+      const json = db.toJSON();
+      json.meta.version.should.eql(0);
+      (json.models as any).Test.should.eql(model);
+      console.log(db.toJSON());
+    });
+  });
 });

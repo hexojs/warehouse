@@ -11,7 +11,7 @@ import { logger } from 'hexo-log';
 const log = logger();
 const pkg = require('../package.json');
 const { open } = fsPromises;
-const pipelineAsync = Bluebird.promisify(pipeline) as (...args: Stream[]) => Bluebird<unknown>;
+const pipelineAsync = Bluebird.promisify(pipeline) as unknown as (...args: Stream[]) => Bluebird<unknown>;
 
 let _writev: (handle: fsPromises.FileHandle, buffers: Buffer[]) => Promise<unknown>;
 

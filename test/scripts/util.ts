@@ -96,6 +96,9 @@ describe('util', () => {
 
     util.delProp(obj, 'd.e.f');
     should.not.exist(obj.d.e.f);
+
+    util.delProp(obj, 'd.f.g');
+    should.exist(obj.d.e);
   });
 
   it('delProp() - obj must be an object', () => {
@@ -172,5 +175,6 @@ describe('util', () => {
     util.parseArgs('name', -1).should.eql({name: -1});
     util.parseArgs('name -date').should.eql({name: 1, date: -1});
     util.parseArgs('name -date +priority').should.eql({name: 1, date: -1, priority: 1});
+    util.parseArgs({name: 1}).should.eql({name: 1});
   });
 });

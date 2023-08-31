@@ -17,6 +17,12 @@ describe('Query', () => {
     comments: [{type: Schema.Types.CUID, ref: 'Comment'}]
   });
 
+  const Loop = db.model('Loop', {
+    age: {
+      age: Number
+    }
+  });
+
   const Comment = db.model('Comment', {
     content: String,
     author: {type: Schema.Types.CUID, ref: 'User'}
@@ -262,6 +268,38 @@ describe('Query', () => {
     return data;
   }).map(item => User.removeById(item._id)));
 
+  it('find() - abnormal - 1', () => User.insert([
+    {name: 'John', age: 20},
+    {name: 'John', age: 25},
+    {name: 'Jack', age: 30}
+  ]).then(data => {
+    const query = User.find({}).find({
+      $and: [
+        {name: 'Jack'},
+        {age: {gt: 20}}
+      ]
+    });
+    query.toArray().length.should.eql(0);
+
+    return data;
+  }).map(item => User.removeById(item._id)));
+
+  it('find() - abnormal - 2', () => User.insert([
+    {name: 'John', age: 20},
+    {name: 'John', age: 25},
+    {name: 'Jack', age: 30}
+  ]).then(data => {
+    const query = User.find({}).find({
+      $and: [
+        {name: 'Jack'},
+        {age: {gt: {}}}
+      ]
+    });
+    query.toArray().should.eql([data[2]]);
+
+    return data;
+  }).map(item => User.removeById(item._id)));
+
   it('findOne()', () => User.insert([
     {age: 10},
     {age: 20},
@@ -297,6 +335,18 @@ describe('Query', () => {
     query.data[2].should.eql(data[1]);
     return data;
   }).map(item => User.removeById(item._id)));
+
+  it('sort() - object', () => Loop.insert([
+    {age: {age: 15}},
+    {age: {age: 35}},
+    {age: {age: 10}}
+  ]).then(data => {
+    const query = Loop.find({}).sort('age', { age: 1 });
+    query.data[0].should.eql(data[2]);
+    query.data[1].should.eql(data[0]);
+    query.data[2].should.eql(data[1]);
+    return data;
+  }).map(item => Loop.removeById(item._id)));
 
   it('sort() - descending', () => User.insert([
     {age: 15},
@@ -551,5 +601,57 @@ describe('Query', () => {
         Comment.removeById(comments[3]._id)
       ]);
     });
+  });
+
+  it('populate() - array expr - string', () => {
+    let user, comment;
+
+    return User.insert({}).then(user_ => {
+      user = user_;
+
+      return Comment.insert({
+        author: user._id
+      });
+    }).then(comment_ => {
+      comment = comment_;
+      return Comment.find({}).populate(['author']);
+    }).then(result => {
+      result.first().author.should.eql(user);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Comment.removeById(comment._id)
+      ]);
+    });
+  });
+
+  it('populate() - array expr - object', () => {
+    let user, comment;
+
+    return User.insert({}).then(user_ => {
+      user = user_;
+
+      return Comment.insert({
+        author: user._id
+      });
+    }).then(comment_ => {
+      comment = comment_;
+      return Comment.find({}).populate([{ path: 'author' }]);
+    }).then(result => {
+      result.first().author.should.eql(user);
+
+      return Promise.all([
+        User.removeById(user._id),
+        Comment.removeById(comment._id)
+      ]);
+    });
+  });
+
+  it('populate() - path is required', () => {
+    try {
+      Comment.find({}).populate({});
+    } catch (err) {
+      err.message.should.eql('path is required');
+    }
   });
 });
