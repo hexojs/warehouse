@@ -58,7 +58,7 @@
     "mocha": "^10.1.0",
     "sinon": "^15.0.2",
     "ts-node": "^10.9.1",
-    "typedoc": "^0.24.4",
+    "typedoc": "^0.25.0",
     "typedoc-plugin-rename-defaults": "^0.6.4",
     "typescript": "^5.0.3"
   },
