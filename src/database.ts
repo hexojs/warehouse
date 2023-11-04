@@ -7,6 +7,7 @@ import Schema from './schema';
 import SchemaType from './schematype';
 import WarehouseError from './error';
 import { logger } from 'hexo-log';
+import type { NodeJSLikeCallback } from './types';
 
 const log = logger();
 const pkg = require('../package.json');

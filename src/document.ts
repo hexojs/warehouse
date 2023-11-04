@@ -1,6 +1,7 @@
 import rfdc from 'rfdc';
 import type Model from './model';
 import type Schema from './schema';
+import type { NodeJSLikeCallback } from './types';
 const cloneDeep = rfdc();
 
 abstract class Document {

@@ -11,6 +11,7 @@ import WarehouseError from './error';
 import PopulationError from './error/population';
 import Mutex from './mutex';
 import type Database from './database';
+import type { NodeJSLikeCallback, Options } from './types';
 
 class Model extends EventEmitter {
   _mutex = new Mutex();

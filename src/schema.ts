@@ -5,6 +5,7 @@ import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
 import { isPlainObject } from 'is-plain-object';
+import type { NodeJSLikeCallback } from './types';
 
 /**
  * @callback queryFilterCallback
@@ -57,8 +58,7 @@ const checkHookType = (type: string) => {
   }
 };
 
-const hookWrapper = (fn: (callback: NodeJSLikeCallback<any>, options?: Promise.PromisifyOptions) => void)
-  : (callback?: NodeJSLikeCallback<any, any>) => Promise<any> => {
+const hookWrapper = (fn: (...args: any[]) => void): (...args: any[]) => Promise<any> => {
   if (fn.length > 1) {
     return Promise.promisify(fn);
   }
@@ -73,7 +73,7 @@ const execSortStack = (stack: ((a: unknown, b: unknown) => number)[]) => {
   const len = stack.length;
 
   return (a: any, b: any) => {
-    let result;
+    let result: number;
 
     for (let i = 0; i < len; i++) {
       result = stack[i](a, b);
@@ -567,7 +567,7 @@ class Schema {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  pre(type: string, fn: (callback: NodeJSLikeCallback<any, any>, options?: Promise.PromisifyOptions) => void): void {
+  pre(type: string, fn: (...args: any[]) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -580,7 +580,7 @@ class Schema {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  post(type: string, fn: (callback: NodeJSLikeCallback<any, any>, options?: Promise.PromisifyOptions) => void): void {
+  post(type: string, fn: (...args: any[]) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 

@@ -432,7 +432,7 @@ describe('Model', () => {
     });
   });
 
-  it('removeById() - id not exist', () => (User.removeById('foo', {}) as any).should.eventually.be.rejected);
+  it('removeById() - id not exist', () => (User.removeById('foo', () => {}) as any).should.eventually.be.rejected);
 
   it('removeById() - hook', () => {
     const db = new Database();

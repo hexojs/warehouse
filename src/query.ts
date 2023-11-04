@@ -3,6 +3,7 @@ import { parseArgs, shuffle } from './util';
 import type Model from './model';
 import type Schema from './schema';
 import type Document from './document';
+import type { NodeJSLikeCallback, Options } from './types';
 
 abstract class Query {
   data: any[];
