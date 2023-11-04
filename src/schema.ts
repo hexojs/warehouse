@@ -11,12 +11,14 @@ import { isPlainObject } from 'is-plain-object';
  * @param {*} data
  * @return {boolean}
  */
+type queryFilterCallback = (data: unknown) => boolean;
 
 /**
  * @callback queryCallback
  * @param {*} data
  * @return {void}
  */
+type queryCallback = (data: unknown) => void;
 
 /**
  * @callback queryParseCallback
@@ -24,16 +26,21 @@ import { isPlainObject } from 'is-plain-object';
  * @param {*} b
  * @returns {*}
  */
+type queryParseCallback = (a: unknown, b: unknown) => number;
 
 /**
  * @typedef PopulateResult
  * @property {string} path
  * @property {*} model
  */
+type PopulateResult = {
+  path: string;
+  model: any;
+};
 
 const builtinTypes = new Set(['String', 'Number', 'Boolean', 'Array', 'Object', 'Date', 'Buffer']);
 
-const getSchemaType = (name, options) => {
+const getSchemaType = (name: string, options: Record<string, unknown> | { type: any; }) => {
   const Type = options.type || options;
   const typeName = Type.name;
 
@@ -44,13 +51,14 @@ const getSchemaType = (name, options) => {
   return new Type(name, options);
 };
 
-const checkHookType = type => {
+const checkHookType = (type: string) => {
   if (type !== 'save' && type !== 'remove') {
     throw new TypeError('Hook type must be `save` or `remove`!');
   }
 };
 
-const hookWrapper = fn => {
+const hookWrapper = (fn: (callback: NodeJSLikeCallback<any>, options?: Promise.PromisifyOptions) => void)
+  : (callback?: NodeJSLikeCallback<any, any>) => Promise<any> => {
   if (fn.length > 1) {
     return Promise.promisify(fn);
   }
@@ -61,10 +69,10 @@ const hookWrapper = fn => {
 /**
  * @param {Function[]} stack
  */
-const execSortStack = stack => {
+const execSortStack = (stack: Function[]) => {
   const len = stack.length;
 
-  return (a, b) => {
+  return (a: any, b: any) => {
     let result;
 
     for (let i = 0; i < len; i++) {
@@ -76,32 +84,32 @@ const execSortStack = stack => {
   };
 };
 
-const sortStack = (path_, key, sort) => {
+const sortStack = (path_: SchemaType<any>, key: string, sort: string | number) => {
   const path = path_ || new SchemaType(key);
   const descending = sort === 'desc' || sort === -1;
 
-  return (a, b) => {
+  return (a: any, b: any) => {
     const result = path.compare(getProp(a, key), getProp(b, key));
     return descending && result ? result * -1 : result;
   };
 };
 
 class UpdateParser {
-  static updateStackNormal(key, update) {
-    return data => { setProp(data, key, update); };
+  static updateStackNormal(key: string, update: any) {
+    return (data: any) => { setProp(data, key, update); };
   }
 
-  static updateStackOperator(path_, ukey, key, update) {
+  static updateStackOperator(path_: SchemaType<unknown>, ukey: string | number, key: string, update: any) {
     const path = path_ || new SchemaType(key);
 
-    return data => {
+    return (data: any) => {
       const result = path[ukey](getProp(data, key), update, data);
       setProp(data, key, result);
     };
   }
 
   // eslint-disable-next-line no-useless-constructor
-  constructor(private paths) {}
+  constructor(private paths: Record<string, SchemaType<any>>) { }
 
   /**
    * Parses updating expressions and returns a stack.
@@ -110,11 +118,11 @@ class UpdateParser {
    * @param {queryCallback[]} [stack]
    * @private
    */
-  parseUpdate(updates, prefix = '', stack = []) {
+  parseUpdate(updates: object, prefix = '', stack: queryCallback[] = []): queryCallback[] {
     const { paths } = this;
     const { updateStackOperator } = UpdateParser;
     const keys = Object.keys(updates);
-    let path, prefixNoDot;
+    let path: SchemaType<any>, prefixNoDot: string;
 
     if (prefix) {
       prefixNoDot = prefix.substring(0, prefix.length - 1);
@@ -158,7 +166,7 @@ class UpdateParser {
  */
 class QueryParser {
   // eslint-disable-next-line no-useless-constructor
-  constructor(private paths) {}
+  constructor(private paths: Record<string, SchemaType<any>>) { }
 
   /**
    *
@@ -166,10 +174,10 @@ class QueryParser {
    * @param {*} query
    * @return {queryFilterCallback}
    */
-  queryStackNormal(name, query) {
+  queryStackNormal(name: string, query: unknown): queryFilterCallback {
     const path = this.paths[name] || new SchemaType(name);
 
-    return data => path.match(getProp(data, name), query, data);
+    return (data: unknown) => path.match(getProp(data, name), query, data);
   }
 
   /**
@@ -179,7 +187,7 @@ class QueryParser {
    * @param {*} query
    * @return {queryFilterCallback}
    */
-  queryStackOperator(qkey, name, query) {
+  queryStackOperator(qkey: string, name: string, query: any): queryFilterCallback {
     const path = this.paths[name] || new SchemaType(name);
 
     return data => path[qkey](getProp(data, name), query, data);
@@ -191,7 +199,7 @@ class QueryParser {
    * @return {void}
    * @private
    */
-  $and(arr, stack) {
+  $and(arr: any[], stack: queryFilterCallback[]): void {
     for (let i = 0, len = arr.length; i < len; i++) {
       stack.push(this.execQuery(arr[i]));
     }
@@ -202,7 +210,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $or(query) {
+  $or(query: any[]): queryFilterCallback {
     const stack = this.parseQueryArray(query);
     const len = stack.length;
 
@@ -220,7 +228,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $nor(query) {
+  $nor(query: any[]): queryFilterCallback {
     const stack = this.parseQueryArray(query);
     const len = stack.length;
 
@@ -238,7 +246,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $not(query) {
+  $not(query: any): queryFilterCallback {
     const stack = this.parseQuery(query);
     const len = stack.length;
 
@@ -262,7 +270,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $where(fn) {
+  $where(fn: (...args: any[]) => boolean): queryFilterCallback {
     return data => Reflect.apply(fn, data, []);
   }
 
@@ -273,7 +281,7 @@ class QueryParser {
    * @return {queryFilterCallback[]}
    * @private
    */
-  parseQueryArray(arr) {
+  parseQueryArray(arr: any[]): queryFilterCallback[] {
     const stack = [];
     this.$and(arr, stack);
     return stack;
@@ -288,7 +296,7 @@ class QueryParser {
    * @return {void}
    * @private
    */
-  parseNormalQuery(queries, prefix, stack = []) {
+  parseNormalQuery(queries: object, prefix: string, stack: queryFilterCallback[] = []): void {
     const keys = Object.keys(queries);
 
     for (let i = 0, len = keys.length; i < len; i++) {
@@ -316,10 +324,10 @@ class QueryParser {
    * @return {queryFilterCallback[]}
    * @private
    */
-  parseQuery(queries) {
+  parseQuery(queries: any): queryFilterCallback[] {
 
     /** @type {queryFilterCallback[]} */
-    const stack = [];
+    const stack: queryFilterCallback[] = [];
     const keys = Object.keys(queries);
 
     for (let i = 0, len = keys.length; i < len; i++) {
@@ -366,7 +374,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  execQuery(query) {
+  execQuery(query: object): queryFilterCallback {
     const stack = this.parseQuery(query);
     const len = stack.length;
 
@@ -392,7 +400,7 @@ class Schema {
    *
    * @param {Object} [schema]
    */
-  constructor(schema?) {
+  constructor(schema?: object) {
     this.hooks = {
       pre: {
         save: [],
@@ -422,7 +430,7 @@ class Schema {
    * @param {Object} schema
    * @param {String} prefix
    */
-  add(schema: Record<string, any>, prefix = ''): void {
+  add(schema: Record<string, any>, prefix: string = ''): void {
     const keys = Object.keys(schema);
     const len = keys.length;
 
@@ -458,7 +466,7 @@ class Schema {
     } else {
       switch (typeof obj) {
         case 'function':
-          type = getSchemaType(name, {type: obj});
+          type = getSchemaType(name, { type: obj });
           break;
 
         case 'object':
@@ -493,7 +501,7 @@ class Schema {
    * @param {SchemaType} type
    * @private
    */
-  _updateStack(name: string, type: SchemaType<unknown>) {
+  _updateStack(name: string, type: SchemaType<unknown>): void {
     const { stacks } = this;
 
     stacks.getter.push(data => {
@@ -559,7 +567,7 @@ class Schema {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  pre(type, fn) {
+  pre(type: string, fn: (callback: NodeJSLikeCallback<any, any>, options?: Promise.PromisifyOptions) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -572,7 +580,7 @@ class Schema {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  post(type, fn) {
+  post(type: string, fn: (callback: NodeJSLikeCallback<any, any>, options?: Promise.PromisifyOptions) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -585,7 +593,7 @@ class Schema {
    * @param {String} name
    * @param {Function} fn
    */
-  method(name, fn) {
+  method(name: string | number, fn: (...args: any[]) => any) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {
@@ -601,7 +609,7 @@ class Schema {
    * @param {String} name
    * @param {Function} fn
    */
-  static(name: string, fn) {
+  static(name: string, fn: (...args: any[]) => any) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {
@@ -618,7 +626,7 @@ class Schema {
    * @return {void}
    * @private
    */
-  _applyGetters(data) {
+  _applyGetters(data: object): void {
     const stack = this.stacks.getter;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -633,7 +641,7 @@ class Schema {
    * @return {void}
    * @private
    */
-  _applySetters(data) {
+  _applySetters(data: object): void {
     const stack = this.stacks.setter;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -682,7 +690,7 @@ class Schema {
    * @return {queryCallback[]}
    * @private
    */
-  _parseUpdate(updates) {
+  _parseUpdate(updates): queryCallback[] {
     return new UpdateParser(this.paths).parseUpdate(updates);
   }
 
@@ -693,7 +701,7 @@ class Schema {
    * @return {queryFilterCallback}
    * @private
    */
-  _execQuery(query) {
+  _execQuery(query): queryFilterCallback {
     return new QueryParser(this.paths).execQuery(query);
   }
 
@@ -707,7 +715,7 @@ class Schema {
    * @return {queryParseCallback[]}
    * @private
    */
-  _parseSort(sorts, prefix = '', stack = []) {
+  _parseSort(sorts: object, prefix: string = '', stack: queryParseCallback[] = []): queryParseCallback[] {
     const { paths } = this;
     const keys = Object.keys(sorts);
 
@@ -733,7 +741,7 @@ class Schema {
    * @return {queryParseCallback}
    * @private
    */
-  _execSort(sorts) {
+  _execSort(sorts: object): queryParseCallback {
     const stack = this._parseSort(sorts);
     return execSortStack(stack);
   }
@@ -746,7 +754,7 @@ class Schema {
    * @private
    */
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  _parsePopulate(expr) {
+  _parsePopulate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): PopulateResult[] {
     const { paths } = this;
     const arr = [];
 

@@ -23,7 +23,7 @@ if (typeof writev === 'function') {
   };
 }
 
-async function exportAsync(database: Database, path: string) {
+async function exportAsync(database: Database, path: string): Promise<void> {
   const handle = await open(path, 'w');
 
   try {
@@ -79,7 +79,7 @@ interface DatabaseOptions {
 
 class Database {
   options: DatabaseOptions;
-  _models: any;
+  _models: Record<string, Model>;
   Model: typeof Model;
 
   /**
@@ -117,7 +117,7 @@ class Database {
    * @param {Schema|object} [schema]
    * @return {Model}
    */
-  model(name: string, schema?: any) {
+  model(name: string, schema?: Schema | object): Model {
     if (this._models[name]) {
       return this._models[name];
     }
@@ -133,7 +133,7 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  load(callback?) {
+  load(callback?: NodeJSLikeCallback<any>): Bluebird<any> {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
@@ -173,14 +173,14 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(callback?) {
+  save(callback?: NodeJSLikeCallback<any>): Bluebird<void>{
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
     return Bluebird.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
-  toJSON() {
+  toJSON(): { meta: { version: number, warehouse: string }, models: Record<string, Model> } {
     const models = Object.keys(this._models)
       .reduce((obj, key) => {
         const value = this._models[key];

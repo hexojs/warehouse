@@ -15,7 +15,7 @@ class SchemaTypeEnum extends SchemaType<any[]> {
    *   @param {Array} options.elements
    *   @param {*} [options.default]
    */
-  constructor(name, options) {
+  constructor(name: string, options?: Partial<SchemaType<any[]>['options']> & { elements?: any[] }) {
     super(name, Object.assign({
       elements: []
     }, options));
@@ -24,11 +24,11 @@ class SchemaTypeEnum extends SchemaType<any[]> {
   /**
    * Validates data. The value must be one of elements set in the options.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {*}
    */
-  validate(value_, data?) {
+  validate(value_: unknown, data?: unknown) {
     const value = super.validate(value_, data);
     const elements = this.options.elements;
 

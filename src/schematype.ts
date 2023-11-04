@@ -56,7 +56,7 @@ class SchemaType<T> {
    *   @param {Boolean} [options.required=false]
    *   @param {*} [options.default]
    */
-  constructor(public name = '', options?: { required?: boolean; default?: (() => T) | T; }) {
+  constructor(public name: string = '', options?: { required?: boolean; default?: (() => T) | T; }) {
     this.options = Object.assign({
       required: false
     }, options);
@@ -244,7 +244,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data?) {
+  q$nin(value: unknown, query: unknown[], data?: unknown): boolean {
     return !query.includes(value);
   }
 
@@ -256,7 +256,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  u$set(value, update, data?) {
+  u$set<T>(value: unknown, update: T, data?: unknown): T {
     return update;
   }
 
@@ -268,7 +268,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  u$unset(value, update, data?) { return update ? undefined : value; }
+  u$unset<T>(value: T, update: boolean, data?: unknown): T | undefined { return update ? undefined : value; }
 
   /**
    * Renames a field.
@@ -278,7 +278,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  u$rename(value, update, data): void {
+  u$rename(value: unknown, update: unknown, data: unknown): void {
     if (value !== undefined) setProp(data, update, value);
     return undefined;
   }

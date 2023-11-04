@@ -7,7 +7,7 @@ import Parser from 'jsonparse';
  * @param {*} y
  * @returns {boolean}
  */
-const check = (x, y) => {
+const check = (x, y): boolean => {
   if (typeof x === 'string') {
     return y === x;
   }
@@ -27,7 +27,7 @@ const check = (x, y) => {
   return false;
 };
 
-export function parse(path, map = null) {
+export function parse(path: string | any[], map = null) {
   let header, footer;
 
   const parser = new Parser();

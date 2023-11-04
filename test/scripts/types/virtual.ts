@@ -9,10 +9,11 @@ describe('SchemaTypeVirtual', () => {
     const getter = () => 'foo';
 
     type.get(getter);
-    type.getter.should.eql(getter);
+    (type.getter as () => any).should.eql(getter);
   });
 
   it('get() - type check', () => {
+    //@ts-ignore
     (() => type.get(123)).should.to.throw(TypeError, 'Getter must be a function!');
   });
 
@@ -22,10 +23,11 @@ describe('SchemaTypeVirtual', () => {
     };
 
     type.set(setter);
-    type.setter.should.eql(setter);
+    (type.setter as () => any).should.eql(setter);
   });
 
   it('set() - type check', () => {
+    //@ts-ignore
     (() => type.set(123)).should.to.throw(TypeError, 'Setter must be a function!');
   });
 

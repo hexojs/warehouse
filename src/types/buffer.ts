@@ -14,7 +14,7 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    *   @param {boolean|Function} [options.default]
    *   @param {string} [options.encoding=hex]
    */
-  constructor(name: string, options?) {
+  constructor(name: string, options?: Partial<SchemaType<Buffer>['options']> & { encoding?: BufferEncoding; }) {
     super(name, Object.assign({
       encoding: 'hex'
     }, options));
@@ -23,11 +23,13 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
   /**
    * Casts data.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {Buffer}
    */
-  cast(value_?: unknown, data?): Buffer | null | undefined {
+  cast(value_: WithImplicitCoercion<Uint8Array | ReadonlyArray<number> | string>, data?: unknown): Buffer;
+  cast(value_?: unknown, data?: unknown): Buffer | null | undefined;
+  cast(value_?: unknown, data?: unknown): Buffer | null | undefined {
     const value = super.cast(value_, data);
 
     if (value == null || Buffer.isBuffer(value)) return value as Buffer | null | undefined;
@@ -38,11 +40,11 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
   /**
    * Validates data.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {Buffer}
    */
-  validate(value_: unknown, data?): Buffer {
+  validate(value_: unknown, data?: unknown): Buffer {
     const value = super.validate(value_, data);
 
     if (!Buffer.isBuffer(value)) {
@@ -73,7 +75,9 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * @param {*} value
    * @return {Boolean}
    */
-  parse(value?) {
+  parse(value: WithImplicitCoercion<Uint8Array | ReadonlyArray<number> | string>): Buffer;
+  parse(value?: unknown): Buffer | null | undefined;
+  parse(value?: any): Buffer | null | undefined {
     return value ? Buffer.from(value, this.options.encoding) : value;
   }
 
@@ -81,9 +85,9 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * Transforms data into number to compress the size of database files.
    *
    * @param {Buffer} value
-   * @return {Number}
+   * @return {String}
    */
-  value(value?: Buffer) {
+  value(value?: Buffer): string {
     return Buffer.isBuffer(value) ? value.toString(this.options.encoding) : value;
   }
 

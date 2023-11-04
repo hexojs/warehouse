@@ -1,8 +1,8 @@
-function extractPropKey(key) {
+function extractPropKey(key: string): string[] {
   return key.split('.');
 }
 
-function _parseArgs(args) {
+function _parseArgs(args: string) {
   if (typeof args !== 'string') return args;
 
   const arr = args.split(' ');
@@ -173,12 +173,12 @@ export function reverse(arr) {
   return arr;
 }
 
-export function parseArgs(orderby, order?) {
+export function parseArgs(orderby: string | object, order?: string | number | object) {
   let result;
 
   if (order) {
     result = {};
-    result[orderby] = order;
+    result[orderby as string] = order;
   } else if (typeof orderby === 'string') {
     result = _parseArgs(orderby);
   } else {

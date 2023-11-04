@@ -6,7 +6,7 @@ class Mutex {
     this._queue = [];
   }
 
-  lock(fn: () => void) {
+  lock(fn: () => void): void {
     if (this._locked) {
       this._queue.push(fn);
       return;
@@ -16,7 +16,7 @@ class Mutex {
     fn();
   }
 
-  unlock() {
+  unlock(): void {
     if (!this._locked) return;
 
     const next = this._queue.shift();

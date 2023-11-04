@@ -12,7 +12,7 @@ class SchemaTypeObject extends SchemaType<Record<string, any>> {
    *   @param {Boolean} [options.required=false]
    *   @param {Object|Function} [options.default={}]
    */
-  constructor(name?, options?) {
+  constructor(name?: string, options?: Partial<SchemaType<Record<string, any>>['options']>) {
     super(name, Object.assign({ default: {} }, options));
   }
 }

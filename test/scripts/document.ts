@@ -39,7 +39,7 @@ describe('Document', () => {
     const doc = User.new({});
 
     return doc.save().then(item => {
-      User.findById(doc._id).should.exist;
+      User.findById(doc._id as string | number).should.exist;
       return User.removeById(item._id);
     });
   });
@@ -115,5 +115,5 @@ describe('Document', () => {
 
     user.populate('comments').comments.toArray().should.eql(comments);
     return comments;
-  }).map(comment => Comment.removeById(comment._id)));
+  }).map<unknown, any>(comment => Comment.removeById(comment._id)));
 });

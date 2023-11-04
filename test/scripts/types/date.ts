@@ -16,7 +16,7 @@ describe('SchemaTypeDate', () => {
     const date = new Date();
     const type = new SchemaTypeDate('test', {default: date});
 
-    type.cast().should.eql(date);
+    (type.cast() as Date).should.eql(date);
   });
 
   function shouldThrowError(value) {
@@ -42,7 +42,9 @@ describe('SchemaTypeDate', () => {
   it('match()', () => {
     type.match(new Date(2014, 1, 1), new Date(2014, 1, 1)).should.be.true;
     type.match(new Date(2014, 1, 1), new Date(2014, 1, 2)).should.be.false;
+    //@ts-ignore
     type.match(undefined, new Date()).should.be.false;
+    //@ts-ignore
     type.match(undefined, undefined).should.be.true;
   });
 

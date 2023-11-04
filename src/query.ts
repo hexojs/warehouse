@@ -1,17 +1,22 @@
 import Promise from 'bluebird';
 import { parseArgs, shuffle } from './util';
+import type Model from './model';
+import type Schema from './schema';
+import type Document from './document';
 
 abstract class Query {
+  data: any[];
   length: number;
-  abstract _model;
-  abstract _schema;
+  abstract _model: Model;
+  abstract _schema: Schema;
 
   /**
    * Query constructor.
    *
    * @param {Array} data
    */
-  constructor(private data: any[]) {
+  constructor(data: any[]) {
+    this.data = data;
     this.length = data.length;
   }
 
@@ -53,7 +58,7 @@ abstract class Query {
    * @param {Number} i
    * @return {Document|Object}
    */
-  eq(i: number) {
+  eq(i: number): Document | Record<PropertyKey, any> {
     const index = i < 0 ? this.length + i : i;
     return this.data[index];
   }
@@ -63,7 +68,7 @@ abstract class Query {
    *
    * @return {Document|Object}
    */
-  first() {
+  first(): Document | Record<PropertyKey, any> {
     return this.eq(0);
   }
 
@@ -72,7 +77,7 @@ abstract class Query {
    *
    * @return {Document|Object}
    */
-  last() {
+  last(): Document | Record<PropertyKey, any> {
     return this.eq(-1);
   }
 
@@ -135,7 +140,7 @@ abstract class Query {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Query|Array}
    */
-  find(query: any, options: { limit?: number; skip?: number; lean?: boolean; } = {}): any[] | Query {
+  find(query: object, options: Options = {}): any[] | Query {
     const filter = this._schema._execQuery(query);
     const { data, length } = this;
     const { lean = false } = options;
@@ -167,7 +172,7 @@ abstract class Query {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Document|Object}
    */
-  findOne(query: any, options: { skip?: number; lean?: boolean; } = {}): any {
+  findOne(query: object, options: Options = {}): Document | Record<PropertyKey, any> {
     const _options = Object.assign(options, { limit: 1 });
 
     const result = this.find(query, _options);
@@ -192,7 +197,7 @@ abstract class Query {
    * @param {String|Number} [order]
    * @return {Query}
    */
-  sort(orderby, order): Query {
+  sort(orderby: string | object, order?: string | number | object): Query {
     const sort = parseArgs(orderby, order);
     const fn = this._schema._execSort(sort);
 
@@ -224,9 +229,9 @@ abstract class Query {
    * @param {*} [initial] By default, the initial value is the first document.
    * @return {*}
    */
-  reduce(iterator, initial?) {
+  reduce<T>(iterator: (pre: any, cur: any, index: number) => T, initial?: T): T {
     const { data, length } = this;
-    let result, i;
+    let result: T, i: number;
 
     if (initial === undefined) {
       i = 1;
@@ -251,7 +256,7 @@ abstract class Query {
    * @param {*} [initial] By default, the initial value is the last document.
    * @return {*}
    */
-  reduceRight(iterator, initial?) {
+  reduceRight<T>(iterator: (pre: any, cur: any, index: number) => T, initial?: T): T {
     const { data, length } = this;
     let result, i;
 
@@ -330,7 +335,7 @@ abstract class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  update(data: any, callback?: (err?: any) => void): Promise<any> {
+  update(data: any, callback?: NodeJSLikeCallback<any>): Promise<any> {
     const model = this._model;
     const stack = this._schema._parseUpdate(data);
 
@@ -344,7 +349,7 @@ abstract class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  replace(data: any, callback?: (err?: any) => void): Promise<any> {
+  replace(data: any, callback?: NodeJSLikeCallback<any>): Promise<any> {
     const model = this._model;
 
     return Promise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
@@ -356,7 +361,7 @@ abstract class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  remove(callback) {
+  remove(callback?: NodeJSLikeCallback<any>): Promise<any> {
     const model = this._model;
 
     return Promise.mapSeries(this.data, item => model.removeById(item._id)).asCallback(callback);
@@ -368,7 +373,7 @@ abstract class Query {
    * @param {String|Object} expr
    * @return {Query}
    */
-  populate(expr: any): Query {
+  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Query {
     const stack = this._schema._parsePopulate(expr);
     const { data, length } = this;
     const model = this._model;

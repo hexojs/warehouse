@@ -13,12 +13,12 @@ describe('SchemaTypeArray', () => {
     type.cast('foo').should.eql(['foo']);
     type.cast([]).should.eql([]);
     type.cast([1, 2, 3]).should.eql([1, 2, 3]);
-    type.cast().should.eql([]);
+    (type.cast() as any[]).should.eql([]);
   });
 
   it('cast() - default', () => {
     const type = new SchemaTypeArray('test', {default: [1, 2, 3]});
-    type.cast().should.eql([1, 2, 3]);
+    (type.cast() as any[]).should.eql([1, 2, 3]);
   });
 
   it('cast() - child', () => {
