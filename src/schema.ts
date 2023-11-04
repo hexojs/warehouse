@@ -69,7 +69,7 @@ const hookWrapper = (fn: (callback: NodeJSLikeCallback<any>, options?: Promise.P
 /**
  * @param {Function[]} stack
  */
-const execSortStack = (stack: Function[]) => {
+const execSortStack = (stack: ((a: unknown, b: unknown) => number)[]) => {
   const len = stack.length;
 
   return (a: any, b: any) => {
@@ -430,7 +430,7 @@ class Schema {
    * @param {Object} schema
    * @param {String} prefix
    */
-  add(schema: Record<string, any>, prefix: string = ''): void {
+  add(schema: Record<string, any>, prefix = ''): void {
     const keys = Object.keys(schema);
     const len = keys.length;
 
@@ -715,7 +715,7 @@ class Schema {
    * @return {queryParseCallback[]}
    * @private
    */
-  _parseSort(sorts: object, prefix: string = '', stack: queryParseCallback[] = []): queryParseCallback[] {
+  _parseSort(sorts: object, prefix = '', stack: queryParseCallback[] = []): queryParseCallback[] {
     const { paths } = this;
     const keys = Object.keys(sorts);
 

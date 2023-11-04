@@ -13,7 +13,7 @@ describe('SchemaTypeVirtual', () => {
   });
 
   it('get() - type check', () => {
-    //@ts-ignore
+    // @ts-ignore
     (() => type.get(123)).should.to.throw(TypeError, 'Getter must be a function!');
   });
 
@@ -27,7 +27,7 @@ describe('SchemaTypeVirtual', () => {
   });
 
   it('set() - type check', () => {
-    //@ts-ignore
+    // @ts-ignore
     (() => type.set(123)).should.to.throw(TypeError, 'Setter must be a function!');
   });
 

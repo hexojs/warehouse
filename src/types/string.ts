@@ -52,7 +52,7 @@ class SchemaTypeString extends SchemaType<string> {
       return value === query;
     }
 
-    if (typeof (query as any).test === 'function') {
+    if (typeof(query as any).test === 'function') {
       return (query as RegExp).test(value);
     }
 

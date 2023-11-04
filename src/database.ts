@@ -173,7 +173,7 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(callback?: NodeJSLikeCallback<any>): Bluebird<void>{
+  save(callback?: NodeJSLikeCallback<any>): Bluebird<void> {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');

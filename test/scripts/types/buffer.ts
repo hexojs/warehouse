@@ -50,9 +50,9 @@ describe('SchemaTypeBuffer', () => {
   it('match()', () => {
     type.match(Buffer.from([97, 98, 99]), Buffer.from([97, 98, 99])).should.be.true;
     type.match(Buffer.from([97, 98, 99]), Buffer.from([97, 98, 100])).should.be.false;
-    //@ts-ignore
+    // @ts-ignore
     type.match(undefined, Buffer.from([97, 98, 99])).should.be.false;
-    //@ts-ignore
+    // @ts-ignore
     type.match(undefined, undefined).should.be.true;
   });
 
