@@ -5,7 +5,7 @@ import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
 import { isPlainObject } from 'is-plain-object';
-import type { NodeJSLikeCallback } from './types';
+import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, PopulateResult, SchemaTypeOptions } from './types';
 
 /**
  * @callback queryFilterCallback
@@ -29,21 +29,11 @@ type queryCallback = (data: unknown) => void;
  */
 type queryParseCallback = (a: unknown, b: unknown) => number;
 
-/**
- * @typedef PopulateResult
- * @property {string} path
- * @property {*} model
- */
-type PopulateResult = {
-  path: string;
-  model: any;
-};
-
 const builtinTypes = new Set(['String', 'Number', 'Boolean', 'Array', 'Object', 'Date', 'Buffer']);
 
-const getSchemaType = (name: string, options: Record<string, unknown> | { type: any; }) => {
-  const Type = options.type || options;
-  const typeName = Type.name;
+const getSchemaType = (name: string, options: { type: SchemaTypeOptions; [key: string]: any } | SchemaTypeOptions) => {
+  const Type = (options as any).type || options;
+  const typeName: string = Type.name;
 
   if (builtinTypes.has(typeName)) {
     return new Types[typeName](name, options);
@@ -388,19 +378,34 @@ class QueryParser {
   }
 }
 
+
 class Schema {
   paths: Record<string, SchemaType<any>> = {};
-  statics: Record<string, any> = {};
-  methods: Record<string, any> = {};
-  hooks;
-  stacks;
+  statics: Record<string, (...args: any[]) => any> = {};
+  methods: Record<string, (...args: any[]) => any> = {};
+  hooks: {
+    pre: {
+      save: ((...args: any[]) => Promise<any>)[]
+      remove: ((...args: any[]) => Promise<any>)[]
+    };
+    post: {
+      save: ((...args: any[]) => Promise<any>)[]
+      remove: ((...args: any[]) => Promise<any>)[]
+    };
+  };
+  stacks: {
+    getter: ((data: object) => void)[];
+    setter: ((data: object) => void)[];
+    import: ((data: object) => void)[];
+    export: ((data: object) => void)[];
+  };
 
   /**
    * Schema constructor.
    *
    * @param {Object} [schema]
    */
-  constructor(schema?: object) {
+  constructor(schema?: Record<string, AddSchemaTypeOptions>) {
     this.hooks = {
       pre: {
         save: [],
@@ -430,7 +435,7 @@ class Schema {
    * @param {Object} schema
    * @param {String} prefix
    */
-  add(schema: Record<string, any>, prefix = ''): void {
+  add(schema: Record<string, AddSchemaTypeOptions>, prefix = ''): void {
     const keys = Object.keys(schema);
     const len = keys.length;
 
@@ -452,8 +457,8 @@ class Schema {
    * @return {SchemaType | undefined}
    */
   path(name: string): SchemaType<any>;
-  path(name: string, obj: SchemaType<unknown> | ((...args: any[]) => any) | { type: any; } | Record<string, unknown> | any[]): void;
-  path(name: string, obj?: SchemaType<unknown> | ((...args: any[]) => any) | { type: any; } | Record<string, unknown> | any[]): SchemaType<any> | void {
+  path(name: string, obj: AddSchemaTypeOptions): void;
+  path(name: string, obj?: AddSchemaTypeOptions): SchemaType<any> | void {
     if (obj == null) {
       return this.paths[name];
     }
@@ -475,7 +480,7 @@ class Schema {
               child: obj.length ? getSchemaType(name, obj[0]) : new SchemaType(name)
             });
           } else if (obj.type) {
-            type = getSchemaType(name, obj);
+            type = getSchemaType(name, obj as { type: SchemaTypeOptions; });
           } else {
             type = new Types.Object();
             nested = Object.keys(obj).length > 0;
@@ -491,7 +496,7 @@ class Schema {
     this.paths[name] = type;
     this._updateStack(name, type);
 
-    if (nested) this.add(obj, `${name}.`);
+    if (nested) this.add(obj as AddSchemaTypeLoopOptions, `${name}.`);
   }
 
   /**
@@ -567,7 +572,7 @@ class Schema {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  pre(type: string, fn: (...args: any[]) => void): void {
+  pre(type: 'save' | 'remove', fn: (...args: any[]) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -580,7 +585,7 @@ class Schema {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  post(type: string, fn: (...args: any[]) => void): void {
+  post(type: 'save' | 'remove', fn: (...args: any[]) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -593,7 +598,7 @@ class Schema {
    * @param {String} name
    * @param {Function} fn
    */
-  method(name: string | number, fn: (...args: any[]) => any) {
+  method(name: string, fn: (...args: any[]) => any) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {
@@ -656,7 +661,7 @@ class Schema {
    * @return {Object}
    * @private
    */
-  _parseDatabase(data) {
+  _parseDatabase(data: object): object {
     const stack = this.stacks.import;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -673,7 +678,7 @@ class Schema {
    * @return {Object}
    * @private
    */
-  _exportDatabase(data) {
+  _exportDatabase(data: object): object {
     const stack = this.stacks.export;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -690,7 +695,7 @@ class Schema {
    * @return {queryCallback[]}
    * @private
    */
-  _parseUpdate(updates): queryCallback[] {
+  _parseUpdate(updates: object): queryCallback[] {
     return new UpdateParser(this.paths).parseUpdate(updates);
   }
 
@@ -701,7 +706,7 @@ class Schema {
    * @return {queryFilterCallback}
    * @private
    */
-  _execQuery(query): queryFilterCallback {
+  _execQuery(query: object): queryFilterCallback {
     return new QueryParser(this.paths).execQuery(query);
   }
 

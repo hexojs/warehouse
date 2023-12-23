@@ -2,18 +2,30 @@ import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import Database from '../../dist/database';
 import Document from '../../dist/document';
+import type Model from '../../dist/model';
+
+interface UserType {
+  name?: string;
+  age?: number;
+  comments?: string;
+}
+
+interface CommentType {
+  content?: string;
+  author?: string;
+}
 
 describe('Document', () => {
   const db = new Database();
   const Schema = Database.Schema;
 
-  const User = db.model('User', {
+  const User: Model<UserType> = db.model('User', {
     name: String,
     age: Number,
     comments: [{type: Schema.Types.CUID, ref: 'Comment'}]
   });
 
-  const Comment = db.model('Comment', {
+  const Comment: Model<CommentType> = db.model('Comment', {
     content: String,
     author: {type: Schema.Types.CUID, ref: 'User'}
   });

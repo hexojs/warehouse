@@ -4,18 +4,18 @@ import type Schema from './schema';
 import type { NodeJSLikeCallback } from './types';
 const cloneDeep = rfdc();
 
-abstract class Document {
-  abstract _model: Model;
+abstract class Document<T> {
+  abstract _model: Model<T>;
   _id!: string | number | undefined;
   abstract _schema: Schema;
-  [key: PropertyKey]: any;
+  [key : string]: any;
 
   /**
    * Document constructor.
    *
    * @param {object} data
    */
-  constructor(data?: object) {
+  constructor(data?: T) {
     if (data) {
       Object.assign(this, data);
     }
@@ -38,7 +38,7 @@ abstract class Document {
    * @param {function} [callback]
    * @return {Promise}
    */
-  update(data: Record<string, any>, callback?: NodeJSLikeCallback<any>): Promise<any> {
+  update(data: object, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return this._model.updateById(this._id, data, callback);
   }
 
@@ -49,7 +49,7 @@ abstract class Document {
    * @param {function} [callback]
    * @return {Promise}
    */
-  replace(data: object | Document, callback?: NodeJSLikeCallback<any>): Promise<any> {
+  replace(data: T | Document<T>, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return this._model.replaceById(this._id, data, callback);
   }
 
@@ -68,9 +68,9 @@ abstract class Document {
    *
    * @return {object}
    */
-  toObject(): object {
+  toObject(): T {
     const keys = Object.keys(this);
-    const obj = {};
+    const obj: Partial<T> = {};
 
     for (let i = 0, len = keys.length; i < len; i++) {
       const key = keys[i];
@@ -79,7 +79,7 @@ abstract class Document {
       obj[key] = isGetter(this, key) ? this[key] : cloneDeep(this[key]);
     }
 
-    return obj;
+    return obj as T;
   }
 
   /**
@@ -97,7 +97,7 @@ abstract class Document {
    * @param {String|Object} expr
    * @return {Document}
    */
-  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Document {
+  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Document<T> {
     const stack = this._schema._parsePopulate(expr);
     return this._model._populate(this, stack);
   }

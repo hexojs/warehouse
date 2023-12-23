@@ -100,6 +100,7 @@ describe('Schema', () => {
     schema.hooks.pre.remove.should.have.length(1);
 
     // incompatible type
+    // @ts-ignore
     (() => schema.pre('wtf', () => {})).should.to.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
@@ -121,6 +122,7 @@ describe('Schema', () => {
     schema.hooks.post.remove.should.have.length(1);
 
     // incompatible type
+    // @ts-ignore
     (() => schema.post('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function

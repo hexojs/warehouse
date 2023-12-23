@@ -6,19 +6,32 @@ import Promise from 'bluebird';
 import Document from '../../dist/document';
 import Database from '../../dist/database';
 import type Query from '../../dist/query';
+import type Model from '../../dist/model';
+
+interface UserType {
+  name?: string;
+  age?: number;
+  comments?: string;
+}
+
+interface LoopType {
+  age: {
+    age: number;
+  }
+}
 
 describe('Query', () => {
 
   const db = new Database();
   const Schema = Database.Schema;
 
-  const User = db.model('User', {
+  const User: Model<UserType> = db.model('User', {
     name: String,
     age: Number,
     comments: [{type: Schema.Types.CUID, ref: 'Comment'}]
   });
 
-  const Loop = db.model('Loop', {
+  const Loop: Model<LoopType> = db.model('Loop', {
     age: {
       age: Number
     }
@@ -30,7 +43,7 @@ describe('Query', () => {
   });
 
   it('count()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).count().should.eql(data.length);
+    User.find({}).count().should.eql(data.length);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
@@ -46,7 +59,7 @@ describe('Query', () => {
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('toArray()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).toArray().should.eql(data);
+    User.find({}).toArray().should.eql(data);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
@@ -54,7 +67,7 @@ describe('Query', () => {
     const query = User.find({});
 
     for (let i = 0, len = data.length; i < len; i++) {
-      (query as Query).eq(i).should.eql(data[i]);
+      query.eq(i).should.eql(data[i]);
     }
 
     return data;
@@ -64,44 +77,44 @@ describe('Query', () => {
     const query = User.find({});
 
     for (let i = 1, len = data.length; i <= len; i++) {
-      (query as Query).eq(-i).should.eql(data[len - i]);
+      query.eq(-i).should.eql(data[len - i]);
     }
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('first()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).first().should.eql(data[0]);
+    User.find({}).first().should.eql(data[0]);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('last()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).last().should.eql(data[data.length - 1]);
+    User.find({}).last().should.eql(data[data.length - 1]);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('slice()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).slice(2, 4).data.should.eql(data.slice(2, 4));
+    User.find({}).slice(2, 4).data.should.eql(data.slice(2, 4));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('limit()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).limit(2).data.should.eql(data.slice(0, 2));
+    User.find({}).limit(2).data.should.eql(data.slice(0, 2));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('skip()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).skip(2).data.should.eql(data.slice(2));
+    User.find({}).skip(2).data.should.eql(data.slice(2));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('reverse()', () => User.insert(Array(5).fill({})).then(data => {
-    (User.find({}) as Query).reverse().data.should.eql(data.reverse());
+    User.find({}).reverse().data.should.eql(data.reverse());
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('shuffle()', () => User.insert(Array(5).fill({})).then(data => {
-    sortBy((User.find({}) as Query).shuffle().data, '_id').should.eql(sortBy(data, '_id'));
+    sortBy(User.find({}).shuffle().data, '_id').should.eql(sortBy(data, '_id'));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
@@ -112,7 +125,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({age: 20}) as Query;
+    const query = User.find({}).find({age: 20});
     query.data.should.eql(data.slice(1, 3));
 
     const { length } = query;
@@ -130,7 +143,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({}) as Query;
+    const query = User.find({}).find({});
     query.data.should.eql(data);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -141,7 +154,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({age: {$gt: 20}}) as Query;
+    const query = User.find({}).find({age: {$gt: 20}});
     query.data.should.eql(data.slice(2));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -152,7 +165,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({age: {$gte: 20}}, {limit: 2}) as Query;
+    const query = User.find({}).find({age: {$gte: 20}}, {limit: 2}) as Query<UserType>;
     query.data.should.eql(data.slice(1, 3));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -163,11 +176,11 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    let query = (User.find({}) as Query).find({age: {$gte: 20}}, {skip: 1}) as Query;
+    let query = User.find({}).find({age: {$gte: 20}}, {skip: 1}) as Query<UserType>;
     query.data.should.eql(data.slice(2));
 
     // with limit
-    query = (User.find({}) as Query).find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query;
+    query = User.find({}).find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query<UserType>;
     query.data.should.eql(data.slice(2, 3));
 
     return data;
@@ -179,7 +192,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({age: {$gt: 20}}, {lean: true}) as Query;
+    const query = User.find({}).find({age: {$gt: 20}}, {lean: true}) as Query<UserType>;
     query.should.be.a('array');
     const { length } = query;
     for (let i = 0; i < length; i++) {
@@ -193,12 +206,12 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $and: [
         {name: 'John'},
         {age: {$gt: 20}}
       ]
-    }) as Query;
+    });
 
     query.toArray().should.eql([data[1]]);
 
@@ -210,12 +223,12 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $or: [
         {name: 'Jack'},
         {age: {$gt: 20}}
       ]
-    }) as Query;
+    });
 
     query.toArray().should.eql(data.slice(1));
 
@@ -227,12 +240,12 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $nor: [
         {name: 'Jack'},
         {age: {$gt: 20}}
       ]
-    }) as Query;
+    });
 
     query.toArray().should.eql([data[0]]);
 
@@ -244,9 +257,9 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $not: {name: 'John'}
-    }) as Query;
+    });
 
     query.toArray().should.eql([data[2]]);
 
@@ -258,11 +271,11 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $where() {
         return this.name === 'John';
       }
-    }) as Query;
+    });
 
     query.toArray().should.eql(data.slice(0, 2));
 
@@ -274,12 +287,12 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $and: [
         {name: 'Jack'},
         {age: {gt: 20}}
       ]
-    }) as Query;
+    });
     query.toArray().length.should.eql(0);
 
     return data;
@@ -290,12 +303,12 @@ describe('Query', () => {
     {name: 'John', age: 25},
     {name: 'Jack', age: 30}
   ]).then(data => {
-    const query = (User.find({}) as Query).find({
+    const query = User.find({}).find({
       $and: [
         {name: 'Jack'},
         {age: {gt: {}}}
       ]
-    }) as Query;
+    });
     query.toArray().should.eql([data[2]]);
 
     return data;
@@ -307,7 +320,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const result = (User.find({}) as Query).findOne({age: {$gt: 20}});
+    const result = (User.find({})).findOne({age: {$gt: 20}});
     result.should.eql(data[2]);
     result.should.to.be.an.instanceof(Document);
     return data;
@@ -319,8 +332,8 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const result = (User.find({}) as Query).findOne({age: {$gt: 20}}, {lean: true});
-    result._id.should.eql(data[2]._id);
+    const result = User.find({}).findOne({age: {$gt: 20}}, {lean: true}) as Document<UserType>;
+    result._id!.should.eql(data[2]._id);
     result.should.to.not.be.an.instanceof(Document);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -330,7 +343,7 @@ describe('Query', () => {
     {age: 35},
     {age: 10}
   ]).then(data => {
-    const query = (User.find({}) as Query).sort('age');
+    const query = User.find({}).sort('age');
     query.data[0].should.eql(data[2]);
     query.data[1].should.eql(data[0]);
     query.data[2].should.eql(data[1]);
@@ -342,7 +355,7 @@ describe('Query', () => {
     {age: {age: 35}},
     {age: {age: 10}}
   ]).then(data => {
-    const query = (Loop.find({}) as Query).sort('age', { age: 1 });
+    const query = Loop.find({}).sort('age', { age: 1 });
     query.data[0].should.eql(data[2]);
     query.data[1].should.eql(data[0]);
     query.data[2].should.eql(data[1]);
@@ -354,7 +367,7 @@ describe('Query', () => {
     {age: 35},
     {age: 10}
   ]).then(data => {
-    const query = (User.find({}) as Query).sort('age', -1);
+    const query = User.find({}).sort('age', -1);
     query.data[0].should.eql(data[1]);
     query.data[1].should.eql(data[0]);
     query.data[2].should.eql(data[2]);
@@ -367,7 +380,7 @@ describe('Query', () => {
     {age: 20, name: 'C'},
     {age: 20, name: 'D'}
   ]).then(data => {
-    const query = (User.find({}) as Query).sort('age name');
+    const query = User.find({}).sort('age name');
     query.data[0].should.eql(data[0]);
     query.data[1].should.eql(data[2]);
     query.data[2].should.eql(data[3]);
@@ -469,7 +482,7 @@ describe('Query', () => {
     const query = User.find({}).filter((data, i) => {
       i.should.eql(num++);
       return data.age > 20;
-    }) as Query;
+    });
 
     query.data.should.eql(data.slice(2));
 
@@ -518,7 +531,7 @@ describe('Query', () => {
     {age: 30},
     {age: 20},
     {age: 40}
-  ]).then(data => (User.find({age: 20}) as Query).update({name: 'A'}).then(updated => {
+  ]).then(data => User.find({age: 20}).update({name: 'A'}).then(updated => {
     updated[0]._id.should.eql(data[1]._id);
     updated[1]._id.should.eql(data[3]._id);
     updated[0].name.should.eql('A');
@@ -532,7 +545,7 @@ describe('Query', () => {
     {age: 30},
     {age: 20},
     {age: 40}
-  ]).then(data => (User.find({age: 20}) as Query).replace({name: 'A'}).then(updated => {
+  ]).then(data => User.find({age: 20}).replace({name: 'A'}).then(updated => {
     updated[0]._id.should.eql(data[1]._id);
     updated[1]._id.should.eql(data[3]._id);
     updated[0].name.should.eql('A');
@@ -546,7 +559,7 @@ describe('Query', () => {
     {age: 30},
     {age: 20},
     {age: 40}
-  ]).then(data => (User.find({age: 20}) as Query).remove().then(removed => {
+  ]).then(data => User.find({age: 20}).remove().then(removed => {
     should.not.exist(User.findById(data[1]._id));
     should.not.exist(User.findById(data[3]._id));
     return [data[0], data[2], data[4]];
@@ -563,7 +576,7 @@ describe('Query', () => {
       });
     }).then(comment_ => {
       comment = comment_;
-      return (Comment.find({}) as Query).populate('author');
+      return Comment.find({}).populate('author');
     }).then(result => {
       result.first().author.should.eql(user);
 
@@ -615,7 +628,7 @@ describe('Query', () => {
       });
     }).then(comment_ => {
       comment = comment_;
-      return (Comment.find({}) as Query).populate(['author']);
+      return Comment.find({}).populate(['author']);
     }).then(result => {
       result.first().author.should.eql(user);
 
@@ -637,7 +650,7 @@ describe('Query', () => {
       });
     }).then(comment_ => {
       comment = comment_;
-      return (Comment.find({}) as Query).populate([{ path: 'author' }]);
+      return Comment.find({}).populate([{ path: 'author' }]);
     }).then(result => {
       result.first().author.should.eql(user);
 
@@ -650,7 +663,7 @@ describe('Query', () => {
 
   it('populate() - path is required', () => {
     try {
-      (Comment.find({}) as Query).populate({});
+      Comment.find({}).populate({});
     } catch (err) {
       err.message.should.eql('path is required');
     }

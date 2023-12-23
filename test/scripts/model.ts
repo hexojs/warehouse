@@ -11,6 +11,24 @@ import cuid from 'cuid';
 import Database from '../../dist/database';
 import type Query from '../../dist/query';
 import type Document from '../../dist/document';
+import type Model from '../../dist/model';
+
+interface UserType {
+  name?: {
+    first: string;
+    last: string;
+  }
+  email?: string;
+  age?: number;
+  posts?: string[];
+}
+
+interface PostType {
+  title?: string;
+  content?: string;
+  user_id?: string;
+  created?: Date;
+}
 
 describe('Model', () => {
 
@@ -40,10 +58,10 @@ describe('Model', () => {
     created: Date
   });
 
-  const User = db.model('User', userSchema);
-  const Post = db.model('Post', postSchema);
+  const User: Model<UserType> = db.model('User', userSchema);
+  const Post: Model<PostType> = db.model('Post', postSchema);
 
-  it('new()', () => {
+  it('new()', () => {``
     const user = User.new({
       name: {first: 'John', last: 'Doe'},
       email: 'abc@example.com',
@@ -106,6 +124,7 @@ describe('Model', () => {
   it('insert() - already existed', () => {
     let user;
 
+    // @ts-ignore
     return (User.insert({}).then(data => {
       user = data;
       return User.insert(data);
@@ -506,7 +525,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: 20}) as Query;
+    const query = User.find({age: 20}) as Query<UserType>;
     query.data.should.eql(data.slice(1, 3));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -518,7 +537,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({}) as Query;
+    const query = User.find({}) as Query<UserType>;
     query.data.should.eql(data);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -529,7 +548,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: {$gt: 20}}) as Query;
+    const query = User.find({age: {$gt: 20}}) as Query<UserType>;
     query.data.should.eql(data.slice(2));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -540,7 +559,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: {$gte: 20}}, {limit: 2}) as Query;
+    const query = User.find({age: {$gte: 20}}, {limit: 2}) as Query<UserType>;
     query.data.should.eql(data.slice(1, 3));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -551,11 +570,11 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    let query = User.find({age: {$gte: 20}}, {skip: 1}) as Query;
+    let query = User.find({age: {$gte: 20}}, {skip: 1}) as Query<UserType>;
     query.data.should.eql(data.slice(2));
 
     // with limit
-    query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query;
+    query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query<UserType>;
     query.data.should.eql(data.slice(2, 3));
 
     return data;
@@ -584,7 +603,7 @@ describe('Model', () => {
       ]
     });
 
-    (query as Query).toArray().should.eql([data[1]]);
+    (query as Query<UserType>).toArray().should.eql([data[1]]);
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -601,7 +620,7 @@ describe('Model', () => {
       ]
     });
 
-    (query as Query).toArray().should.eql(data.slice(1));
+    (query as Query<UserType>).toArray().should.eql(data.slice(1));
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -618,7 +637,7 @@ describe('Model', () => {
       ]
     });
 
-    (query as Query).toArray().should.eql([data[0]]);
+    (query as Query<UserType>).toArray().should.eql([data[0]]);
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -632,7 +651,7 @@ describe('Model', () => {
       $not: {'name.last': 'Doe'}
     });
 
-    (query as Query).toArray().should.eql(data.slice(2));
+    (query as Query<UserType>).toArray().should.eql(data.slice(2));
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -648,7 +667,7 @@ describe('Model', () => {
       }
     });
 
-    (query as Query).toArray().should.eql(data.slice(0, 2));
+    (query as Query<UserType>).toArray().should.eql(data.slice(0, 2));
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -669,7 +688,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    (User.findOne({age: {$gt: 20}}, {lean: true}) as Document)._id!.should.eql(data[2]._id);
+    (User.findOne({age: {$gt: 20}}, {lean: true}) as Document<UserType>)._id!.should.eql(data[2]._id);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
@@ -830,32 +849,32 @@ describe('Model', () => {
   }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduce()', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 1;
 
     const sum = Post.reduce((sum, item, i) => {
       i.should.eql(num++);
-      return {email: sum.email + item.email};
+      return {title: sum.title + item.title};
     });
 
-    sum.email.should.eql('ABC');
+    sum.title.should.eql('ABC');
 
     return data;
   }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduce() - with initial', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 0;
 
     const sum = Post.reduce((sum, item, i) => {
       i.should.eql(num++);
-      return sum + item.email;
+      return sum + item.title;
     }, '_');
 
     sum.should.eql('_ABC');
@@ -864,32 +883,32 @@ describe('Model', () => {
   }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduceRight()', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 1;
 
     const sum = Post.reduceRight((sum, item, i) => {
       i.should.eql(num--);
-      return {email: sum.email + item.email};
+      return {title: sum.title + item.title};
     });
 
-    sum.email.should.eql('CBA');
+    sum.title.should.eql('CBA');
 
     return data;
   }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduceRight() - with initial', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 2;
 
     const sum = Post.reduceRight((sum, item, i) => {
       i.should.eql(num--);
-      return sum + item.email;
+      return sum + item.title;
     }, '_');
 
     sum.should.eql('_CBA');
@@ -1302,7 +1321,7 @@ describe('Model', () => {
 
   it('_export() - should not save undefined value', () => {
     // @ts-ignore
-    class CacheType extends SchemaType {
+    class CacheType extends SchemaType<T> {
       value() {}
     }
 

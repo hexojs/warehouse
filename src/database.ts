@@ -7,7 +7,7 @@ import Schema from './schema';
 import SchemaType from './schematype';
 import WarehouseError from './error';
 import { logger } from 'hexo-log';
-import type { NodeJSLikeCallback } from './types';
+import type { AddSchemaTypeOptions, NodeJSLikeCallback } from './types';
 
 const log = logger();
 const pkg = require('../package.json');
@@ -80,7 +80,7 @@ interface DatabaseOptions {
 
 class Database {
   options: DatabaseOptions;
-  _models: Record<string, Model>;
+  _models: Record<string, Model<any>>;
   Model: typeof Model;
 
   /**
@@ -104,7 +104,7 @@ class Database {
 
     this._models = {};
 
-    class _Model extends Model {}
+    class _Model extends Model<any> {}
 
     this.Model = _Model;
 
@@ -118,7 +118,7 @@ class Database {
    * @param {Schema|object} [schema]
    * @return {Model}
    */
-  model(name: string, schema?: Schema | object): Model {
+  model(name: string, schema?: Schema | Record<string, AddSchemaTypeOptions>): Model<any> {
     if (this._models[name]) {
       return this._models[name];
     }
@@ -181,7 +181,7 @@ class Database {
     return Bluebird.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
-  toJSON(): { meta: { version: number, warehouse: string }, models: Record<string, Model> } {
+  toJSON(): { meta: { version: number, warehouse: string }, models: Record<string, Model<any>> } {
     const models = Object.keys(this._models)
       .reduce((obj, key) => {
         const value = this._models[key];
