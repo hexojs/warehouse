@@ -320,7 +320,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const result = (User.find({})).findOne({age: {$gt: 20}});
+    const result = User.find({}).findOne({age: {$gt: 20}});
     result.should.eql(data[2]);
     result.should.to.be.an.instanceof(Document);
     return data;

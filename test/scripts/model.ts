@@ -61,7 +61,7 @@ describe('Model', () => {
   const User: Model<UserType> = db.model('User', userSchema);
   const Post: Model<PostType> = db.model('Post', postSchema);
 
-  it('new()', () => {``
+  it('new()', () => {
     const user = User.new({
       name: {first: 'John', last: 'Doe'},
       email: 'abc@example.com',
@@ -1321,7 +1321,7 @@ describe('Model', () => {
 
   it('_export() - should not save undefined value', () => {
     // @ts-ignore
-    class CacheType extends SchemaType<T> {
+    class CacheType extends SchemaType<any> {
       value() {}
     }
 
