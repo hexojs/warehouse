@@ -28,11 +28,11 @@ class SchemaTypeBuffer extends SchemaType<Buffer> {
    * @return {Buffer}
    */
   cast(value_: WithImplicitCoercion<Uint8Array | ReadonlyArray<number> | string>, data?: unknown): Buffer;
-  cast(value_?: unknown, data?: unknown): Buffer | null | undefined;
-  cast(value_?: unknown, data?: unknown): Buffer | null | undefined {
+  cast(value_?: unknown, data?: unknown): Buffer | undefined;
+  cast(value_?: unknown, data?: unknown): Buffer | undefined {
     const value = super.cast(value_, data);
 
-    if (value == null || Buffer.isBuffer(value)) return value as Buffer | null | undefined;
+    if (value == null || Buffer.isBuffer(value)) return value as Buffer | undefined;
     if (typeof value === 'string') return Buffer.from(value, this.options.encoding);
     if (Array.isArray(value)) return Buffer.from(value);
   }

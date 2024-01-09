@@ -14,11 +14,11 @@ class SchemaTypeString extends SchemaType<string> {
    * @return {String}
    */
   cast(value_: { toString(): string }, data?: unknown): string;
-  cast(value_?: unknown, data?: unknown): string | null | undefined;
-  cast(value_?: unknown, data?: unknown): string | null | undefined {
+  cast(value_?: unknown, data?: unknown): string | undefined;
+  cast(value_?: unknown, data?: unknown): string | undefined {
     const value = super.cast(value_, data);
 
-    if (value == null || typeof value === 'string') return value as string | null | undefined;
+    if (value == null || typeof value === 'string') return value as string | undefined;
     if (typeof value.toString === 'function') return value.toString();
   }
 

@@ -13,11 +13,11 @@ class SchemaTypeDate extends SchemaType<Date> {
    * @return {Date | null | undefined}
    */
   cast(value_: Date | number | string): Date;
-  cast(value_?: unknown): Date | null | undefined;
-  cast(value_?: unknown): Date | null | undefined {
+  cast(value_?: unknown): Date | undefined;
+  cast(value_?: unknown): Date | undefined {
     const value = super.cast(value_, null);
 
-    if (value == null || value instanceof Date) return value as Date | null | undefined;
+    if (value == null || value instanceof Date) return value as Date | undefined;
 
     return new Date(value as any);
   }
@@ -63,7 +63,7 @@ class SchemaTypeDate extends SchemaType<Date> {
    */
   compare(a?: Date, b?: Date): number {
     if (a) {
-      return b ? (a as unknown as number) - (b as unknown as number) : 1;
+      return b ? a.getTime() - b.getTime() : 1;
     }
 
     return b ? -1 : 0;

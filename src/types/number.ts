@@ -14,11 +14,11 @@ class SchemaTypeNumber extends SchemaType<number> {
    * @return {Number}
    */
   cast(value_: Exclude<unknown, undefined | null>, data?: unknown): number;
-  cast(value_?: unknown, data?: unknown): number | null | undefined;
-  cast(value_?: unknown, data?: unknown): number | null | undefined {
+  cast(value_?: unknown, data?: unknown): number | undefined;
+  cast(value_?: unknown, data?: unknown): number | undefined {
     const value = super.cast(value_, data);
 
-    if (value == null || typeof value === 'number') return value as number | null | undefined;
+    if (value == null || typeof value === 'number') return value as number | undefined;
 
     return +value;
   }

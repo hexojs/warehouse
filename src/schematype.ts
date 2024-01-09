@@ -64,7 +64,7 @@ class SchemaType<T> {
     const default_ = this.options.default;
 
     if (typeof default_ === 'function') {
-      this.default = default_ as unknown as () => T;
+      this.default = default_ as () => T;
     } else {
       this.default = () => default_;
     }

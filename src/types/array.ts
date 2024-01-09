@@ -34,10 +34,10 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @return {Array}
    */
   cast(value_: Exclude<unknown, null | undefined>, data?: unknown): I[];
-  cast(value_?: unknown, data?: unknown): I[] | null | undefined;
-  cast(value_?: unknown, data?: unknown): I[] | null | undefined {
+  cast(value_?: unknown, data?: unknown): I[] | undefined;
+  cast(value_?: unknown, data?: unknown): I[] | undefined {
     value_ = super.cast(value_, data);
-    if (value_ == null) return value_ as null | undefined;
+    if (value_ == null) return value_ as undefined;
 
     const value = isArray(value_) ? value_ : value_ = [value_];
     if (!value.length) return value;
