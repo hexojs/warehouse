@@ -45,7 +45,7 @@
     "@types/jsonstream": "^0.8.30",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.7",
-    "@types/sinon": "^10.0.13",
+    "@types/sinon": "^17.0.3",
     "@types/through2": "^2.0.36",
     "c8": "^9.0.0",
     "chai": "^4.3.6",
