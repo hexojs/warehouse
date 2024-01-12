@@ -14,7 +14,7 @@ class SchemaTypeVirtual extends SchemaType<any> {
    * @param {Function} fn
    * @chainable
    */
-  get(fn) {
+  get(fn: () => any): SchemaTypeVirtual {
     if (typeof fn !== 'function') {
       throw new TypeError('Getter must be a function!');
     }
@@ -30,7 +30,7 @@ class SchemaTypeVirtual extends SchemaType<any> {
    * @param {Function} fn
    * @chainable
    */
-  set(fn) {
+  set(fn: (value: any) => void): SchemaTypeVirtual {
     if (typeof fn !== 'function') {
       throw new TypeError('Setter must be a function!');
     }
@@ -47,7 +47,7 @@ class SchemaTypeVirtual extends SchemaType<any> {
    * @param {Object} data
    * @return {*}
    */
-  cast(value, data) {
+  cast(value: unknown, data: any): void {
     if (typeof this.getter !== 'function') return;
 
     const getter = this.getter;
@@ -70,7 +70,7 @@ class SchemaTypeVirtual extends SchemaType<any> {
    * @param {*} value
    * @param {Object} data
    */
-  validate(value, data) {
+  validate(value: any, data: any): void {
     if (typeof this.setter === 'function') {
       this.setter.call(data, value);
     }

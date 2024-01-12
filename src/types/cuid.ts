@@ -14,7 +14,7 @@ class SchemaTypeCUID extends SchemaType<string> {
    * @param {String} value
    * @return {String}
    */
-  cast(value?) {
+  cast(value?: string): string {
     if (value == null && this.options.required) {
       return cuid();
     }
@@ -28,7 +28,7 @@ class SchemaTypeCUID extends SchemaType<string> {
    * @param {*} value
    * @return {String|Error}
    */
-  validate(value?) {
+  validate(value?: string): string {
     if (value && (value[0] !== 'c' || value.length !== 25)) {
       throw new ValidationError(`\`${value}\` is not a valid CUID`);
     }

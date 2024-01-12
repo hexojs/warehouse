@@ -9,6 +9,26 @@ import Promise from 'bluebird';
 import sinon from 'sinon';
 import cuid from 'cuid';
 import Database from '../../dist/database';
+import type Query from '../../dist/query';
+import type Document from '../../dist/document';
+import type Model from '../../dist/model';
+
+interface UserType {
+  name?: {
+    first: string;
+    last: string;
+  }
+  email?: string;
+  age?: number;
+  posts?: string[];
+}
+
+interface PostType {
+  title?: string;
+  content?: string;
+  user_id?: string;
+  created?: Date;
+}
 
 describe('Model', () => {
 
@@ -38,8 +58,8 @@ describe('Model', () => {
     created: Date
   });
 
-  const User = db.model('User', userSchema);
-  const Post = db.model('Post', postSchema);
+  const User: Model<UserType> = db.model('User', userSchema);
+  const Post: Model<PostType> = db.model('Post', postSchema);
 
   it('new()', () => {
     const user = User.new({
@@ -48,7 +68,7 @@ describe('Model', () => {
       age: 20
     });
 
-    user._id.should.exist;
+    user._id!.should.exist;
     user.name.first.should.eql('John');
     user.name.last.should.eql('Doe');
     user.name.full.should.eql('John Doe');
@@ -98,16 +118,17 @@ describe('Model', () => {
     const doc = User.new();
     delete doc._id;
 
-    return User.insert(doc).should.eventually.be.rejected;
+    return (User.insert(doc) as any).should.eventually.be.rejected;
   });
 
   it('insert() - already existed', () => {
     let user;
 
-    return User.insert({}).then(data => {
+    // @ts-ignore
+    return (User.insert({}).then(data => {
       user = data;
       return User.insert(data);
-    }).finally(() => User.removeById(user._id)).should.eventually.be.rejected;
+    }).finally(() => User.removeById(user._id)) as any).should.eventually.be.rejected;
   });
 
   it('insert() - hook', () => {
@@ -150,7 +171,7 @@ describe('Model', () => {
   ]).then(data => {
     data.length = 2;
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('insert() - sync problem', () => {
     const db = new Database();
@@ -301,7 +322,7 @@ describe('Model', () => {
     return data;
   }).then(data => User.removeById(data._id)));
 
-  it('updateById() - id not exist', () => User.updateById('foo', {}).should.eventually.be.rejected);
+  it('updateById() - id not exist', () => (User.updateById('foo', {}) as any).should.eventually.be.rejected);
 
   it('updateById() - hook', () => {
     const db = new Database();
@@ -341,7 +362,7 @@ describe('Model', () => {
     updated[0].email.should.eql('A');
     updated[1].email.should.eql('A');
     return data;
-  })).map(item => User.removeById(item._id)));
+  })).map<unknown, any>(item => User.removeById(item._id)));
 
   it('replaceById()', () => {
     function validate(data) {
@@ -371,7 +392,7 @@ describe('Model', () => {
     }).then(data => User.removeById(data._id));
   });
 
-  it('replaceById() - id not exist', () => User.replaceById('foo', {}).should.eventually.be.rejected);
+  it('replaceById() - id not exist', () => (User.replaceById('foo', {}) as any).should.eventually.be.rejected);
 
   it('replaceById() - pre-hook', () => {
     const db = new Database();
@@ -411,7 +432,7 @@ describe('Model', () => {
     updated[0].email.should.eql('A');
     updated[1].email.should.eql('A');
     return data;
-  })).map(item => User.removeById(item._id)));
+  })).map<unknown, any>(item => User.removeById(item._id)));
 
   it('removeById()', () => {
     const listener = sinon.spy(data => {
@@ -430,7 +451,7 @@ describe('Model', () => {
     });
   });
 
-  it('removeById() - id not exist', () => User.removeById('foo', {}).should.eventually.be.rejected);
+  it('removeById() - id not exist', () => (User.removeById('foo', () => {}) as any).should.eventually.be.rejected);
 
   it('removeById() - hook', () => {
     const db = new Database();
@@ -489,13 +510,13 @@ describe('Model', () => {
 
       count.should.eql(data.length);
       return data;
-    }).map(item => Post.removeById(item._id));
+    }).map<unknown, any>(item => Post.removeById(item._id));
   });
 
   it('toArray()', () => Post.insert(Array(10).fill({})).then(data => {
     Post.toArray().should.eql(data);
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('find()', () => User.insert([
     {age: 10},
@@ -504,10 +525,10 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: 20});
+    const query = User.find({age: 20}) as Query<UserType>;
     query.data.should.eql(data.slice(1, 3));
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - blank', () => User.insert([
     {age: 10},
@@ -516,10 +537,10 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({});
+    const query = User.find({}) as Query<UserType>;
     query.data.should.eql(data);
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - operator', () => User.insert([
     {age: 10},
@@ -527,10 +548,10 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: {$gt: 20}});
+    const query = User.find({age: {$gt: 20}}) as Query<UserType>;
     query.data.should.eql(data.slice(2));
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - limit', () => User.insert([
     {age: 10},
@@ -538,10 +559,10 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: {$gte: 20}}, {limit: 2});
+    const query = User.find({age: {$gte: 20}}, {limit: 2}) as Query<UserType>;
     query.data.should.eql(data.slice(1, 3));
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - skip', () => User.insert([
     {age: 10},
@@ -549,15 +570,15 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    let query = User.find({age: {$gte: 20}}, {skip: 1});
+    let query = User.find({age: {$gte: 20}}, {skip: 1}) as Query<UserType>;
     query.data.should.eql(data.slice(2));
 
     // with limit
-    query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1});
+    query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query<UserType>;
     query.data.should.eql(data.slice(2, 3));
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - lean', () => User.insert([
     {age: 10},
@@ -568,7 +589,7 @@ describe('Model', () => {
     const query = User.find({age: {$gt: 20}}, {lean: true});
     query.should.be.a('array');
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - $and', () => User.insert([
     {name: {first: 'John', last: 'Doe'}, age: 20},
@@ -582,10 +603,10 @@ describe('Model', () => {
       ]
     });
 
-    query.toArray().should.eql([data[1]]);
+    (query as Query<UserType>).toArray().should.eql([data[1]]);
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - $or', () => User.insert([
     {name: {first: 'John', last: 'Doe'}, age: 20},
@@ -599,10 +620,10 @@ describe('Model', () => {
       ]
     });
 
-    query.toArray().should.eql(data.slice(1));
+    (query as Query<UserType>).toArray().should.eql(data.slice(1));
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - $nor', () => User.insert([
     {name: {first: 'John', last: 'Doe'}, age: 20},
@@ -616,10 +637,10 @@ describe('Model', () => {
       ]
     });
 
-    query.toArray().should.eql([data[0]]);
+    (query as Query<UserType>).toArray().should.eql([data[0]]);
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - $not', () => User.insert([
     {name: {first: 'John', last: 'Doe'}, age: 20},
@@ -630,10 +651,10 @@ describe('Model', () => {
       $not: {'name.last': 'Doe'}
     });
 
-    query.toArray().should.eql(data.slice(2));
+    (query as Query<UserType>).toArray().should.eql(data.slice(2));
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('find() - $where', () => User.insert([
     {name: {first: 'John', last: 'Doe'}, age: 20},
@@ -646,10 +667,10 @@ describe('Model', () => {
       }
     });
 
-    query.toArray().should.eql(data.slice(0, 2));
+    (query as Query<UserType>).toArray().should.eql(data.slice(0, 2));
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('findOne()', () => User.insert([
     {age: 10},
@@ -659,7 +680,7 @@ describe('Model', () => {
   ]).then(data => {
     User.findOne({age: {$gt: 20}}).should.eql(data[2]);
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('findOne() - lean', () => User.insert([
     {age: 10},
@@ -667,9 +688,9 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    User.findOne({age: {$gt: 20}}, {lean: true})._id.should.eql(data[2]._id);
+    (User.findOne({age: {$gt: 20}}, {lean: true}) as Document<UserType>)._id!.should.eql(data[2]._id);
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('sort()', () => User.insert([
     {age: 15},
@@ -681,7 +702,7 @@ describe('Model', () => {
     query.data[1].should.eql(data[0]);
     query.data[2].should.eql(data[1]);
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('sort() - descending', () => User.insert([
     {age: 15},
@@ -693,7 +714,7 @@ describe('Model', () => {
     query.data[1].should.eql(data[0]);
     query.data[2].should.eql(data[2]);
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('sort() - multi', () => User.insert([
     {age: 15, email: 'A'},
@@ -707,7 +728,7 @@ describe('Model', () => {
     query.data[2].should.eql(data[3]);
     query.data[3].should.eql(data[1]);
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('eq()', () => Post.insert(Array(5).fill({})).then(data => {
     for (let i = 0, len = data.length; i < len; i++) {
@@ -715,7 +736,7 @@ describe('Model', () => {
     }
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('eq() - negative index', () => Post.insert(Array(5).fill({})).then(data => {
     for (let i = 1, len = data.length; i <= len; i++) {
@@ -723,7 +744,7 @@ describe('Model', () => {
     }
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('eq() - no data', () => {
     (typeof Post.eq(1)).should.eql('undefined');
@@ -733,68 +754,68 @@ describe('Model', () => {
     Post.first().should.eql(data[0]);
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('last()', () => Post.insert(Array(5).fill({})).then(data => {
     Post.last().should.eql(data[data.length - 1]);
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - no arguments', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice().data.should.eql(data);
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - one argument', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(2).data.should.eql(data.slice(2));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - one negative argument', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(-2).data.should.eql(data.slice(-2));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - two arguments', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(2, 4).data.should.eql(data.slice(2, 4));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - start + negative end index', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(1, -1).data.should.eql(data.slice(1, -1));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - two negative arguments', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(-3, -1).data.should.eql(data.slice(-3, -1));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - start > end', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(-1, -3).data.should.eql(data.slice(-1, -3));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - index overflow', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(1, 100).data.should.eql(data.slice(1, 100));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('slice() - index overflow 2', () => Post.insert(Array(5).fill({})).then(data => {
     Post.slice(100, 200).data.should.eql(data.slice(100, 200));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('limit()', () => Post.insert(Array(5).fill({})).then(data => {
     Post.limit(2).data.should.eql(data.slice(0, 2));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('skip()', () => Post.insert(Array(5).fill({})).then(data => {
     Post.skip(2).data.should.eql(data.slice(2));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reverse()', () => Post.insert(Array(5).fill({})).then(data => {
     const query = Post.reverse();
@@ -804,13 +825,13 @@ describe('Model', () => {
     }
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('shuffle()', () => Post.insert(Array(5).fill({})).then(data => {
     const query = Post.shuffle();
     sortBy(query.data, '_id').should.eql(sortBy(data, '_id'));
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('map()', () => Post.insert(Array(5).fill({})).then(data => {
     let num = 0;
@@ -825,75 +846,75 @@ describe('Model', () => {
     d1.should.eql(d2);
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduce()', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 1;
 
     const sum = Post.reduce((sum, item, i) => {
       i.should.eql(num++);
-      return {email: sum.email + item.email};
+      return {title: sum.title + item.title};
     });
 
-    sum.email.should.eql('ABC');
+    sum.title.should.eql('ABC');
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduce() - with initial', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 0;
 
     const sum = Post.reduce((sum, item, i) => {
       i.should.eql(num++);
-      return sum + item.email;
+      return sum + item.title;
     }, '_');
 
     sum.should.eql('_ABC');
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduceRight()', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 1;
 
     const sum = Post.reduceRight((sum, item, i) => {
       i.should.eql(num--);
-      return {email: sum.email + item.email};
+      return {title: sum.title + item.title};
     });
 
-    sum.email.should.eql('CBA');
+    sum.title.should.eql('CBA');
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('reduceRight() - with initial', () => Post.insert([
-    {email: 'A'},
-    {email: 'B'},
-    {email: 'C'}
+    {title: 'A'},
+    {title: 'B'},
+    {title: 'C'}
   ]).then(data => {
     let num = 2;
 
     const sum = Post.reduceRight((sum, item, i) => {
       i.should.eql(num--);
-      return sum + item.email;
+      return sum + item.title;
     }, '_');
 
     sum.should.eql('_CBA');
 
     return data;
-  }).map(item => Post.removeById(item._id)));
+  }).map<unknown, any>(item => Post.removeById(item._id)));
 
   it('filter()', () => User.insert([
     {age: 10},
@@ -911,7 +932,7 @@ describe('Model', () => {
     query.data.should.eql(data.slice(2));
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('every()', () => User.insert([
     {age: 10},
@@ -929,7 +950,7 @@ describe('Model', () => {
     User.every((data, i) => data.age > 10).should.be.false;
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('some()', () => User.insert([
     {age: 10},
@@ -947,10 +968,11 @@ describe('Model', () => {
     }).should.be.false;
 
     return data;
-  }).map(item => User.removeById(item._id)));
+  }).map<unknown, any>(item => User.removeById(item._id)));
 
   it('populate() - error', () => {
     try {
+      // @ts-ignore
       Post.populate();
     } catch (err) {
       err.message.should.eql('path is required');
@@ -1230,7 +1252,7 @@ describe('Model', () => {
 
     const Test = db.model('Test', schema);
 
-    Test.add({name: 'foo'}).then(data => {
+    (Test as any).add({name: 'foo'}).then(data => {
       data.name.should.eql('foo');
     });
 
@@ -1299,7 +1321,7 @@ describe('Model', () => {
 
   it('_export() - should not save undefined value', () => {
     // @ts-ignore
-    class CacheType extends SchemaType {
+    class CacheType extends SchemaType<any> {
       value() {}
     }
 

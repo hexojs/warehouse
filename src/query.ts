@@ -1,17 +1,23 @@
 import Promise from 'bluebird';
 import { parseArgs, shuffle } from './util';
+import type Model from './model';
+import type Schema from './schema';
+import type Document from './document';
+import type { NodeJSLikeCallback, Options } from './types';
 
-abstract class Query {
+abstract class Query<T> {
+  data: Document<T>[];
   length: number;
-  abstract _model;
-  abstract _schema;
+  abstract _model: Model<T>;
+  abstract _schema: Schema;
 
   /**
    * Query constructor.
    *
    * @param {Array} data
    */
-  constructor(private data: any[]) {
+  constructor(data: Document<T>[]) {
+    this.data = data;
     this.length = data.length;
   }
 
@@ -42,7 +48,7 @@ abstract class Query {
    *
    * @return {Array}
    */
-  toArray(): any[] {
+  toArray(): Document<T>[] {
     return this.data;
   }
 
@@ -53,7 +59,7 @@ abstract class Query {
    * @param {Number} i
    * @return {Document|Object}
    */
-  eq(i: number) {
+  eq(i: number): Document<T> {
     const index = i < 0 ? this.length + i : i;
     return this.data[index];
   }
@@ -63,7 +69,7 @@ abstract class Query {
    *
    * @return {Document|Object}
    */
-  first() {
+  first(): Document<T> {
     return this.eq(0);
   }
 
@@ -72,7 +78,7 @@ abstract class Query {
    *
    * @return {Document|Object}
    */
-  last() {
+  last(): Document<T> {
     return this.eq(-1);
   }
 
@@ -83,7 +89,7 @@ abstract class Query {
    * @param {Number} [end]
    * @return {Query}
    */
-  slice(start: number, end?: number): Query {
+  slice(start: number, end?: number): Query<T> {
     return Reflect.construct(this.constructor, [this.data.slice(start, end)]);
   }
 
@@ -93,7 +99,7 @@ abstract class Query {
    * @param {Number} i
    * @return {Query}
    */
-  limit(i: number): Query {
+  limit(i: number): Query<T> {
     return this.slice(0, i);
   }
 
@@ -103,7 +109,7 @@ abstract class Query {
    * @param {Number} i
    * @return {Query}
    */
-  skip(i: number): Query {
+  skip(i: number): Query<T> {
     return this.slice(i);
   }
 
@@ -112,7 +118,7 @@ abstract class Query {
    *
    * @return {Query}
    */
-  reverse(): Query {
+  reverse(): Query<T> {
     return Reflect.construct(this.constructor, [this.data.slice().reverse()]);
   }
 
@@ -121,7 +127,7 @@ abstract class Query {
    *
    * @return {Query}
    */
-  shuffle(): Query {
+  shuffle(): Query<T> {
     return Reflect.construct(this.constructor, [shuffle(this.data)]);
   }
 
@@ -135,7 +141,9 @@ abstract class Query {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Query|Array}
    */
-  find(query: any, options: { limit?: number; skip?: number; lean?: boolean; } = {}): any[] | Query {
+  find(query: object): Query<T>;
+  find(query: object, options: Options): T[] | Query<T>;
+  find(query: object, options: Options = {}): T[] | Query<T> {
     const filter = this._schema._execQuery(query);
     const { data, length } = this;
     const { lean = false } = options;
@@ -167,7 +175,9 @@ abstract class Query {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Document|Object}
    */
-  findOne(query: any, options: { skip?: number; lean?: boolean; } = {}): any {
+  findOne(query: object): Document<T>;
+  findOne(query: object, options): Document<T> | T;
+  findOne(query: object, options: Options = {}): Document<T> | T {
     const _options = Object.assign(options, { limit: 1 });
 
     const result = this.find(query, _options);
@@ -192,7 +202,7 @@ abstract class Query {
    * @param {String|Number} [order]
    * @return {Query}
    */
-  sort(orderby, order): Query {
+  sort(orderby: string | object, order?: string | number | object): Query<T> {
     const sort = parseArgs(orderby, order);
     const fn = this._schema._execSort(sort);
 
@@ -224,9 +234,9 @@ abstract class Query {
    * @param {*} [initial] By default, the initial value is the first document.
    * @return {*}
    */
-  reduce(iterator, initial?) {
+  reduce<R>(iterator: (pre: any, cur: any, index: number) => R, initial?: R): R {
     const { data, length } = this;
-    let result, i;
+    let result, i: number;
 
     if (initial === undefined) {
       i = 1;
@@ -251,7 +261,7 @@ abstract class Query {
    * @param {*} [initial] By default, the initial value is the last document.
    * @return {*}
    */
-  reduceRight(iterator, initial?) {
+  reduceRight<R>(iterator: (pre: any, cur: any, index: number) => R, initial?: R): R {
     const { data, length } = this;
     let result, i;
 
@@ -277,7 +287,7 @@ abstract class Query {
    * @param {Function} iterator
    * @return {Query}
    */
-  filter(iterator: (item: any, index: number) => boolean): Query {
+  filter(iterator: (item: any, index: number) => boolean): Query<T> {
     const { data, length } = this;
     const arr = [];
 
@@ -330,7 +340,7 @@ abstract class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  update(data: any, callback?: (err?: any) => void): Promise<any> {
+  update(data: any, callback?: NodeJSLikeCallback<any>): Promise<any> {
     const model = this._model;
     const stack = this._schema._parseUpdate(data);
 
@@ -344,7 +354,7 @@ abstract class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  replace(data: any, callback?: (err?: any) => void): Promise<any> {
+  replace(data: any, callback?: NodeJSLikeCallback<any>): Promise<any> {
     const model = this._model;
 
     return Promise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
@@ -356,7 +366,7 @@ abstract class Query {
    * @param {Function} [callback]
    * @return {Promise}
    */
-  remove(callback) {
+  remove(callback?: NodeJSLikeCallback<any>): Promise<any> {
     const model = this._model;
 
     return Promise.mapSeries(this.data, item => model.removeById(item._id)).asCallback(callback);
@@ -368,7 +378,7 @@ abstract class Query {
    * @param {String|Object} expr
    * @return {Query}
    */
-  populate(expr: any): Query {
+  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Query<T> {
     const stack = this._schema._parsePopulate(expr);
     const { data, length } = this;
     const model = this._model;
@@ -380,9 +390,9 @@ abstract class Query {
     return this;
   }
 
-  size: Query['count'];
-  each: Query['forEach'];
-  random: Query['shuffle'];
+  size: Query<T>['count'];
+  each: Query<T>['forEach'];
+  random: Query<T>['shuffle'];
 }
 
 Query.prototype.size = Query.prototype.count;

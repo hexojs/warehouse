@@ -7,7 +7,7 @@ describe('SchemaTypeEnum', () => {
   it('validate()', () => {
     const type = new SchemaTypeEnum('test', {elements: ['foo', 'bar', 'baz']});
 
-    type.validate('foo').should.eql('foo');
+    (type.validate('foo') as string).should.eql('foo');
 
     (() => type.validate('wat')).should.to.throw(ValidationError, 'The value must be one of foo, bar, baz');
   });

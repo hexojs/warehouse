@@ -10,26 +10,28 @@ import * as Types from './types/index';
 import WarehouseError from './error';
 import PopulationError from './error/population';
 import Mutex from './mutex';
+import type Database from './database';
+import type { AddSchemaTypeOptions, NodeJSLikeCallback, Options, PopulateResult } from './types';
 
-class Model extends EventEmitter {
+class Model<T> extends EventEmitter {
   _mutex = new Mutex();
-  data: Record<any, any> = {};
-  schema;
+  data: Record<PropertyKey, T> = {};
+  schema: Schema;
   length = 0;
   Document;
   Query;
-  _database;
+  _database: Database;
 
   /**
    * Model constructor.
    *
    * @param {string} name Model name
-   * @param {Schema|object} [schema] Schema
+   * @param {Schema|object} [schema_] Schema
    */
-  constructor(public name: string, schema_) {
+  constructor(public name: string, schema_: Schema | Record<string, AddSchemaTypeOptions>) {
     super();
 
-    let schema;
+    let schema: Schema;
 
     // Define schema
     if (schema_ instanceof Schema) {
@@ -47,10 +49,10 @@ class Model extends EventEmitter {
 
     this.schema = schema;
 
-    class _Document extends Document {
-      _model!: Model;
+    class _Document<T> extends Document<T> {
+      _model!: Model<T>;
       _schema!: Schema;
-      constructor(data) {
+      constructor(data: T) {
         super(data);
 
         // Apply getters
@@ -63,8 +65,8 @@ class Model extends EventEmitter {
     _Document.prototype._model = this;
     _Document.prototype._schema = schema;
 
-    class _Query extends Query {
-      _model!: Model;
+    class _Query<T> extends Query<T> {
+      _model!: Model<T>;
       _schema!: Schema;
     }
 
@@ -86,7 +88,7 @@ class Model extends EventEmitter {
    * @param {object} data
    * @return {Document}
    */
-  new(data) {
+  new(data?: T): Document<T> {
     return new this.Document(data);
   }
 
@@ -98,7 +100,7 @@ class Model extends EventEmitter {
    *   @param {boolean} [options.lean=false] Returns a plain JavaScript object
    * @return {Document|object}
    */
-  findById(id, options_?) {
+  findById(id: PropertyKey, options_?: Options): Document<T> | T {
     const raw = this.data[id];
     if (!raw) return;
 
@@ -116,7 +118,7 @@ class Model extends EventEmitter {
    * @param {*} id
    * @return {boolean}
    */
-  has(id) {
+  has(id: PropertyKey): boolean {
     return Boolean(this.data[id]);
   }
 
@@ -143,11 +145,11 @@ class Model extends EventEmitter {
    * @return {Promise}
    * @private
    */
-  _insertOne(data_) {
+  _insertOne(data_: Document<T> | T): Promise<any> {
     const schema = this.schema;
 
     // Apply getters
-    const data = data_ instanceof this.Document ? data_ : this.new(data_);
+    const data = (data_ instanceof this.Document ? data_ : this.new(data_ as T)) as Document<T>;
     const id = data._id;
 
     // Check ID
@@ -161,7 +163,7 @@ class Model extends EventEmitter {
 
     // Apply setters
     const result = data.toObject();
-    schema._applySetters(result);
+    schema._applySetters(result as object);
 
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', data).then(data => {
@@ -181,7 +183,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  insertOne(data, callback?) {
+  insertOne(data: Document<T> | T, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return Promise.using(this._acquireWriteLock(), () => this._insertOne(data)).asCallback(callback);
   }
 
@@ -192,9 +194,9 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  insert(data, callback) {
+  insert(data: Document<T> | T | Document<T>[] | T[], callback?: NodeJSLikeCallback<any>): Promise<any> {
     if (Array.isArray(data)) {
-      return Promise.mapSeries(data, item => this.insertOne(item)).asCallback(callback);
+      return Promise.mapSeries<Document<T> | T, any>(data, item => this.insertOne(item)).asCallback(callback);
     }
 
     return this.insertOne(data, callback);
@@ -207,8 +209,8 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(data, callback) {
-    const id = data._id;
+  save(data: Document<T> | T, callback?: NodeJSLikeCallback<any>): Promise<any> {
+    const id = (data as any)._id;
 
     if (!id) return this.insertOne(data, callback);
 
@@ -229,7 +231,7 @@ class Model extends EventEmitter {
    * @return {Promise}
    * @private
    */
-  _updateWithStack(id, stack): Promise<any> {
+  _updateWithStack(id: string | number, stack: ((data: any) => void)[]): Promise<any> {
     const schema = this.schema;
 
     const data = this.data[id];
@@ -251,7 +253,7 @@ class Model extends EventEmitter {
 
     // Apply setters
     result = doc.toObject();
-    schema._applySetters(result);
+    schema._applySetters(result as object);
 
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', doc).then(data => {
@@ -271,9 +273,9 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  updateById(id, update, callback?) {
+  updateById(id: string | number, update: object, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return Promise.using(this._acquireWriteLock(), () => {
-      const stack = this.schema._parseUpdate(update);
+      const stack = this.schema._parseUpdate(update as object);
       return this._updateWithStack(id, stack);
     }).asCallback(callback);
   }
@@ -286,8 +288,8 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  update(query, data, callback?) {
-    return this.find(query).update(data, callback);
+  update(query: object, data: object, callback?: NodeJSLikeCallback<any>): Promise<any> {
+    return (this.find(query) as Query<T>).update(data, callback);
   }
 
   /**
@@ -298,21 +300,21 @@ class Model extends EventEmitter {
    * @return {Promise}
    * @private
    */
-  _replaceById(id, data_) {
+  _replaceById(id: string | number, data_: Document<T> | T): Promise<any> {
     const schema = this.schema;
 
     if (!this.has(id)) {
       return Promise.reject(new WarehouseError('ID `' + id + '` does not exist', WarehouseError.ID_NOT_EXIST));
     }
 
-    data_._id = id;
+    (data_ as any)._id = id;
 
     // Apply getters
-    const data = data_ instanceof this.Document ? data_ : this.new(data_);
+    const data = (data_ instanceof this.Document ? data_ : this.new(data_ as T)) as Document<T>;
 
     // Apply setters
     const result = data.toObject();
-    schema._applySetters(result);
+    schema._applySetters(result as object);
 
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', data).then(data => {
@@ -332,7 +334,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  replaceById(id, data, callback?) {
+  replaceById(id: string | number, data: Document<T> | T, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return Promise.using(this._acquireWriteLock(), () => this._replaceById(id, data)).asCallback(callback);
   }
 
@@ -344,19 +346,18 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  replace(query, data, callback?) {
-    return this.find(query).replace(data, callback);
+  replace(query: object, data, callback?: NodeJSLikeCallback<any>): Promise<any> {
+    return (this.find(query) as Query<T>).replace(data, callback);
   }
 
   /**
    * Finds a document by its identifier and remove it.
    *
    * @param {*} id
-   * @param {function} [callback]
    * @return {Promise}
    * @private
    */
-  _removeById(id) {
+  _removeById(id: string | number): Promise<any> {
     const schema = this.schema;
 
     const data = this.data[id];
@@ -383,7 +384,7 @@ class Model extends EventEmitter {
    * @param {function} [callback]
    * @return {Promise}
    */
-  removeById(id, callback) {
+  removeById(id: string | number, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return Promise.using(this._acquireWriteLock(), () => this._removeById(id)).asCallback(callback);
   }
 
@@ -391,17 +392,17 @@ class Model extends EventEmitter {
    * Removes matching documents.
    *
    * @param {object} query
-   * @param {object} [callback]
+   * @param {function} [callback]
    * @return {Promise}
    */
-  remove(query, callback) {
-    return this.find(query).remove(callback);
+  remove(query: object, callback?: NodeJSLikeCallback<any>): Promise<any> {
+    return (this.find(query) as Query<T>).remove(callback);
   }
 
   /**
    * Deletes a model.
    */
-  destroy() {
+  destroy(): void {
     this._database._models[this.name] = null;
   }
 
@@ -410,7 +411,7 @@ class Model extends EventEmitter {
    *
    * @return {number}
    */
-  count() {
+  count(): number {
     return this.length;
   }
 
@@ -420,7 +421,7 @@ class Model extends EventEmitter {
    * @param {function} iterator
    * @param {object} [options] See {@link Model#findById}.
    */
-  forEach(iterator, options?) {
+  forEach(iterator: (value: any, index: number) => void, options?: Options): void {
     const keys = Object.keys(this.data);
     let num = 0;
 
@@ -436,7 +437,7 @@ class Model extends EventEmitter {
    * @param {Object} [options] See {@link Model#findById}.
    * @return {Array}
    */
-  toArray(options?) {
+  toArray(options?: Options): any[] {
     const result = new Array(this.length);
 
     this.forEach((item, i) => {
@@ -456,14 +457,16 @@ class Model extends EventEmitter {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Query|Array}
    */
-  find(query, options: { limit?: number; skip?: number; lean?: boolean; } = {}) {
+  find(query: object): Query<T>;
+  find(query: object, options: Options): Query<T> | T[];
+  find(query: object, options: Options = {}): Query<T> | T[] {
     const filter = this.schema._execQuery(query);
     const keys = Object.keys(this.data);
     const len = keys.length;
     let limit = options.limit || this.length;
     let skip = options.skip;
     const data = this.data;
-    const arr = [];
+    const arr: (T | Document<T>)[] = [];
 
     for (let i = 0; limit && i < len; i++) {
       const key = keys[i];
@@ -491,11 +494,13 @@ class Model extends EventEmitter {
    *   @param {Boolean} [options.lean=false] Returns a plain JavaScript object.
    * @return {Document|Object}
    */
-  findOne(query, options_ : { skip?: number; lean?: boolean; } = {}) {
+  findOne(query: object): Document<T>;
+  findOne(query: object, options_ : Options): Document<T> | T;
+  findOne(query: object, options_ : Options = {}): Document<T> | T {
     const options = Object.assign(options_, { limit: 1 });
 
     const result = this.find(query, options);
-    return options.lean ? result[0] : result.data[0];
+    return options.lean ? (result as any[])[0] : (result as Query<T>).toArray()[0];
   }
 
   /**
@@ -505,7 +510,7 @@ class Model extends EventEmitter {
    * @param {String|Number} [order]
    * @return {Query}
    */
-  sort(orderby, order) {
+  sort(orderby: string | object, order?: string | number): Query<T> {
     const sort = parseArgs(orderby, order);
     const fn = this.schema._execSort(sort);
 
@@ -520,7 +525,7 @@ class Model extends EventEmitter {
    * @param {Object} [options] See {@link Model#findById}.
    * @return {Document|Object}
    */
-  eq(i_, options?) {
+  eq(i_: number, options?: Options): Document<T> | Record<PropertyKey, any> {
     let index = i_ < 0 ? this.length + i_ : i_;
     const data = this.data;
     const keys = Object.keys(data);
@@ -545,7 +550,7 @@ class Model extends EventEmitter {
    * @param {Object} [options] See {@link Model#findById}.
    * @return {Document|Object}
    */
-  first(options) {
+  first(options?: Options): Document<T> | Record<PropertyKey, any> {
     return this.eq(0, options);
   }
 
@@ -555,7 +560,7 @@ class Model extends EventEmitter {
    * @param {Object} [options] See {@link Model#findById}.
    * @return {Document|Object}
    */
-  last(options) {
+  last(options?: Options): Document<T> | Record<PropertyKey, any> {
     return this.eq(-1, options);
   }
 
@@ -566,7 +571,7 @@ class Model extends EventEmitter {
    * @param {Number} [end]
    * @return {Query}
    */
-  slice(start_: number, end_?: number) {
+  slice(start_?: number, end_?: number): Query<T> {
     const total = this.length;
 
     let start = start_ | 0;
@@ -605,7 +610,7 @@ class Model extends EventEmitter {
    * @param {Number} i
    * @return {Query}
    */
-  limit(i) {
+  limit(i: number): Query<T> {
     return this.slice(0, i);
   }
 
@@ -615,7 +620,7 @@ class Model extends EventEmitter {
    * @param {Number} i
    * @return {Query}
    */
-  skip(i) {
+  skip(i: number): Query<T> {
     return this.slice(i);
   }
 
@@ -624,7 +629,7 @@ class Model extends EventEmitter {
    *
    * @return {Query}
    */
-  reverse() {
+  reverse(): Query<T> {
     return new this.Query(this.toArray().reverse());
   }
 
@@ -633,7 +638,7 @@ class Model extends EventEmitter {
    *
    * @return {Query}
    */
-  shuffle() {
+  shuffle(): Query<T> {
     return new this.Query(shuffle(this.toArray()));
   }
 
@@ -644,7 +649,7 @@ class Model extends EventEmitter {
    * @param {Object} [options]
    * @return {Array}
    */
-  map(iterator, options) {
+  map<T>(iterator: (value: any, index: number) => T, options?: Options): T[] {
     const result = new Array(this.length);
     const keys = Object.keys(this.data);
     const len = keys.length;
@@ -668,10 +673,10 @@ class Model extends EventEmitter {
    * @param {*} [initial] By default, the initial value is the first document.
    * @return {*}
    */
-  reduce(iterator, initial) {
+  reduce<T>(iterator: (pre: any, cur: any, index: number) => T, initial?: T): T {
     const arr = this.toArray();
     const len = this.length;
-    let i, result;
+    let i: number, result: any;
 
     if (initial === undefined) {
       i = 1;
@@ -696,7 +701,7 @@ class Model extends EventEmitter {
    * @param {*} [initial] By default, the initial value is the last document.
    * @return {*}
    */
-  reduceRight(iterator, initial) {
+  reduceRight<T>(iterator: (pre: any, cur: any, index: number) => T, initial?: T): T {
     const arr = this.toArray();
     const len = this.length;
     let i, result;
@@ -724,10 +729,10 @@ class Model extends EventEmitter {
    * @param {Object} [options]
    * @return {Query}
    */
-  filter(iterator, options) {
+  filter(iterator: (value: any, index: number) => any, options?: Options): Query<T> {
     const arr = [];
 
-    this.forEach((item, i) => {
+    this.forEach((item: any, i: number) => {
       if (iterator(item, i)) arr.push(item);
     }, options);
 
@@ -741,7 +746,7 @@ class Model extends EventEmitter {
    * @param {Function} iterator
    * @return {Boolean}
    */
-  every(iterator) {
+  every(iterator: (value: any, index: number) => any): boolean {
     const keys = Object.keys(this.data);
     const len = keys.length;
     let num = 0;
@@ -766,7 +771,7 @@ class Model extends EventEmitter {
    * @param {Function} iterator
    * @return {Boolean}
    */
-  some(iterator) {
+  some(iterator: (value: any, index: number) => any): boolean {
     const keys = Object.keys(this.data);
     const len = keys.length;
     let num = 0;
@@ -793,9 +798,9 @@ class Model extends EventEmitter {
    * @return {Function}
    * @private
    */
-  _populateGetter(data, model, options) {
+  _populateGetter(data: string | number, model: Model<T>, options: unknown) {
     let hasCache = false;
-    let cache;
+    let cache: Record<PropertyKey, any> | Document<T>;
 
     return () => {
       if (!hasCache) {
@@ -816,10 +821,10 @@ class Model extends EventEmitter {
    * @return {Function}
    * @private
    */
-  _populateGetterArray(data, model, options) {
+  _populateGetterArray(data: any[], model: Model<T>, options: Options): () => any[] | Query<T> {
     const Query = model.Query;
     let hasCache = false;
-    let cache;
+    let cache: any[] | Query<T>;
 
     return () => {
       if (!hasCache) {
@@ -830,7 +835,7 @@ class Model extends EventEmitter {
         }
 
         if (options.match) {
-          cache = new Query(arr).find(options.match, options);
+          cache = (new Query(arr) as Query<T>).find(options.match, options);
         } else if (options.skip) {
           if (options.limit) {
             arr = arr.slice(options.skip, options.skip + options.limit);
@@ -864,7 +869,7 @@ class Model extends EventEmitter {
    * @return {Object}
    * @private
    */
-  _populate(data, stack) {
+  _populate(data: Document<T>, stack: PopulateResult[]): Document<T> {
     const models = this._database._models;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -894,7 +899,7 @@ class Model extends EventEmitter {
    * @param {String|Object} path
    * @return {Query}
    */
-  populate(path) {
+  populate(path: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Query<T> {
     if (!path) throw new TypeError('path is required');
 
     const stack = this.schema._parsePopulate(path);
@@ -913,14 +918,14 @@ class Model extends EventEmitter {
    * @param {Array} arr
    * @private
    */
-  _import(arr) {
+  _import(arr: any[]) {
     const len = arr.length;
     const data = this.data;
     const schema = this.schema;
 
     for (let i = 0; i < len; i++) {
       const item = arr[i];
-      data[item._id] = schema._parseDatabase(item);
+      data[item._id] = schema._parseDatabase(item) as T;
     }
 
     this.length = len;
@@ -932,11 +937,11 @@ class Model extends EventEmitter {
    * @return {String}
    * @private
    */
-  _export() {
+  _export(): string {
     return JSON.stringify(this.toJSON());
   }
 
-  toJSON() {
+  toJSON(): any[] {
     const result = new Array(this.length);
     const { data, schema } = this;
     const keys = Object.keys(data);
@@ -945,20 +950,20 @@ class Model extends EventEmitter {
     for (let i = 0, num = 0; i < length; i++) {
       const raw = data[keys[i]];
       if (raw) {
-        result[num++] = schema._exportDatabase(cloneDeep(raw));
+        result[num++] = schema._exportDatabase(cloneDeep(raw) as object);
       }
     }
     return result;
   }
-  get: Model['findById'];
-  size: Model['count'];
-  each: Model['forEach'];
-  random: Model['shuffle'];
+  get: Model<T>['findById'];
+  size: Model<T>['count'];
+  each: Model<T>['forEach'];
+  random: Model<T>['shuffle'];
 }
 
 Model.prototype.get = Model.prototype.findById;
 
-function execHooks(schema, type, event, data) {
+function execHooks(schema: Schema, type: string, event: string, data: any): Promise<any> {
   const hooks = schema.hooks[type][event] as ((data: any) => Promise<void> | void)[];
   if (!hooks.length) return Promise.resolve(data);
 

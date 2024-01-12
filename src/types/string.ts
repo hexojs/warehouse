@@ -9,32 +9,34 @@ class SchemaTypeString extends SchemaType<string> {
   /**
    * Casts a string.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {String}
    */
-  cast(value_?, data?) {
+  cast(value_: { toString(): string }, data?: unknown): string;
+  cast(value_?: unknown, data?: unknown): string | undefined;
+  cast(value_?: unknown, data?: unknown): string | undefined {
     const value = super.cast(value_, data);
 
-    if (value == null || typeof value === 'string') return value;
+    if (value == null || typeof value === 'string') return value as string | undefined;
     if (typeof value.toString === 'function') return value.toString();
   }
 
   /**
    * Validates a string.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {String|Error}
    */
-  validate(value_?, data?) {
+  validate(value_?: unknown, data?: unknown): string {
     const value = super.validate(value_, data);
 
     if (value !== undefined && typeof value !== 'string') {
       throw new ValidationError(`\`${value}\` is not a string!`);
     }
 
-    return value;
+    return value as string;
   }
 
   /**
@@ -45,13 +47,13 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {Boolean}
    */
-  match(value, query, data?) {
+  match(value: string | undefined, query: string | RegExp | undefined, data?: unknown): boolean {
     if (!value || !query) {
       return value === query;
     }
 
-    if (typeof query.test === 'function') {
-      return query.test(value);
+    if (typeof(query as any).test === 'function') {
+      return (query as RegExp).test(value);
     }
 
     return value === query;
@@ -65,7 +67,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$in(value, query, data?) {
+  q$in(value: string | undefined, query: string[] | RegExp[], data?: unknown): boolean {
     for (let i = 0, len = query.length; i < len; i++) {
       if (this.match(value, query[i], data)) return true;
     }
@@ -81,7 +83,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value, query, data?) {
+  q$nin(value: string | undefined, query: string[] | RegExp[], data?: unknown): boolean {
     return !this.q$in(value, query, data);
   }
 
@@ -92,7 +94,7 @@ class SchemaTypeString extends SchemaType<string> {
    * @param {Number} query
    * @return {Boolean}
    */
-  q$length(value, query) {
+  q$length(value: string | undefined, query: number): boolean {
     return (value ? value.length : 0) === query;
   }
 }

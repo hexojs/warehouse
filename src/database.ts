@@ -7,6 +7,7 @@ import Schema from './schema';
 import SchemaType from './schematype';
 import WarehouseError from './error';
 import { logger } from 'hexo-log';
+import type { AddSchemaTypeOptions, NodeJSLikeCallback } from './types';
 
 const log = logger();
 const pkg = require('../package.json');
@@ -23,7 +24,7 @@ if (typeof writev === 'function') {
   };
 }
 
-async function exportAsync(database: Database, path: string) {
+async function exportAsync(database: Database, path: string): Promise<void> {
   const handle = await open(path, 'w');
 
   try {
@@ -79,7 +80,7 @@ interface DatabaseOptions {
 
 class Database {
   options: DatabaseOptions;
-  _models: any;
+  _models: Record<string, Model<any>>;
   Model: typeof Model;
 
   /**
@@ -103,7 +104,7 @@ class Database {
 
     this._models = {};
 
-    class _Model extends Model {}
+    class _Model extends Model<any> {}
 
     this.Model = _Model;
 
@@ -117,7 +118,7 @@ class Database {
    * @param {Schema|object} [schema]
    * @return {Model}
    */
-  model(name: string, schema?: any) {
+  model(name: string, schema?: Schema | Record<string, AddSchemaTypeOptions>): Model<any> {
     if (this._models[name]) {
       return this._models[name];
     }
@@ -133,7 +134,7 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  load(callback?) {
+  load(callback?: NodeJSLikeCallback<any>): Bluebird<any> {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
@@ -173,14 +174,14 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(callback?) {
+  save(callback?: NodeJSLikeCallback<any>): Bluebird<void> {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
     return Bluebird.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
-  toJSON() {
+  toJSON(): { meta: { version: number, warehouse: string }, models: Record<string, Model<any>> } {
     const models = Object.keys(this._models)
       .reduce((obj, key) => {
         const value = this._models[key];

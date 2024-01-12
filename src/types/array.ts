@@ -29,13 +29,15 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
   /**
    * Casts an array and its child elements.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {Array}
    */
-  cast(value_?: unknown, data?: unknown): I[] | null | undefined {
+  cast(value_: Exclude<unknown, null | undefined>, data?: unknown): I[];
+  cast(value_?: unknown, data?: unknown): I[] | undefined;
+  cast(value_?: unknown, data?: unknown): I[] | undefined {
     value_ = super.cast(value_, data);
-    if (value_ == null) return value_ as null | undefined;
+    if (value_ == null) return value_ as undefined;
 
     const value = isArray(value_) ? value_ : value_ = [value_];
     if (!value.length) return value;
@@ -52,7 +54,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
   /**
    * Validates an array and its child elements.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {Array|Error}
    */
@@ -107,8 +109,10 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Array} value
    * @return {Array}
    */
-  parse(value?: unknown[]) {
-    if (!value) return value;
+  parse(value: unknown[]): I[];
+  parse(): undefined;
+  parse(value?: unknown[]): I[] | undefined {
+    if (!value) return value as undefined;
 
     const len = value.length;
     if (!len) return [];
@@ -117,7 +121,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
     const child = this.child;
 
     for (let i = 0; i < len; i++) {
-      result[i] = child.parse(value[i]);
+      result[i] = child.parse(value[i]) as I;
     }
 
     return result;
@@ -130,8 +134,10 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  value(value?: unknown[], data?: unknown): any[] {
-    if (!value) return value;
+  value(value: unknown[], data?: unknown): any[]
+  value(): undefined;
+  value(value?: unknown[], data?: unknown): any[] | undefined {
+    if (!value) return value as undefined;
 
     const len = value.length;
     if (!len) return [];
@@ -211,7 +217,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$nin(value?: unknown[], query?: unknown[], data?: unknown): boolean {
+  q$nin<T>(value?: T[], query?: T[], data?: unknown): boolean {
     if (!value) return true;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -229,7 +235,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Boolean}
    */
-  q$all(value?: unknown[], query?: unknown[], data?: unknown): boolean {
+  q$all<T>(value?: T[], query?: T[], data?: unknown): boolean {
     if (!value) return false;
 
     for (let i = 0, len = query.length; i < len; i++) {
@@ -268,7 +274,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$unshift(value?: unknown[], update?: unknown, data?: unknown): any[] {
+  u$unshift<T>(value?: T[], update?: T | T[], data?: unknown): T[] {
     if (isArray(update)) {
       return value ? update.concat(value) : update;
     }
@@ -289,7 +295,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$pull(value?: unknown[], update?: unknown, data?: unknown): any[] {
+  u$pull<T>(value?: T[], update?: T | T[], data?: unknown): T[] {
     if (!value) return value;
 
     if (isArray(update)) {
@@ -307,7 +313,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$shift(value?, update?, data?) {
+  u$shift<T>(value?: T[], update?: number | boolean, data?: unknown): T[] {
     if (!value || !update) return value;
 
     if (update === true) {
@@ -327,7 +333,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$pop(value?, update?, data?) {
+  u$pop<T>(value?: T[], update?: number | boolean, data?: unknown): T[] {
     if (!value || !update) return value;
 
     const length = value.length;
@@ -349,7 +355,7 @@ class SchemaTypeArray<I, T extends SchemaType<I>> extends SchemaType<I[]> {
    * @param {Object} data
    * @return {Array}
    */
-  u$addToSet(value?: any[], update?, data?) {
+  u$addToSet<T>(value?: T[], update?: T | T[], data?: unknown): T[] {
     if (isArray(update)) {
       if (!value) return update;
 

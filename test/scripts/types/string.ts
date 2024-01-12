@@ -21,7 +21,7 @@ describe('SchemaTypeString', () => {
 
   it('cast() - default', () => {
     const type = new SchemaTypeString('test', {default: 'foo'});
-    type.cast().should.eql('foo');
+    (type.cast() as string).should.eql('foo');
   });
 
   function shouldThrowError(value) {

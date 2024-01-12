@@ -4,24 +4,24 @@ import ValidationError from '../../dist/error/validation';
 import SchemaType from '../../dist/schematype';
 
 describe('SchemaType', () => {
-  const type = new SchemaType('test');
+  const type = new SchemaType<number>('test');
 
   it('cast()', () => {
-    type.cast(123).should.eql(123);
+    (type.cast(123) as number).should.eql(123);
   });
 
   it('cast() - default', () => {
     const type = new SchemaType('test', {default: 'foo'});
-    type.cast().should.eql('foo');
+    (type.cast() as string).should.eql('foo');
   });
 
   it('cast() - default - function', () => {
     const type = new SchemaType('test', {default: () => 'foo'});
-    type.cast().should.eql('foo');
+    (type.cast() as string).should.eql('foo');
   });
 
   it('validate()', () => {
-    type.validate(123).should.eql(123);
+    (type.validate(123) as number).should.eql(123);
   });
 
   it('validate() - required', () => {
@@ -127,12 +127,12 @@ describe('SchemaType', () => {
   });
 
   it('u$set', () => {
-    type.u$set(1, 1).should.eql(1);
+    type.u$set<number>(1, 1).should.eql(1);
   });
 
   it('u$unset', () => {
     should.not.exist(type.u$unset(1, true));
-    type.u$unset(1, false).should.eql(1);
+    (type.u$unset<number>(1, false) as number).should.eql(1);
   });
 
   it('u$rename', () => {

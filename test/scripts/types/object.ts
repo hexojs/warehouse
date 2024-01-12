@@ -6,6 +6,6 @@ describe('SchemaTypeObject', () => {
   const type = new SchemaTypeObject('test');
 
   it('cast() - default', () => {
-    type.cast().should.eql({});
+    (type.cast() as object).should.eql({});
   });
 });

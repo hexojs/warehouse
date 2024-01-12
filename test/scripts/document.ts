@@ -2,18 +2,30 @@ import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
 import Database from '../../dist/database';
 import Document from '../../dist/document';
+import type Model from '../../dist/model';
+
+interface UserType {
+  name?: string;
+  age?: number;
+  comments?: string;
+}
+
+interface CommentType {
+  content?: string;
+  author?: string;
+}
 
 describe('Document', () => {
   const db = new Database();
   const Schema = Database.Schema;
 
-  const User = db.model('User', {
+  const User: Model<UserType> = db.model('User', {
     name: String,
     age: Number,
     comments: [{type: Schema.Types.CUID, ref: 'Comment'}]
   });
 
-  const Comment = db.model('Comment', {
+  const Comment: Model<CommentType> = db.model('Comment', {
     content: String,
     author: {type: Schema.Types.CUID, ref: 'User'}
   });
@@ -39,7 +51,7 @@ describe('Document', () => {
     const doc = User.new({});
 
     return doc.save().then(item => {
-      User.findById(doc._id).should.exist;
+      User.findById(doc._id as string | number).should.exist;
       return User.removeById(item._id);
     });
   });
@@ -115,5 +127,5 @@ describe('Document', () => {
 
     user.populate('comments').comments.toArray().should.eql(comments);
     return comments;
-  }).map(comment => Comment.removeById(comment._id)));
+  }).map<unknown, any>(comment => Comment.removeById(comment._id)));
 });

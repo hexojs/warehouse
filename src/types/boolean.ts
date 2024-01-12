@@ -9,7 +9,7 @@ class SchemaTypeBoolean extends SchemaType<boolean> {
   /**
    * Casts a boolean.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {Boolean}
    */
@@ -24,7 +24,7 @@ class SchemaTypeBoolean extends SchemaType<boolean> {
   /**
    * Validates a boolean.
    *
-   * @param {*} value
+   * @param {*} value_
    * @param {Object} data
    * @return {Boolean|Error}
    */

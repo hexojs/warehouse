@@ -17,7 +17,7 @@ describe('SchemaTypeNumber', () => {
 
   it('cast() - default', () => {
     const type = new SchemaTypeNumber('type', {default: 42});
-    type.cast().should.eql(42);
+    (type.cast() as number).should.eql(42);
   });
 
   function shouldThrowError(value) {

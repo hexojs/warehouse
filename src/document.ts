@@ -1,17 +1,21 @@
 import rfdc from 'rfdc';
+import type Model from './model';
+import type Schema from './schema';
+import type { NodeJSLikeCallback } from './types';
 const cloneDeep = rfdc();
 
-abstract class Document {
-  abstract _model;
-  _id!: any;
-  abstract _schema;
+abstract class Document<T> {
+  abstract _model: Model<T>;
+  _id!: string | number | undefined;
+  abstract _schema: Schema;
+  [key : string]: any;
 
   /**
    * Document constructor.
    *
    * @param {object} data
    */
-  constructor(data) {
+  constructor(data?: T) {
     if (data) {
       Object.assign(this, data);
     }
@@ -23,7 +27,7 @@ abstract class Document {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(callback) {
+  save(callback?: NodeJSLikeCallback<any>): Promise<any> {
     return this._model.save(this, callback);
   }
 
@@ -34,7 +38,7 @@ abstract class Document {
    * @param {function} [callback]
    * @return {Promise}
    */
-  update(data, callback) {
+  update(data: object, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return this._model.updateById(this._id, data, callback);
   }
 
@@ -45,7 +49,7 @@ abstract class Document {
    * @param {function} [callback]
    * @return {Promise}
    */
-  replace(data, callback) {
+  replace(data: T | Document<T>, callback?: NodeJSLikeCallback<any>): Promise<any> {
     return this._model.replaceById(this._id, data, callback);
   }
 
@@ -55,7 +59,7 @@ abstract class Document {
    * @param {function} [callback]
    * @return {Promise}
    */
-  remove(callback) {
+  remove(callback?: NodeJSLikeCallback<any>): Promise<any> {
     return this._model.removeById(this._id, callback);
   }
 
@@ -64,9 +68,9 @@ abstract class Document {
    *
    * @return {object}
    */
-  toObject() {
+  toObject(): T {
     const keys = Object.keys(this);
-    const obj = {};
+    const obj: Partial<T> = {};
 
     for (let i = 0, len = keys.length; i < len; i++) {
       const key = keys[i];
@@ -75,7 +79,7 @@ abstract class Document {
       obj[key] = isGetter(this, key) ? this[key] : cloneDeep(this[key]);
     }
 
-    return obj;
+    return obj as T;
   }
 
   /**
@@ -83,7 +87,7 @@ abstract class Document {
    *
    * @return {String}
    */
-  toString() {
+  toString(): string {
     return JSON.stringify(this);
   }
 
@@ -93,13 +97,13 @@ abstract class Document {
    * @param {String|Object} expr
    * @return {Document}
    */
-  populate(expr) {
+  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Document<T> {
     const stack = this._schema._parsePopulate(expr);
     return this._model._populate(this, stack);
   }
 }
 
-function isGetter(obj, key) {
+function isGetter(obj: any, key: PropertyKey): any {
   return Object.getOwnPropertyDescriptor(obj, key).get;
 }
 

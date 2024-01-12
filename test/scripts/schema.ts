@@ -100,9 +100,11 @@ describe('Schema', () => {
     schema.hooks.pre.remove.should.have.length(1);
 
     // incompatible type
+    // @ts-ignore
     (() => schema.pre('wtf', () => {})).should.to.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
+    // @ts-ignore
     (() => schema.pre('save', {})).should.to.throw(TypeError, 'Hook must be a function!');
   });
 
@@ -120,9 +122,11 @@ describe('Schema', () => {
     schema.hooks.post.remove.should.have.length(1);
 
     // incompatible type
+    // @ts-ignore
     (() => schema.post('wtf', () => {})).should.throw(TypeError, 'Hook type must be `save` or `remove`!');
 
     // hook is not a function
+    // @ts-ignore
     (() => schema.post('save', {})).should.to.throw(TypeError, 'Hook must be a function!');
   });
 
@@ -137,6 +141,7 @@ describe('Schema', () => {
     schema.method.should.to.throw(TypeError, 'Method name is required!');
 
     // without function
+    // @ts-ignore
     (() => schema.method('wtf', {})).should.to.throw(TypeError, 'Instance method must be a function!');
   });
 
@@ -151,6 +156,7 @@ describe('Schema', () => {
     schema.static.should.to.throw(TypeError, 'Method name is required!');
 
     // without function
+    // @ts-ignore
     (() => schema.static('wtf', {})).should.to.throw(TypeError, 'Static method must be a function!');
   });
 });
