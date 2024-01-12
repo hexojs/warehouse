@@ -7,7 +7,7 @@ import lodash from 'lodash';
 const { sortBy } = lodash;
 import Promise from 'bluebird';
 import sinon from 'sinon';
-import cuid from 'cuid';
+import { createId } from '@paralleldrive/cuid2';
 import Database from '../../dist/database';
 
 describe('Model', () => {
@@ -193,7 +193,7 @@ describe('Model', () => {
   }).then(data => User.removeById(data._id)));
 
   it('save() - sync problem', () => {
-    const id = cuid();
+    const id = createId();
 
     return Promise.all([
       User.save({_id: id, age: 1}),

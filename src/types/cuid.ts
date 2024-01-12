@@ -1,5 +1,5 @@
 import SchemaType from '../schematype';
-import cuid from 'cuid';
+import { createId, getConstants } from '@paralleldrive/cuid2';
 import ValidationError from '../error/validation';
 
 /**
@@ -16,20 +16,20 @@ class SchemaTypeCUID extends SchemaType<string> {
    */
   cast(value?) {
     if (value == null && this.options.required) {
-      return cuid();
+      return createId();
     }
 
     return value;
   }
 
   /**
-   * Validates data. A valid CUID must be started with `c` and 25 in length.
+   * Validates data. A valid CUID must be 24 in length.
    *
    * @param {*} value
    * @return {String|Error}
    */
   validate(value?) {
-    if (value && (value[0] !== 'c' || value.length !== 25)) {
+    if (value && (value.length !== getConstants().defaultLength)) {
       throw new ValidationError(`\`${value}\` is not a valid CUID`);
     }
 
