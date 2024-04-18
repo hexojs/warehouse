@@ -214,7 +214,7 @@ describe('Model', () => {
   }).then(data => User.removeById(data._id)));
 
   it('save() - sync problem', () => {
-    const id = nanoid();
+    const id = 'cuid' + nanoid();
 
     return Promise.all([
       User.save({_id: id, age: 1}),

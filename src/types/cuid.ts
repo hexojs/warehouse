@@ -16,20 +16,20 @@ class SchemaTypeCUID extends SchemaType<string> {
    */
   cast(value?: string): string {
     if (value == null && this.options.required) {
-      return nanoid();
+      return 'cuid' + nanoid();
     }
 
     return value;
   }
 
   /**
-   * Validates data. A valid CUID must be 21 in length.
+   * Validates data. A valid CUID must be started with `c` and 25 in length.
    *
    * @param {*} value
    * @return {String|Error}
    */
   validate(value?: string): string {
-    if (value && (value.length !== 21)) {
+    if (value && (value[0] !== 'c' || value.length !== 25)) {
       throw new ValidationError(`\`${value}\` is not a valid CUID`);
     }
 

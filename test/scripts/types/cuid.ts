@@ -18,7 +18,7 @@ describe('SchemaTypeCUID', () => {
   });
 
   it('validate()', () => {
-    const id = nanoid();
+    const id = 'cuid' + nanoid();
     type.validate(id).should.eql(id);
 
     (() => type.validate('foo')).should.to.throw(ValidationError, '`foo` is not a valid CUID');
