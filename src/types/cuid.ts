@@ -1,9 +1,9 @@
 import SchemaType from '../schematype';
-import cuid from 'cuid';
+import { nanoid } from 'nanoid';
 import ValidationError from '../error/validation';
 
 /**
- * [CUID](https://github.com/ericelliott/cuid) schema type.
+ * [CUID](https://github.com/ai/nanoid) schema type.
  */
 class SchemaTypeCUID extends SchemaType<string> {
 
@@ -16,20 +16,20 @@ class SchemaTypeCUID extends SchemaType<string> {
    */
   cast(value?: string): string {
     if (value == null && this.options.required) {
-      return cuid();
+      return nanoid();
     }
 
     return value;
   }
 
   /**
-   * Validates data. A valid CUID must be started with `c` and 25 in length.
+   * Validates data. A valid CUID must be 21 in length.
    *
    * @param {*} value
    * @return {String|Error}
    */
   validate(value?: string): string {
-    if (value && (value[0] !== 'c' || value.length !== 25)) {
+    if (value && (value.length !== 21)) {
       throw new ValidationError(`\`${value}\` is not a valid CUID`);
     }
 
