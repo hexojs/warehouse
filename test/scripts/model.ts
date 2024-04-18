@@ -7,7 +7,7 @@ import lodash from 'lodash';
 const { sortBy } = lodash;
 import Promise from 'bluebird';
 import sinon from 'sinon';
-import cuid from 'cuid';
+import { nanoid } from 'nanoid';
 import Database from '../../dist/database';
 import type Query from '../../dist/query';
 import type Document from '../../dist/document';
@@ -214,7 +214,7 @@ describe('Model', () => {
   }).then(data => User.removeById(data._id)));
 
   it('save() - sync problem', () => {
-    const id = cuid();
+    const id = 'cuid' + nanoid();
 
     return Promise.all([
       User.save({_id: id, age: 1}),

@@ -1,5 +1,6 @@
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
+import { nanoid } from 'nanoid';
 import ValidationError from '../../../dist/error/validation';
 import SchemaTypeCUID from '../../../dist/types/cuid';
 
@@ -17,7 +18,8 @@ describe('SchemaTypeCUID', () => {
   });
 
   it('validate()', () => {
-    type.validate('ch72gsb320000udocl363eofy').should.eql('ch72gsb320000udocl363eofy');
+    const id = 'cuid' + nanoid();
+    type.validate(id).should.eql(id);
 
     (() => type.validate('foo')).should.to.throw(ValidationError, '`foo` is not a valid CUID');
   });
