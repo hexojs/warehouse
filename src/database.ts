@@ -1,5 +1,5 @@
 import { parse as createJsonParseStream } from './lib/jsonstream';
-import Bluebird from 'bluebird';
+import BluebirdPromise from 'bluebird';
 import { writev, promises as fsPromises, createReadStream } from 'graceful-fs';
 import { pipeline, Stream } from 'stream';
 import Model from './model';
@@ -12,7 +12,7 @@ import type { AddSchemaTypeOptions, NodeJSLikeCallback } from './types';
 const log = logger();
 const pkg = require('../package.json');
 const { open } = fsPromises;
-const pipelineAsync = Bluebird.promisify(pipeline) as unknown as (...args: Stream[]) => Bluebird<unknown>;
+const pipelineAsync = BluebirdPromise.promisify(pipeline) as unknown as (...args: Stream[]) => BluebirdPromise<unknown>;
 
 let _writev: (handle: fsPromises.FileHandle, buffers: Buffer[]) => Promise<unknown>;
 
@@ -134,7 +134,7 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  load(callback?: NodeJSLikeCallback<any>): Bluebird<any> {
+  load(callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
@@ -174,11 +174,11 @@ class Database {
    * @param {function} [callback]
    * @return {Promise}
    */
-  save(callback?: NodeJSLikeCallback<any>): Bluebird<void> {
+  save(callback?: NodeJSLikeCallback<any>): BluebirdPromise<void> {
     const { path } = this.options;
 
     if (!path) throw new WarehouseError('options.path is required');
-    return Bluebird.resolve(exportAsync(this, path)).asCallback(callback);
+    return BluebirdPromise.resolve(exportAsync(this, path)).asCallback(callback);
   }
 
   toJSON(): { meta: { version: number, warehouse: string }, models: Record<string, Model<any>> } {
