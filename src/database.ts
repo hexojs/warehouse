@@ -132,7 +132,7 @@ class Database {
    * Loads database.
    *
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {BluebirdPromise}
    */
   load(callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const { path, onUpgrade, onDowngrade, version: newVersion } = this.options;
