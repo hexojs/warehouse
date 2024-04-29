@@ -172,7 +172,7 @@ class Database {
    * Saves database.
    *
    * @param {function} [callback]
-   * @return {Promise}
+   * @return {BluebirdPromise}
    */
   save(callback?: NodeJSLikeCallback<any>): BluebirdPromise<void> {
     const { path } = this.options;
