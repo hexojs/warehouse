@@ -6,6 +6,7 @@ import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
 import { isPlainObject } from 'is-plain-object';
 import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, PopulateResult, SchemaTypeOptions } from './types';
+import type Model from './model';
 
 /**
  * @callback queryFilterCallback
@@ -379,7 +380,7 @@ class QueryParser {
 }
 
 
-class Schema {
+class Schema<T> {
   paths: Record<string, SchemaType<any>> = {};
   statics: Record<string, (...args: any[]) => any> = {};
   methods: Record<string, (...args: any[]) => any> = {};
@@ -557,7 +558,7 @@ class Schema {
    * @param {Function} [getter]
    * @return {SchemaType.Virtual}
    */
-  virtual(name: string, getter?: () => any): SchemaTypeVirtual {
+  virtual(name: string, getter?: (this: T) => any): SchemaTypeVirtual<T> {
     const virtual = new Types.Virtual(name, {});
     if (getter) virtual.get(getter);
 
@@ -614,7 +615,7 @@ class Schema {
    * @param {String} name
    * @param {Function} fn
    */
-  static(name: string, fn: (...args: any[]) => any) {
+  static(name: string, fn: (this: Model<T>, ...args: any[]) => any) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {

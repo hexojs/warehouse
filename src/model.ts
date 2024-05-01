@@ -16,7 +16,7 @@ import type { AddSchemaTypeOptions, NodeJSLikeCallback, Options, PopulateResult 
 class Model<T> extends EventEmitter {
   _mutex = new Mutex();
   data: Record<PropertyKey, T> = {};
-  schema: Schema;
+  schema: Schema<T>;
   length = 0;
   Document;
   Query;
@@ -28,10 +28,10 @@ class Model<T> extends EventEmitter {
    * @param {string} name Model name
    * @param {Schema|object} [schema_] Schema
    */
-  constructor(public name: string, schema_: Schema | Record<string, AddSchemaTypeOptions>) {
+  constructor(public name: string, schema_: Schema<T> | Record<string, AddSchemaTypeOptions>) {
     super();
 
-    let schema: Schema;
+    let schema: Schema<T>;
 
     // Define schema
     if (schema_ instanceof Schema) {
@@ -51,7 +51,7 @@ class Model<T> extends EventEmitter {
 
     class _Document<T> extends Document<T> {
       _model!: Model<T>;
-      _schema!: Schema;
+      _schema!: Schema<T>;
       constructor(data: T) {
         super(data);
 
@@ -67,7 +67,7 @@ class Model<T> extends EventEmitter {
 
     class _Query<T> extends Query<T> {
       _model!: Model<T>;
-      _schema!: Schema;
+      _schema!: Schema<T>;
     }
 
     this.Query = _Query;
@@ -963,7 +963,7 @@ class Model<T> extends EventEmitter {
 
 Model.prototype.get = Model.prototype.findById;
 
-function execHooks(schema: Schema, type: string, event: string, data: any): Promise<any> {
+function execHooks(schema: Schema<any>, type: string, event: string, data: any): Promise<any> {
   const hooks = schema.hooks[type][event] as ((data: any) => Promise<void> | void)[];
   if (!hooks.length) return Promise.resolve(data);
 

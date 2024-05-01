@@ -37,7 +37,15 @@ describe('Model', () => {
 
   const db = new Database();
 
-  const userSchema = new Schema({
+  const userSchema = new Schema<{
+    name: {
+      first: string;
+      last: string;
+    }
+    email: string;
+    age: number;
+    posts: string[];
+  }>({
     name: {
       first: String,
       last: String

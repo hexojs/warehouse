@@ -4,8 +4,8 @@ import { setGetter } from '../util';
 /**
  * Virtual schema type.
  */
-class SchemaTypeVirtual extends SchemaType<any> {
-  getter: (() => any) | undefined;
+class SchemaTypeVirtual<T> extends SchemaType<any> {
+  getter: ((this: T) => any) | undefined;
   setter: ((value: any) => void) | undefined;
 
   /**
@@ -14,7 +14,7 @@ class SchemaTypeVirtual extends SchemaType<any> {
    * @param {Function} fn
    * @chainable
    */
-  get(fn: () => any): SchemaTypeVirtual {
+  get(fn: (this: T) => any): SchemaTypeVirtual<T> {
     if (typeof fn !== 'function') {
       throw new TypeError('Getter must be a function!');
     }
@@ -30,7 +30,7 @@ class SchemaTypeVirtual extends SchemaType<any> {
    * @param {Function} fn
    * @chainable
    */
-  set(fn: (value: any) => void): SchemaTypeVirtual {
+  set(fn: (this: T, value: any) => void): SchemaTypeVirtual<T> {
     if (typeof fn !== 'function') {
       throw new TypeError('Setter must be a function!');
     }

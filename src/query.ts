@@ -9,7 +9,7 @@ abstract class Query<T> {
   data: Document<T>[];
   length: number;
   abstract _model: Model<T>;
-  abstract _schema: Schema;
+  abstract _schema: Schema<T>;
 
   /**
    * Query constructor.
