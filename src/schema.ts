@@ -1,6 +1,6 @@
 import SchemaType from './schematype';
 import * as Types from './types/index';
-import Promise from 'bluebird';
+import BluebirdPromise from 'bluebird';
 import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
@@ -50,12 +50,12 @@ const checkHookType = (type: string) => {
   }
 };
 
-const hookWrapper = (fn: (...args: any[]) => void): (...args: any[]) => Promise<any> => {
+const hookWrapper = (fn: (...args: any[]) => void): (...args: any[]) => BluebirdPromise<any> => {
   if (fn.length > 1) {
-    return Promise.promisify(fn);
+    return BluebirdPromise.promisify(fn);
   }
 
-  return Promise.method(fn);
+  return BluebirdPromise.method(fn);
 };
 
 /**
@@ -387,12 +387,12 @@ class Schema<T> {
   methods: Record<string, (this: Document<T>, ...args: any[]) => any> = {};
   hooks: {
     pre: {
-      save: ((...args: any[]) => Promise<any>)[]
-      remove: ((...args: any[]) => Promise<any>)[]
+      save: ((...args: any[]) => BluebirdPromise<any>)[]
+      remove: ((...args: any[]) => BluebirdPromise<any>)[]
     };
     post: {
-      save: ((...args: any[]) => Promise<any>)[]
-      remove: ((...args: any[]) => Promise<any>)[]
+      save: ((...args: any[]) => BluebirdPromise<any>)[]
+      remove: ((...args: any[]) => BluebirdPromise<any>)[]
     };
   };
   stacks: {

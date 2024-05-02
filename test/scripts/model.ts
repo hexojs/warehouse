@@ -132,7 +132,6 @@ describe('Model', () => {
   it('insert() - already existed', () => {
     let user;
 
-    // @ts-ignore
     return (User.insert({}).then(data => {
       user = data;
       return User.insert(data);
@@ -980,7 +979,7 @@ describe('Model', () => {
 
   it('populate() - error', () => {
     try {
-      // @ts-ignore
+      // @ts-expect-error
       Post.populate();
     } catch (err) {
       err.message.should.eql('path is required');
