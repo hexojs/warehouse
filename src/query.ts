@@ -1,4 +1,4 @@
-import Promise from 'bluebird';
+import BluebirdPromise from 'bluebird';
 import { parseArgs, shuffle } from './util';
 import type Model from './model';
 import type Schema from './schema';
@@ -338,13 +338,13 @@ abstract class Query<T> {
    *
    * @param {Object} data
    * @param {Function} [callback]
-   * @return {Promise}
+   * @return {BluebirdPromise}
    */
-  update(data: any, callback?: NodeJSLikeCallback<any>): Promise<any> {
+  update(data: any, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const model = this._model;
     const stack = this._schema._parseUpdate(data);
 
-    return Promise.mapSeries(this.data, item => model._updateWithStack(item._id, stack)).asCallback(callback);
+    return BluebirdPromise.mapSeries(this.data, item => model._updateWithStack(item._id, stack)).asCallback(callback);
   }
 
   /**
@@ -352,24 +352,24 @@ abstract class Query<T> {
    *
    * @param {Object} data
    * @param {Function} [callback]
-   * @return {Promise}
+   * @return {BluebirdPromise}
    */
-  replace(data: any, callback?: NodeJSLikeCallback<any>): Promise<any> {
+  replace(data: any, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const model = this._model;
 
-    return Promise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
+    return BluebirdPromise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
   }
 
   /**
    * Remove all documents.
    *
    * @param {Function} [callback]
-   * @return {Promise}
+   * @return {BluebirdPromise}
    */
-  remove(callback?: NodeJSLikeCallback<any>): Promise<any> {
+  remove(callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const model = this._model;
 
-    return Promise.mapSeries(this.data, item => model.removeById(item._id)).asCallback(callback);
+    return BluebirdPromise.mapSeries(this.data, item => model.removeById(item._id)).asCallback(callback);
   }
 
   /**
