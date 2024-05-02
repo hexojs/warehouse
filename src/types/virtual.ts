@@ -4,7 +4,7 @@ import { setGetter } from '../util';
 /**
  * Virtual schema type.
  */
-class SchemaTypeVirtual<T> extends SchemaType<any> {
+class SchemaTypeVirtual<T = any> extends SchemaType<any> {
   getter: ((this: T) => any) | undefined;
   setter: ((value: any) => void) | undefined;
 

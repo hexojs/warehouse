@@ -7,6 +7,7 @@ import SchemaTypeVirtual from './types/virtual';
 import { isPlainObject } from 'is-plain-object';
 import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, PopulateResult, SchemaTypeOptions } from './types';
 import type Model from './model';
+import type Document from './document';
 
 /**
  * @callback queryFilterCallback
@@ -382,8 +383,8 @@ class QueryParser {
 
 class Schema<T> {
   paths: Record<string, SchemaType<any>> = {};
-  statics: Record<string, (...args: any[]) => any> = {};
-  methods: Record<string, (...args: any[]) => any> = {};
+  statics: Record<string, (this: Model<T>, ...args: any[]) => any> = {};
+  methods: Record<string, (this: Document<T>, ...args: any[]) => any> = {};
   hooks: {
     pre: {
       save: ((...args: any[]) => Promise<any>)[]
@@ -599,7 +600,7 @@ class Schema<T> {
    * @param {String} name
    * @param {Function} fn
    */
-  method(name: string, fn: (...args: any[]) => any) {
+  method(name: string, fn: (this: Document<T>, ...args: any[]) => any) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {

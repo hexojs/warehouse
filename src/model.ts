@@ -963,7 +963,7 @@ class Model<T> extends EventEmitter {
 
 Model.prototype.get = Model.prototype.findById;
 
-function execHooks(schema: Schema<any>, type: string, event: string, data: any): Promise<any> {
+function execHooks<T>(schema: Schema<T>, type: string, event: string, data: any): Promise<any> {
   const hooks = schema.hooks[type][event] as ((data: any) => Promise<void> | void)[];
   if (!hooks.length) return Promise.resolve(data);
 
