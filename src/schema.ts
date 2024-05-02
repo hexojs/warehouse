@@ -381,10 +381,10 @@ class QueryParser {
 }
 
 
-class Schema<T> {
+class Schema<T = any> {
   paths: Record<string, SchemaType<any>> = {};
   statics: Record<string, (this: Model<T>, ...args: any[]) => any> = {};
-  methods: Record<string, (this: Document<T>, ...args: any[]) => any> = {};
+  methods: Record<string, (this: T, ...args: any[]) => any> = {};
   hooks: {
     pre: {
       save: ((...args: any[]) => BluebirdPromise<any>)[]
@@ -600,7 +600,7 @@ class Schema<T> {
    * @param {String} name
    * @param {Function} fn
    */
-  method(name: string, fn: (this: Document<T>, ...args: any[]) => any) {
+  method(name: string, fn: (this: T, ...args: any[]) => any) {
     if (!name) throw new TypeError('Method name is required!');
 
     if (typeof fn !== 'function') {
