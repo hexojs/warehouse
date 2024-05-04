@@ -3,7 +3,7 @@ const should = chai.should(); // eslint-disable-line
 import SchemaTypeVirtual from '../../../dist/types/virtual';
 
 describe('SchemaTypeVirtual', () => {
-  const type = new SchemaTypeVirtual('test');
+  const type = new SchemaTypeVirtual<any>('test');
 
   it('get()', () => {
     const getter = () => 'foo';

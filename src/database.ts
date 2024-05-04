@@ -118,7 +118,7 @@ class Database {
    * @param {Schema|object} [schema]
    * @return {Model}
    */
-  model(name: string, schema?: Schema | Record<string, AddSchemaTypeOptions>): Model<any> {
+  model<T = any>(name: string, schema?: Schema<T> | Record<string, AddSchemaTypeOptions>): Model<any> {
     if (this._models[name]) {
       return this._models[name];
     }
