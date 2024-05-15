@@ -54,7 +54,7 @@
     "eslint-config-hexo": "^5.0.0",
     "lodash": "^4.17.21",
     "mocha": "^10.1.0",
-    "sinon": "^17.0.1",
+    "sinon": "^18.0.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.25.0",
     "typedoc-plugin-rename-defaults": "^0.7.0",
