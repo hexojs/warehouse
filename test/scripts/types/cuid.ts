@@ -1,8 +1,8 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
+const should = chai.should();
 import { nanoid } from 'nanoid';
-import ValidationError from '../../../dist/error/validation';
-import SchemaTypeCUID from '../../../dist/types/cuid';
+import ValidationError from '../../../src/error/validation';
+import SchemaTypeCUID from '../../../src/types/cuid';
 
 describe('SchemaTypeCUID', () => {
   const type = new SchemaTypeCUID('test');

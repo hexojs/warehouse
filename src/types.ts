@@ -3,10 +3,13 @@ import type SchemaType from './schematype';
 export type NodeJSLikeCallback<R, E = any> = (err: E, result?: R) => void
 
 export interface Options {
-  lean?: boolean;
-  skip?: number;
-  limit?: number;
-  [key: PropertyKey]: any;
+  lean: boolean;
+  skip: number;
+  limit: number;
+  match: object;
+  sort: any;
+  path: string;
+  model: string;
 }
 
 export type SchemaTypeOptions = typeof SchemaType<unknown> | SchemaType<unknown> | ((...args: any[]) => any)
@@ -20,13 +23,3 @@ export interface AddSchemaTypeLoopOptions {
 }
 
 export type AddSchemaTypeOptions = AddSchemaTypeMixedOptions | AddSchemaTypeLoopOptions;
-
-/**
- * @typedef PopulateResult
- * @property {string} path
- * @property {*} model
- */
-export type PopulateResult = {
-  path: string;
-  model: any;
-};

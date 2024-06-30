@@ -5,9 +5,8 @@ import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
 import { isPlainObject } from 'is-plain-object';
-import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, PopulateResult, SchemaTypeOptions } from './types';
+import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, Options, SchemaTypeOptions } from './types';
 import type Model from './model';
-import type Document from './document';
 
 /**
  * @callback queryFilterCallback
@@ -387,12 +386,12 @@ class Schema<T = any> {
   methods: Record<string, (this: T, ...args: any[]) => any> = {};
   hooks: {
     pre: {
-      save: ((...args: any[]) => BluebirdPromise<any>)[]
-      remove: ((...args: any[]) => BluebirdPromise<any>)[]
+      save: ((data: any) => BluebirdPromise<any>)[]
+      remove: ((data: any) => BluebirdPromise<any>)[]
     };
     post: {
-      save: ((...args: any[]) => BluebirdPromise<any>)[]
-      remove: ((...args: any[]) => BluebirdPromise<any>)[]
+      save: ((data: any) => BluebirdPromise<any>)[]
+      remove: ((data: any) => BluebirdPromise<any>)[]
     };
   };
   stacks: {
@@ -663,7 +662,7 @@ class Schema<T = any> {
    * @return {Object}
    * @private
    */
-  _parseDatabase(data: object): object {
+  _parseDatabase(data: object): any {
     const stack = this.stacks.import;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -680,7 +679,7 @@ class Schema<T = any> {
    * @return {Object}
    * @private
    */
-  _exportDatabase(data: object): object {
+  _exportDatabase(data: object): any {
     const stack = this.stacks.export;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -760,10 +759,9 @@ class Schema<T = any> {
    * @return {PopulateResult[]}
    * @private
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  _parsePopulate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): PopulateResult[] {
+  _parsePopulate(expr: string | string[] | Partial<Options>[] | Partial<Options>): Partial<Options>[] {
     const { paths } = this;
-    const arr = [];
+    const arr: Partial<Options>[] = [];
 
     if (typeof expr === 'string') {
       const split = expr.split(' ');

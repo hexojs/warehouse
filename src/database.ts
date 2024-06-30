@@ -74,8 +74,8 @@ async function exportAsync(database: Database, path: string): Promise<void> {
 interface DatabaseOptions {
   version: number,
   path: string,
-  onUpgrade: (...args: any[]) => any,
-  onDowngrade: (...args: any[]) => any
+  onUpgrade: (oldVersion: number, newVersion: number) => any,
+  onDowngrade: (oldVersion: number, newVersion: number) => any
 }
 
 class Database {

@@ -35,7 +35,7 @@ abstract class Query<T> {
    *
    * @param {Function} iterator
    */
-  forEach(iterator: (item: any, index: number) => void): void {
+  forEach(iterator: (item: Document<T>, index: number) => void): void {
     const { data, length } = this;
 
     for (let i = 0; i < length; i++) {
@@ -142,8 +142,11 @@ abstract class Query<T> {
    * @return {Query|Array}
    */
   find(query: object): Query<T>;
-  find(query: object, options: Options): T[] | Query<T>;
-  find(query: object, options: Options = {}): T[] | Query<T> {
+  find(query: object, options: Partial<Omit<Options, 'lean'>> & { lean: true }): T[];
+  find(query: object, options: Partial<Omit<Options, 'lean'>> & { lean: false }): Query<T>;
+  find(query: object, options: Partial<Omit<Options, 'lean'>> & { lean?: undefined }): Query<T>;
+  find(query: object, options: Partial<Options>): T[] | Query<T>;
+  find(query: object, options: Partial<Options> = {}): T[] | Query<T> {
     const filter = this._schema._execQuery(query);
     const { data, length } = this;
     const { lean = false } = options;
@@ -176,8 +179,11 @@ abstract class Query<T> {
    * @return {Document|Object}
    */
   findOne(query: object): Document<T>;
-  findOne(query: object, options): Document<T> | T;
-  findOne(query: object, options: Options = {}): Document<T> | T {
+  findOne(query: object, options: Partial<Omit<Options, 'lean'>> & { lean: true }): T;
+  findOne(query: object, options: Partial<Omit<Options, 'lean'>> & { lean: false }): Document<T>;
+  findOne(query: object, options: Partial<Omit<Options, 'lean'>> & { lean?: undefined }): Document<T>;
+  findOne(query: object, options: Partial<Options>): Document<T> | T;
+  findOne(query: object, options: Partial<Options> = {}): Document<T> | T {
     const _options = Object.assign(options, { limit: 1 });
 
     const result = this.find(query, _options);
@@ -215,9 +221,9 @@ abstract class Query<T> {
    * @param {Function} iterator
    * @return {Array}
    */
-  map<T>(iterator: (item: any, index: number) => T): T[] {
+  map<R>(iterator: (item: Document<T>, index: number) => R): R[] {
     const { data, length } = this;
-    const result: T[] = new Array(length);
+    const result: R[] = new Array(length);
 
     for (let i = 0; i < length; i++) {
       result[i] = iterator(data[i], i);
@@ -234,7 +240,7 @@ abstract class Query<T> {
    * @param {*} [initial] By default, the initial value is the first document.
    * @return {*}
    */
-  reduce<R>(iterator: (pre: any, cur: any, index: number) => R, initial?: R): R {
+  reduce<R>(iterator: (pre: any, cur: Document<T>, index: number) => R, initial?: R): R {
     const { data, length } = this;
     let result, i: number;
 
@@ -261,7 +267,7 @@ abstract class Query<T> {
    * @param {*} [initial] By default, the initial value is the last document.
    * @return {*}
    */
-  reduceRight<R>(iterator: (pre: any, cur: any, index: number) => R, initial?: R): R {
+  reduceRight<R>(iterator: (pre: any, cur: Document<T>, index: number) => R, initial?: R): R {
     const { data, length } = this;
     let result, i;
 
@@ -287,7 +293,7 @@ abstract class Query<T> {
    * @param {Function} iterator
    * @return {Query}
    */
-  filter(iterator: (item: any, index: number) => boolean): Query<T> {
+  filter(iterator: (item: Document<T>, index: number) => boolean): Query<T> {
     const { data, length } = this;
     const arr = [];
 
@@ -306,7 +312,7 @@ abstract class Query<T> {
    * @param {Function} iterator
    * @return {Boolean}
    */
-  every(iterator: (item: any, index: number) => boolean): boolean {
+  every(iterator: (item: Document<T>, index: number) => boolean): boolean {
     const { data, length } = this;
 
     for (let i = 0; i < length; i++) {
@@ -323,7 +329,7 @@ abstract class Query<T> {
    * @param {Function} iterator
    * @return {Boolean}
    */
-  some(iterator: (item: any, index: number) => boolean): boolean {
+  some(iterator: (item: Document<T>, index: number) => boolean): boolean {
     const { data, length } = this;
 
     for (let i = 0; i < length; i++) {
@@ -340,7 +346,7 @@ abstract class Query<T> {
    * @param {Function} [callback]
    * @return {BluebirdPromise}
    */
-  update(data: any, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
+  update(data: object, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const model = this._model;
     const stack = this._schema._parseUpdate(data);
 
@@ -354,7 +360,7 @@ abstract class Query<T> {
    * @param {Function} [callback]
    * @return {BluebirdPromise}
    */
-  replace(data: any, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
+  replace(data: Document<T> | T, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     const model = this._model;
 
     return BluebirdPromise.map(this.data, item => model.replaceById(item._id, data)).asCallback(callback);
@@ -378,7 +384,7 @@ abstract class Query<T> {
    * @param {String|Object} expr
    * @return {Query}
    */
-  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Query<T> {
+  populate(expr: string | string[] | Partial<Options>[] | Partial<Options>): Query<T> {
     const stack = this._schema._parsePopulate(expr);
     const { data, length } = this;
     const model = this._model;

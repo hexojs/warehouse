@@ -1,17 +1,17 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
+const should = chai.should();
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised ); // eslint-disable-line
+chai.use(chaiAsPromised);
 
 import lodash from 'lodash';
 const { sortBy } = lodash;
 import Promise from 'bluebird';
 import sinon from 'sinon';
 import { nanoid } from 'nanoid';
-import Database from '../../dist/database';
-import type Query from '../../dist/query';
-import type Document from '../../dist/document';
-import type Model from '../../dist/model';
+import Database from '../../src/database';
+import type Query from '../../src/query';
+import type Document from '../../src/document';
+import type Model from '../../src/model';
 
 interface UserType {
   name?: {
@@ -99,7 +99,7 @@ describe('Model', () => {
     email: 'abc@example.com',
     age: 20
   }).then(data => {
-    User.findById(data._id, {lean: true}).name.should.not.ownProperty('full');
+    User.findById(data._id, {lean: true}).name!.should.not.ownProperty('full');
     return data;
   }).then(data => User.removeById(data._id)));
 

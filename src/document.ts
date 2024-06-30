@@ -2,7 +2,7 @@ import rfdc from 'rfdc';
 import type Model from './model';
 import type Schema from './schema';
 import type BluebirdPromise from 'bluebird';
-import type { NodeJSLikeCallback } from './types';
+import type { NodeJSLikeCallback, Options } from './types';
 const cloneDeep = rfdc();
 
 abstract class Document<T> {
@@ -98,7 +98,7 @@ abstract class Document<T> {
    * @param {String|Object} expr
    * @return {Document}
    */
-  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Document<T> {
+  populate(expr: string | string[] | Partial<Options>[] | Partial<Options>): Document<T> {
     const stack = this._schema._parsePopulate(expr);
     return this._model._populate(this, stack);
   }
