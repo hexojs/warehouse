@@ -69,7 +69,7 @@ abstract class Document<T> {
    *
    * @return {object}
    */
-  toObject(): T {
+  toObject(): T extends object ? T : never {
     const keys = Object.keys(this);
     const obj: Partial<T> = {};
 
@@ -80,7 +80,7 @@ abstract class Document<T> {
       obj[key] = isGetter(this, key) ? this[key] : cloneDeep(this[key]);
     }
 
-    return obj as T;
+    return obj as T extends object ? T : never;
   }
 
   /**

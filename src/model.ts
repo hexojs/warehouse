@@ -18,8 +18,8 @@ class Model<T> extends EventEmitter {
   data: Record<PropertyKey, T> = {};
   schema: Schema<T>;
   length = 0;
-  Document;
-  Query;
+  Document: { new<T>(data: T): Document<T> };
+  Query: { new<T>(data: Document<T>[]): Query<T> };
   _database: Database;
 
   /**
@@ -154,7 +154,7 @@ class Model<T> extends EventEmitter {
     const schema = this.schema;
 
     // Apply getters
-    const data = (data_ instanceof this.Document ? data_ : this.new(data_ as T)) as Document<T>;
+    const data = (data_ instanceof this.Document ? data_ : this.new(data_));
     const id = data._id;
 
     // Check ID
@@ -168,7 +168,7 @@ class Model<T> extends EventEmitter {
 
     // Apply setters
     const result = data.toObject();
-    schema._applySetters(result as object);
+    schema._applySetters(result);
 
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', data).then(data => {
@@ -236,7 +236,7 @@ class Model<T> extends EventEmitter {
    * @return {BluebirdPromise}
    * @private
    */
-  _updateWithStack(id: string | number, stack: ((data: any) => void)[]): BluebirdPromise<any> {
+  _updateWithStack(id: string | number, stack: ((data: T) => void)[]): BluebirdPromise<any> {
     const schema = this.schema;
 
     const data = this.data[id];
@@ -280,7 +280,7 @@ class Model<T> extends EventEmitter {
    */
   updateById(id: string | number, update: object, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     return BluebirdPromise.using(this._acquireWriteLock(), () => {
-      const stack = this.schema._parseUpdate(update as object);
+      const stack = this.schema._parseUpdate(update);
       return this._updateWithStack(id, stack);
     }).asCallback(callback);
   }
@@ -294,7 +294,7 @@ class Model<T> extends EventEmitter {
    * @return {BluebirdPromise}
    */
   update(query: object, data: object, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
-    return (this.find(query) as Query<T>).update(data, callback);
+    return this.find(query).update(data, callback);
   }
 
   /**
@@ -315,11 +315,11 @@ class Model<T> extends EventEmitter {
     (data_ as any)._id = id;
 
     // Apply getters
-    const data = (data_ instanceof this.Document ? data_ : this.new(data_ as T)) as Document<T>;
+    const data = (data_ instanceof this.Document ? data_ : this.new(data_));
 
     // Apply setters
     const result = data.toObject();
-    schema._applySetters(result as object);
+    schema._applySetters(result);
 
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', data).then(data => {
@@ -351,8 +351,8 @@ class Model<T> extends EventEmitter {
    * @param {function} [callback]
    * @return {BluebirdPromise}
    */
-  replace(query: object, data, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
-    return (this.find(query) as Query<T>).replace(data, callback);
+  replace(query: object, data: T | Document<T>, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
+    return this.find(query).replace(data, callback);
   }
 
   /**
@@ -401,7 +401,7 @@ class Model<T> extends EventEmitter {
    * @return {BluebirdPromise}
    */
   remove(query: object, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
-    return (this.find(query) as Query<T>).remove(callback);
+    return this.find(query).remove(callback);
   }
 
   /**
@@ -500,7 +500,7 @@ class Model<T> extends EventEmitter {
       }
     }
 
-    return options.lean ? arr : new this.Query(arr);
+    return options.lean ? arr as T[] : new this.Query(arr as Document<T>[]);
   }
 
   /**
@@ -881,7 +881,7 @@ class Model<T> extends EventEmitter {
         }
 
         if (options.match) {
-          cache = (new Query(arr) as Query<T>).find(options.match, options);
+          cache = new Query(arr).find(options.match, options);
         } else if (options.skip) {
           if (options.limit) {
             arr = arr.slice(options.skip, options.skip + options.limit);
@@ -1010,7 +1010,7 @@ class Model<T> extends EventEmitter {
 Model.prototype.get = Model.prototype.findById;
 
 function execHooks<T>(schema: Schema<T>, type: keyof Schema['hooks'], event: keyof Schema['hooks'][keyof Schema['hooks']], data: any): BluebirdPromise<any> {
-  const hooks = schema.hooks[type][event] as ((data: any) => BluebirdPromise<void> | void)[];
+  const hooks = schema.hooks[type][event];
   if (!hooks.length) return BluebirdPromise.resolve(data);
 
   return BluebirdPromise.each(hooks, hook => hook(data)).thenReturn(data);
