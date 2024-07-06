@@ -21,6 +21,7 @@ class Model<T> extends EventEmitter {
   Document: { new<T>(data: T): Document<T> };
   Query: { new<T>(data: Document<T>[]): Query<T> };
   _database: Database;
+  [key : string]: any;
 
   /**
    * Model constructor.
