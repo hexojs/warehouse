@@ -201,14 +201,17 @@ abstract class Query<T> {
    * query.sort('-date title');
    * ```
    *
-   * If the `order` equals to `-1`, `desc` or `descending`, the data will be
+   * If the `order` equals to `-1` or `desc`, the data will be
    * returned in reversed order.
    *
    * @param {String|Object} orderby
    * @param {String|Number} [order]
    * @return {Query}
    */
-  sort(orderby: string | object, order?: string | number | object): Query<T> {
+  sort(orderby: string, order: 'desc' | number | Record<string, any>): Query<T>;
+  sort(orderby: string): Query<T>;
+  sort(orderby: Record<string, number | Record<string, any>>): Query<T>;
+  sort(orderby: string | Record<string, number | Record<string, any>>, order?: 'desc' | number | Record<string, any>): Query<T> {
     const sort = parseArgs(orderby, order);
     const fn = this._schema._execSort(sort);
 

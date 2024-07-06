@@ -7,7 +7,7 @@ const cloneDeep = rfdc();
 
 abstract class Document<T> {
   abstract _model: Model<T>;
-  _id!: string | number | undefined;
+  _id!: string;
   abstract _schema: Schema<T>;
   [key : string]: any;
 

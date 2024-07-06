@@ -11,7 +11,7 @@ import WarehouseError from './error';
 import PopulationError from './error/population';
 import Mutex from './mutex';
 import type Database from './database';
-import type { AddSchemaTypeOptions, NodeJSLikeCallback, Options } from './types';
+import type { AddSchemaTypeOptions, NodeJSLikeCallback, Options, queryCallback } from './types';
 
 class Model<T> extends EventEmitter {
   _mutex = new Mutex();
@@ -236,7 +236,7 @@ class Model<T> extends EventEmitter {
    * @return {BluebirdPromise}
    * @private
    */
-  _updateWithStack(id: string | number, stack: ((data: T) => void)[]): BluebirdPromise<any> {
+  _updateWithStack(id: string, stack: queryCallback<T>[]): BluebirdPromise<any> {
     const schema = this.schema;
 
     const data = this.data[id];
@@ -278,7 +278,7 @@ class Model<T> extends EventEmitter {
    * @param {function} [callback]
    * @return {BluebirdPromise}
    */
-  updateById(id: string | number, update: object, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
+  updateById(id: string, update: object, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     return BluebirdPromise.using(this._acquireWriteLock(), () => {
       const stack = this.schema._parseUpdate(update);
       return this._updateWithStack(id, stack);
@@ -305,7 +305,7 @@ class Model<T> extends EventEmitter {
    * @return {BluebirdPromise}
    * @private
    */
-  _replaceById(id: string | number, data_: Document<T> | T): BluebirdPromise<any> {
+  _replaceById(id: string, data_: Document<T> | T): BluebirdPromise<any> {
     const schema = this.schema;
 
     if (!this.has(id)) {
@@ -339,7 +339,7 @@ class Model<T> extends EventEmitter {
    * @param {function} [callback]
    * @return {BluebirdPromise}
    */
-  replaceById(id: string | number, data: Document<T> | T, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
+  replaceById(id: string, data: Document<T> | T, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     return BluebirdPromise.using(this._acquireWriteLock(), () => this._replaceById(id, data)).asCallback(callback);
   }
 
@@ -362,7 +362,7 @@ class Model<T> extends EventEmitter {
    * @return {BluebirdPromise}
    * @private
    */
-  _removeById(id: string | number): BluebirdPromise<any> {
+  _removeById(id: string): BluebirdPromise<any> {
     const schema = this.schema;
 
     const data = this.data[id];
@@ -389,7 +389,7 @@ class Model<T> extends EventEmitter {
    * @param {function} [callback]
    * @return {BluebirdPromise}
    */
-  removeById(id: string | number, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
+  removeById(id: string, callback?: NodeJSLikeCallback<any>): BluebirdPromise<any> {
     return BluebirdPromise.using(this._acquireWriteLock(), () => this._removeById(id)).asCallback(callback);
   }
 
@@ -531,7 +531,10 @@ class Model<T> extends EventEmitter {
    * @param {String|Number} [order]
    * @return {Query}
    */
-  sort(orderby: string | object, order?: string | number | object): Query<T> {
+  sort(orderby: string, order: 'desc' | number | Record<string, any>): Query<T>;
+  sort(orderby: string): Query<T>;
+  sort(orderby: Record<string, number | Record<string, any>>): Query<T>;
+  sort(orderby: string | Record<string, number | Record<string, any>>, order?: 'desc' | number | Record<string, any>): Query<T> {
     const sort = parseArgs(orderby, order);
     const fn = this.schema._execSort(sort);
 

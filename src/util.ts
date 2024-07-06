@@ -6,7 +6,7 @@ function _parseArgs(args: string): Record<string, number> {
   if (typeof args !== 'string') return args;
 
   const arr = args.split(' ');
-  const result = {};
+  const result: Record<string, number> = {};
 
   for (let i = 0, len = arr.length; i < len; i++) {
     const key = arr[i];
@@ -173,8 +173,12 @@ export function reverse<T>(arr: T[]): T[] {
   return arr;
 }
 
-export function parseArgs(orderby: string | object, order?: string | number | object): Record<string, number> {
-  let result;
+export function parseArgs<B extends string, O extends number | string | Record<string, any>>(orderby: B, order: O): { [key in typeof orderby]: typeof order };
+export function parseArgs<B extends string, O>(orderby: B): Record<string, number>;
+export function parseArgs<B extends Record<string, number>, O>(orderby: B): B;
+export function parseArgs<B extends string | Record<string, number | Record<string, any>>, O extends number | string | Record<string, any>>(orderby: B, order?: O): Record<string, number | string | object>;
+export function parseArgs<B extends string | Record<string, number | Record<string, any>>, O extends number | string | Record<string, any>>(orderby: B, order?: O) {
+  let result: Record<string, number | string | Record<string, any>>;
 
   if (order) {
     result = {};
