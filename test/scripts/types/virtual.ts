@@ -1,6 +1,6 @@
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
-import SchemaTypeVirtual from '../../../dist/types/virtual';
+import SchemaTypeVirtual from '../../../src/types/virtual';
 
 describe('SchemaTypeVirtual', () => {
   const type = new SchemaTypeVirtual<any>('test');

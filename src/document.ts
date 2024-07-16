@@ -2,12 +2,12 @@ import rfdc from 'rfdc';
 import type Model from './model';
 import type Schema from './schema';
 import type BluebirdPromise from 'bluebird';
-import type { NodeJSLikeCallback } from './types';
+import type { NodeJSLikeCallback, Options } from './types';
 const cloneDeep = rfdc();
 
 abstract class Document<T> {
   abstract _model: Model<T>;
-  _id!: string | number | undefined;
+  _id!: string;
   abstract _schema: Schema<T>;
   [key : string]: any;
 
@@ -69,7 +69,7 @@ abstract class Document<T> {
    *
    * @return {object}
    */
-  toObject(): T {
+  toObject(): T extends object ? T : never {
     const keys = Object.keys(this);
     const obj: Partial<T> = {};
 
@@ -80,7 +80,7 @@ abstract class Document<T> {
       obj[key] = isGetter(this, key) ? this[key] : cloneDeep(this[key]);
     }
 
-    return obj as T;
+    return obj as T extends object ? T : never;
   }
 
   /**
@@ -98,7 +98,7 @@ abstract class Document<T> {
    * @param {String|Object} expr
    * @return {Document}
    */
-  populate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): Document<T> {
+  populate(expr: string | string[] | Partial<Options>[] | Partial<Options>): Document<T> {
     const stack = this._schema._parsePopulate(expr);
     return this._model._populate(this, stack);
   }
