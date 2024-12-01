@@ -34,7 +34,7 @@
     "hexo-log": "^4.0.1",
     "is-plain-object": "^5.0.0",
     "jsonparse": "^1.3.1",
-    "nanoid": "^3.3.7",
+    "nanoid": "^5.0.9",
     "rfdc": "^1.3.0",
     "through2": "^4.0.2"
   },
