@@ -3,9 +3,10 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: daily
+    interval: monthly
   open-pull-requests-limit: 20
   ignore:
   - dependency-name: sinon
     versions:
     - 10.0.0
+  - dependency-name: eslint
