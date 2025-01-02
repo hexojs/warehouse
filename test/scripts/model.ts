@@ -1,17 +1,17 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
+const should = chai.should();
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised ); // eslint-disable-line
+chai.use(chaiAsPromised);
 
 import lodash from 'lodash';
 const { sortBy } = lodash;
 import Promise from 'bluebird';
 import sinon from 'sinon';
 import { nanoid } from 'nanoid';
-import Database from '../../dist/database';
-import type Query from '../../dist/query';
-import type Document from '../../dist/document';
-import type Model from '../../dist/model';
+import Database from '../../src/database';
+import type Query from '../../src/query';
+import type Document from '../../src/document';
+import type Model from '../../src/model';
 
 interface UserType {
   name?: {
@@ -99,7 +99,7 @@ describe('Model', () => {
     email: 'abc@example.com',
     age: 20
   }).then(data => {
-    User.findById(data._id, {lean: true}).name.should.not.ownProperty('full');
+    User.findById(data._id, {lean: true}).name!.should.not.ownProperty('full');
     return data;
   }).then(data => User.removeById(data._id)));
 
@@ -532,7 +532,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: 20}) as Query<UserType>;
+    const query = User.find({age: 20});
     query.data.should.eql(data.slice(1, 3));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -544,7 +544,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({}) as Query<UserType>;
+    const query = User.find({});
     query.data.should.eql(data);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -566,7 +566,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: {$gte: 20}}, {limit: 2}) as Query<UserType>;
+    const query = User.find({age: {$gte: 20}}, {limit: 2});
     query.data.should.eql(data.slice(1, 3));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -577,11 +577,11 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    let query = User.find({age: {$gte: 20}}, {skip: 1}) as Query<UserType>;
+    let query = User.find({age: {$gte: 20}}, {skip: 1});
     query.data.should.eql(data.slice(2));
 
     // with limit
-    query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query<UserType>;
+    query = User.find({age: {$gte: 20}}, {limit: 1, skip: 1});
     query.data.should.eql(data.slice(2, 3));
 
     return data;
@@ -610,7 +610,7 @@ describe('Model', () => {
       ]
     });
 
-    (query as Query<UserType>).toArray().should.eql([data[1]]);
+    query.toArray().should.eql([data[1]]);
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -627,7 +627,7 @@ describe('Model', () => {
       ]
     });
 
-    (query as Query<UserType>).toArray().should.eql(data.slice(1));
+    query.toArray().should.eql(data.slice(1));
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -644,7 +644,7 @@ describe('Model', () => {
       ]
     });
 
-    (query as Query<UserType>).toArray().should.eql([data[0]]);
+    query.toArray().should.eql([data[0]]);
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -658,7 +658,7 @@ describe('Model', () => {
       $not: {'name.last': 'Doe'}
     });
 
-    (query as Query<UserType>).toArray().should.eql(data.slice(2));
+    query.toArray().should.eql(data.slice(2));
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -674,7 +674,7 @@ describe('Model', () => {
       }
     });
 
-    (query as Query<UserType>).toArray().should.eql(data.slice(0, 2));
+    query.toArray().should.eql(data.slice(0, 2));
 
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));

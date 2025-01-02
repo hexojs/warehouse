@@ -5,46 +5,24 @@ import { getProp, setProp, delProp } from './util';
 import PopulationError from './error/population';
 import SchemaTypeVirtual from './types/virtual';
 import { isPlainObject } from 'is-plain-object';
-import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, PopulateResult, SchemaTypeOptions } from './types';
+import type { AddSchemaTypeLoopOptions, AddSchemaTypeOptions, AddSchemaTypeSimpleOptions, Options, queryCallback, queryFilterCallback, queryParseCallback, SchemaTypeOptions } from './types';
 import type Model from './model';
 import type Document from './document';
 
-/**
- * @callback queryFilterCallback
- * @param {*} data
- * @return {boolean}
- */
-type queryFilterCallback = (data: unknown) => boolean;
-
-/**
- * @callback queryCallback
- * @param {*} data
- * @return {void}
- */
-type queryCallback = (data: unknown) => void;
-
-/**
- * @callback queryParseCallback
- * @param {*} a
- * @param {*} b
- * @returns {*}
- */
-type queryParseCallback = (a: unknown, b: unknown) => number;
-
 const builtinTypes = new Set(['String', 'Number', 'Boolean', 'Array', 'Object', 'Date', 'Buffer']);
 
-const getSchemaType = (name: string, options: { type: SchemaTypeOptions; [key: string]: any } | SchemaTypeOptions) => {
-  const Type = (options as any).type || options;
-  const typeName: string = Type.name;
+const getSchemaType = (name: string, options: AddSchemaTypeSimpleOptions): SchemaType<any> => {
+  const Type: SchemaTypeOptions = (options as any).type || options;
+  const typeName = Type.name;
 
   if (builtinTypes.has(typeName)) {
     return new Types[typeName](name, options);
   }
 
-  return new Type(name, options);
+  return new Type(name, options as Exclude<AddSchemaTypeSimpleOptions, SchemaTypeOptions>);
 };
 
-const checkHookType = (type: string) => {
+const checkHookType = (type: string): void => {
   if (type !== 'save' && type !== 'remove') {
     throw new TypeError('Hook type must be `save` or `remove`!');
   }
@@ -58,13 +36,10 @@ const hookWrapper = (fn: (...args: any[]) => void): (...args: any[]) => Bluebird
   return BluebirdPromise.method(fn);
 };
 
-/**
- * @param {Function[]} stack
- */
-const execSortStack = (stack: ((a: unknown, b: unknown) => number)[]) => {
+const execSortStack = <T = any>(stack: queryParseCallback<Document<T>>[]): queryParseCallback<Document<T>> => {
   const len = stack.length;
 
-  return (a: any, b: any) => {
+  return (a: Document<T>, b: Document<T>) => {
     let result: number;
 
     for (let i = 0; i < len; i++) {
@@ -76,11 +51,11 @@ const execSortStack = (stack: ((a: unknown, b: unknown) => number)[]) => {
   };
 };
 
-const sortStack = (path_: SchemaType<any>, key: string, sort: string | number) => {
+const sortStack = <T = any>(path_: SchemaType<any>, key: string, sort: string | number): queryParseCallback<Document<T>> => {
   const path = path_ || new SchemaType(key);
   const descending = sort === 'desc' || sort === -1;
 
-  return (a: any, b: any) => {
+  return (a: Document<T>, b: Document<T>) => {
     const result = path.compare(getProp(a, key), getProp(b, key));
     return descending && result ? result * -1 : result;
   };
@@ -91,7 +66,7 @@ class UpdateParser {
     return (data: any) => { setProp(data, key, update); };
   }
 
-  static updateStackOperator(path_: SchemaType<unknown>, ukey: string | number, key: string, update: any) {
+  static updateStackOperator(path_: SchemaType<unknown>, ukey: string, key: string, update: any) {
     const path = path_ || new SchemaType(key);
 
     return (data: any) => {
@@ -110,7 +85,7 @@ class UpdateParser {
    * @param {queryCallback[]} [stack]
    * @private
    */
-  parseUpdate(updates: object, prefix = '', stack: queryCallback[] = []): queryCallback[] {
+  parseUpdate<T>(updates: object, prefix = '', stack: queryCallback<T>[] = []): queryCallback<T>[] {
     const { paths } = this;
     const { updateStackOperator } = UpdateParser;
     const keys = Object.keys(updates);
@@ -182,7 +157,7 @@ class QueryParser {
   queryStackOperator(qkey: string, name: string, query: any): queryFilterCallback {
     const path = this.paths[name] || new SchemaType(name);
 
-    return data => path[qkey](getProp(data, name), query, data);
+    return (data: unknown) => path[qkey](getProp(data, name), query, data);
   }
 
   /**
@@ -191,7 +166,7 @@ class QueryParser {
    * @return {void}
    * @private
    */
-  $and(arr: any[], stack: queryFilterCallback[]): void {
+  $and(arr: object[], stack: queryFilterCallback[]): void {
     for (let i = 0, len = arr.length; i < len; i++) {
       stack.push(this.execQuery(arr[i]));
     }
@@ -202,7 +177,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $or(query: any[]): queryFilterCallback {
+  $or(query: object[]): queryFilterCallback {
     const stack = this.parseQueryArray(query);
     const len = stack.length;
 
@@ -220,7 +195,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $nor(query: any[]): queryFilterCallback {
+  $nor(query: object[]): queryFilterCallback {
     const stack = this.parseQueryArray(query);
     const len = stack.length;
 
@@ -238,7 +213,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $not(query: any): queryFilterCallback {
+  $not(query: object): queryFilterCallback {
     const stack = this.parseQuery(query);
     const len = stack.length;
 
@@ -262,7 +237,7 @@ class QueryParser {
    * @return {queryFilterCallback}
    * @private
    */
-  $where(fn: (...args: any[]) => boolean): queryFilterCallback {
+  $where(fn: () => boolean): queryFilterCallback {
     return data => Reflect.apply(fn, data, []);
   }
 
@@ -273,8 +248,8 @@ class QueryParser {
    * @return {queryFilterCallback[]}
    * @private
    */
-  parseQueryArray(arr: any[]): queryFilterCallback[] {
-    const stack = [];
+  parseQueryArray(arr: object[]): queryFilterCallback[] {
+    const stack: queryFilterCallback[] = [];
     this.$and(arr, stack);
     return stack;
   }
@@ -316,7 +291,7 @@ class QueryParser {
    * @return {queryFilterCallback[]}
    * @private
    */
-  parseQuery(queries: any): queryFilterCallback[] {
+  parseQuery(queries: object): queryFilterCallback[] {
 
     /** @type {queryFilterCallback[]} */
     const stack: queryFilterCallback[] = [];
@@ -387,12 +362,12 @@ class Schema<T = any> {
   methods: Record<string, (this: T, ...args: any[]) => any> = {};
   hooks: {
     pre: {
-      save: ((...args: any[]) => BluebirdPromise<any>)[]
-      remove: ((...args: any[]) => BluebirdPromise<any>)[]
+      save: ((data: any) => BluebirdPromise<any>)[]
+      remove: ((data: any) => BluebirdPromise<any>)[]
     };
     post: {
-      save: ((...args: any[]) => BluebirdPromise<any>)[]
-      remove: ((...args: any[]) => BluebirdPromise<any>)[]
+      save: ((data: any) => BluebirdPromise<any>)[]
+      remove: ((data: any) => BluebirdPromise<any>)[]
     };
   };
   stacks: {
@@ -574,7 +549,7 @@ class Schema<T = any> {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  pre(type: 'save' | 'remove', fn: (...args: any[]) => void): void {
+  pre(type: keyof Schema['hooks']['pre'], fn: (...args: any[]) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -587,7 +562,7 @@ class Schema<T = any> {
    * @param {String} type Hook type. One of `save` or `remove`.
    * @param {Function} fn
    */
-  post(type: 'save' | 'remove', fn: (...args: any[]) => void): void {
+  post(type: keyof Schema['hooks']['post'], fn: (...args: any[]) => void): void {
     checkHookType(type);
     if (typeof fn !== 'function') throw new TypeError('Hook must be a function!');
 
@@ -663,7 +638,7 @@ class Schema<T = any> {
    * @return {Object}
    * @private
    */
-  _parseDatabase(data: object): object {
+  _parseDatabase(data: object): any {
     const stack = this.stacks.import;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -680,7 +655,7 @@ class Schema<T = any> {
    * @return {Object}
    * @private
    */
-  _exportDatabase(data: object): object {
+  _exportDatabase(data: object): any {
     const stack = this.stacks.export;
 
     for (let i = 0, len = stack.length; i < len; i++) {
@@ -697,7 +672,7 @@ class Schema<T = any> {
    * @return {queryCallback[]}
    * @private
    */
-  _parseUpdate(updates: object): queryCallback[] {
+  _parseUpdate(updates: object): queryCallback<T>[] {
     return new UpdateParser(this.paths).parseUpdate(updates);
   }
 
@@ -722,7 +697,7 @@ class Schema<T = any> {
    * @return {queryParseCallback[]}
    * @private
    */
-  _parseSort(sorts: object, prefix = '', stack: queryParseCallback[] = []): queryParseCallback[] {
+  _parseSort(sorts: Record<string, number | string | Record<string, any>>, prefix = '', stack: queryParseCallback<Document<T>>[] = []): queryParseCallback<Document<T>>[] {
     const { paths } = this;
     const keys = Object.keys(sorts);
 
@@ -748,7 +723,7 @@ class Schema<T = any> {
    * @return {queryParseCallback}
    * @private
    */
-  _execSort(sorts: object): queryParseCallback {
+  _execSort(sorts: Record<string, number | string | Record<string, any>>): queryParseCallback<Document<T>> {
     const stack = this._parseSort(sorts);
     return execSortStack(stack);
   }
@@ -760,10 +735,9 @@ class Schema<T = any> {
    * @return {PopulateResult[]}
    * @private
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  _parsePopulate(expr: string | any[] | { path?: string; model?: any; [key: PropertyKey]: any }): PopulateResult[] {
+  _parsePopulate(expr: string | string[] | Partial<Options>[] | Partial<Options>): Partial<Options>[] {
     const { paths } = this;
-    const arr = [];
+    const arr: Partial<Options>[] = [];
 
     if (typeof expr === 'string') {
       const split = expr.split(' ');

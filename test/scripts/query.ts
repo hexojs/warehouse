@@ -1,17 +1,17 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
+const should = chai.should();
 import lodash from 'lodash';
 const { sortBy } = lodash;
 import Promise from 'bluebird';
-import Document from '../../dist/document';
-import Database from '../../dist/database';
-import type Query from '../../dist/query';
-import type Model from '../../dist/model';
+import Document from '../../src/document';
+import Database from '../../src/database';
+import type Model from '../../src/model';
 
 interface UserType {
   name?: string;
   age?: number;
   comments?: string;
+  _id?: string;
 }
 
 interface LoopType {
@@ -165,7 +165,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({}).find({age: {$gte: 20}}, {limit: 2}) as Query<UserType>;
+    const query = User.find({}).find({age: {$gte: 20}}, {limit: 2});
     query.data.should.eql(data.slice(1, 3));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -176,11 +176,11 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    let query = User.find({}).find({age: {$gte: 20}}, {skip: 1}) as Query<UserType>;
+    let query = User.find({}).find({age: {$gte: 20}}, {skip: 1});
     query.data.should.eql(data.slice(2));
 
     // with limit
-    query = User.find({}).find({age: {$gte: 20}}, {limit: 1, skip: 1}) as Query<UserType>;
+    query = User.find({}).find({age: {$gte: 20}}, {limit: 1, skip: 1});
     query.data.should.eql(data.slice(2, 3));
 
     return data;
@@ -192,7 +192,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({}).find({age: {$gt: 20}}, {lean: true}) as Query<UserType>;
+    const query = User.find({}).find({age: {$gt: 20}}, {lean: true});
     query.should.be.a('array');
     const { length } = query;
     for (let i = 0; i < length; i++) {
@@ -332,7 +332,7 @@ describe('Query', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const result = User.find({}).findOne({age: {$gt: 20}}, {lean: true}) as Document<UserType>;
+    const result = User.find({}).findOne({age: {$gt: 20}}, {lean: true});
     result._id!.should.eql(data[2]._id);
     result.should.to.not.be.an.instanceof(Document);
     return data;

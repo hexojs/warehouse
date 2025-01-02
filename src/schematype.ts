@@ -278,7 +278,7 @@ class SchemaType<T> {
    * @param {Object} data
    * @return {*}
    */
-  u$rename(value: unknown, update: unknown, data: unknown): void {
+  u$rename(value: unknown, update: string, data: unknown): void {
     if (value !== undefined) setProp(data, update, value);
     return undefined;
   }
