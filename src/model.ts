@@ -23,6 +23,9 @@ class Model<T> extends EventEmitter {
   _database: Database;
   [key : string]: any;
 
+  _dataKeys: string[] = [];
+  dirty = false;
+
   /**
    * Model constructor.
    *
@@ -81,6 +84,17 @@ class Model<T> extends EventEmitter {
 
     // Apply instance methods
     Object.assign(_Document.prototype, schema.methods);
+  }
+
+  /**
+   * Returns the cached data keys.
+   */
+  get dataKeys(): string[] {
+    if (this.dirty) {
+      this._dataKeys = Object.keys(this.data);
+      this.dirty = false;
+    }
+    return this._dataKeys;
   }
 
   /**
@@ -174,6 +188,7 @@ class Model<T> extends EventEmitter {
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', data).then(data => {
       // Insert data
+      this.dirty = true;
       this.data[id] = result;
       this.length++;
 
@@ -264,6 +279,7 @@ class Model<T> extends EventEmitter {
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', doc).then(data => {
       // Update data
+      this.dirty = true;
       this.data[id] = result;
 
       this.emit('update', data);
@@ -325,6 +341,7 @@ class Model<T> extends EventEmitter {
     // Pre-hooks
     return execHooks(schema, 'pre', 'save', data).then(data => {
       // Replace data
+      this.dirty = true;
       this.data[id] = result;
 
       this.emit('update', data);
@@ -375,6 +392,7 @@ class Model<T> extends EventEmitter {
     // Pre-hooks
     return execHooks(schema, 'pre', 'remove', data).then(data => {
       // Remove data
+      this.dirty = true;
       this.data[id] = null;
       this.length--;
 
@@ -433,7 +451,7 @@ class Model<T> extends EventEmitter {
   forEach(iterator: (value: Document<T>, index: number) => void, options: Partial<Omit<Options, 'lean'>> & { lean?: undefined }): void;
   forEach(iterator: ((value: T, index: number) => void) | ((value: Document<T>, index: number) => void), options: Partial<Options>): void;
   forEach(iterator: ((value: T, index: number) => void) | ((value: Document<T>, index: number) => void), options?: Partial<Options>): void {
-    const keys = Object.keys(this.data);
+    const keys = this.dataKeys;
     let num = 0;
 
     for (let i = 0, len = keys.length; i < len; i++) {
@@ -480,7 +498,7 @@ class Model<T> extends EventEmitter {
   find(query: object, options: Partial<Options>): Query<T> | T[];
   find(query: object, options: Partial<Options> = {}): Query<T> | T[] {
     const filter = this.schema._execQuery(query);
-    const keys = Object.keys(this.data);
+    const keys = this.dataKeys;
     const len = keys.length;
     let limit = options.limit || this.length;
     let skip = options.skip;
@@ -558,7 +576,7 @@ class Model<T> extends EventEmitter {
   eq(i_: number, options?: Partial<Options>): Document<T> | T {
     let index = i_ < 0 ? this.length + i_ : i_;
     const data = this.data;
-    const keys = Object.keys(data);
+    const keys = this.dataKeys;
 
     for (let i = 0, len = keys.length; i < len; i++) {
       const key = keys[i];
@@ -626,7 +644,7 @@ class Model<T> extends EventEmitter {
     if (!len) return new this.Query([]);
 
     const arr = new Array(len);
-    const keys = Object.keys(this.data);
+    const keys = this.dataKeys;
     const keysLen = keys.length;
     let num = 0;
 
@@ -696,7 +714,7 @@ class Model<T> extends EventEmitter {
   map<R>(iterator: ((value: T, index: number) => R) | ((value: Document<T>, index: number) => R), options: Partial<Options>): R[];
   map<R>(iterator: ((value: T, index: number) => R) | ((value: Document<T>, index: number) => R), options?: Partial<Options>): R[] {
     const result = new Array(this.length);
-    const keys = Object.keys(this.data);
+    const keys = this.dataKeys;
     const len = keys.length;
 
     for (let i = 0, num = 0; i < len; i++) {
@@ -797,7 +815,7 @@ class Model<T> extends EventEmitter {
    * @return {Boolean}
    */
   every(iterator: (value: Document<T>, index: number) => boolean): boolean {
-    const keys = Object.keys(this.data);
+    const keys = this.dataKeys;
     const len = keys.length;
     let num = 0;
 
@@ -822,7 +840,7 @@ class Model<T> extends EventEmitter {
    * @return {Boolean}
    */
   some(iterator: (value: Document<T>, index: number) => boolean): boolean {
-    const keys = Object.keys(this.data);
+    const keys = this.dataKeys;
     const len = keys.length;
     let num = 0;
 
@@ -975,6 +993,7 @@ class Model<T> extends EventEmitter {
 
     for (let i = 0; i < len; i++) {
       const item = arr[i];
+      this.dirty = true;
       data[item._id] = schema._parseDatabase(item) as T;
     }
 
@@ -994,7 +1013,7 @@ class Model<T> extends EventEmitter {
   toJSON(): any[] {
     const result = new Array(this.length);
     const { data, schema } = this;
-    const keys = Object.keys(data);
+    const keys = this.dataKeys;
     const { length } = keys;
 
     for (let i = 0, num = 0; i < length; i++) {
