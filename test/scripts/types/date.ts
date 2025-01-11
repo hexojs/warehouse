@@ -1,7 +1,7 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
-import ValidationError from '../../../dist/error/validation';
-import SchemaTypeDate from '../../../dist/types/date';
+const should = chai.should();
+import ValidationError from '../../../src/error/validation';
+import SchemaTypeDate from '../../../src/types/date';
 
 describe('SchemaTypeDate', () => {
   const type = new SchemaTypeDate('test');

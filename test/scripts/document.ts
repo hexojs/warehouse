@@ -1,8 +1,8 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line
-import Database from '../../dist/database';
-import Document from '../../dist/document';
-import type Model from '../../dist/model';
+const should = chai.should();
+import Database from '../../src/database';
+import Document from '../../src/document';
+import type Model from '../../src/model';
 
 interface UserType {
   name?: string;
@@ -51,7 +51,7 @@ describe('Document', () => {
     const doc = User.new({});
 
     return doc.save().then(item => {
-      User.findById(doc._id as string | number).should.exist;
+      User.findById(doc._id).should.exist;
       return User.removeById(item._id);
     });
   });

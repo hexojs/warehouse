@@ -3,8 +3,8 @@ const should = chai.should(); // eslint-disable-line
 import path from 'path';
 import Promise from 'bluebird';
 import sinon from 'sinon';
-import Database from '../../dist/database';
-import Model from '../../dist/model';
+import Database from '../../src/database';
+import Model from '../../src/model';
 import fs from 'fs';
 const promisifyFs = Promise.promisifyAll(fs);
 
@@ -114,7 +114,7 @@ describe('Database', () => {
       const model = db.model('Test');
       const json = db.toJSON();
       json.meta.version.should.eql(0);
-      (json.models as any).Test.should.eql(model);
+      json.models.Test.should.eql(model);
       console.log(db.toJSON());
     });
   });

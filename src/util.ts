@@ -2,11 +2,11 @@ function extractPropKey(key: string): string[] {
   return key.split('.');
 }
 
-function _parseArgs(args: string) {
+function _parseArgs(args: string): Record<string, number> {
   if (typeof args !== 'string') return args;
 
   const arr = args.split(' ');
-  const result = {};
+  const result: Record<string, number> = {};
 
   for (let i = 0, len = arr.length; i < len; i++) {
     const key = arr[i];
@@ -29,7 +29,7 @@ function _parseArgs(args: string) {
 }
 
 
-export function shuffle(array) {
+export function shuffle<T>(array: T[]): T[] {
   if (!Array.isArray(array)) throw new TypeError('array must be an Array!');
   const $array = array.slice();
   const { length } = $array;
@@ -48,7 +48,7 @@ export function shuffle(array) {
   return $array;
 }
 
-export function getProp(obj, key) {
+export function getProp(obj: Record<string, any>, key: string): any {
   if (typeof obj !== 'object') throw new TypeError('obj must be an object!');
   if (!key) throw new TypeError('key is required!');
 
@@ -67,7 +67,7 @@ export function getProp(obj, key) {
   return result;
 }
 
-export function setProp(obj, key, value) {
+export function setProp(obj: Record<string, any>, key: string, value: any): void {
   if (typeof obj !== 'object') throw new TypeError('obj must be an object!');
   if (!key) throw new TypeError('key is required!');
 
@@ -91,7 +91,7 @@ export function setProp(obj, key, value) {
   cursor[lastKey] = value;
 }
 
-export function delProp(obj, key) {
+export function delProp(obj: Record<string, any>, key: string): void {
   if (typeof obj !== 'object') throw new TypeError('obj must be an object!');
   if (!key) throw new TypeError('key is required!');
 
@@ -119,7 +119,7 @@ export function delProp(obj, key) {
   delete cursor[lastKey];
 }
 
-export function setGetter(obj, key, fn) {
+export function setGetter(obj: Record<string, any>, key: string, fn: () => any): void {
   if (typeof obj !== 'object') throw new TypeError('obj must be an object!');
   if (!key) throw new TypeError('key is required!');
   if (typeof fn !== 'function') throw new TypeError('fn must be a function!');
@@ -144,7 +144,7 @@ export function setGetter(obj, key, fn) {
   cursor.__defineGetter__(lastKey, fn);
 }
 
-export function arr2obj(arr, value) {
+export function arr2obj<T>(arr: string[], value: T): Record<string, T> {
   if (!Array.isArray(arr)) throw new TypeError('arr must be an array!');
 
   const obj = {};
@@ -157,7 +157,7 @@ export function arr2obj(arr, value) {
   return obj;
 }
 
-export function reverse(arr) {
+export function reverse<T>(arr: T[]): T[] {
   if (!Array.isArray(arr)) throw new TypeError('arr must be an array!');
 
   const len = arr.length;
@@ -173,8 +173,12 @@ export function reverse(arr) {
   return arr;
 }
 
-export function parseArgs(orderby: string | object, order?: string | number | object) {
-  let result;
+export function parseArgs<B extends string, O extends number | string | Record<string, any>>(orderby: B, order: O): { [key in typeof orderby]: typeof order };
+export function parseArgs<B extends string, O>(orderby: B): Record<string, number>;
+export function parseArgs<B extends Record<string, number>, O>(orderby: B): B;
+export function parseArgs<B extends string | Record<string, number | Record<string, any>>, O extends number | string | Record<string, any>>(orderby: B, order?: O): Record<string, number | string | object>;
+export function parseArgs<B extends string | Record<string, number | Record<string, any>>, O extends number | string | Record<string, any>>(orderby: B, order?: O) {
+  let result: Record<string, number | string | Record<string, any>>;
 
   if (order) {
     result = {};

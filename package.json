@@ -13,9 +13,7 @@
     "prepublishOnly": "npm install && npm run clean && npm run build",
     "build": "tsc -b",
     "clean": "tsc -b --clean",
-    "preeslint": "npm run clean && npm run build",
     "eslint": "eslint src test",
-    "pretest": "npm run clean && npm run build",
     "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
     "test-cov": "c8 --reporter=lcovonly --reporter=text-summary npm test",
     "typedoc": "typedoc --entryPointStrategy expand ./src"
@@ -41,6 +39,7 @@
   "devDependencies": {
     "@types/bluebird": "^3.5.37",
     "@types/chai": "^4.3.3",
+    "@types/chai-as-promised": "^8.0.1",
     "@types/graceful-fs": "^4.1.5",
     "@types/jsonstream": "^0.8.30",
     "@types/mocha": "^10.0.0",

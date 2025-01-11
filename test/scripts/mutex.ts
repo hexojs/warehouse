@@ -1,6 +1,6 @@
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
-import Mutex from '../../dist/mutex';
+import Mutex from '../../src/mutex';
 import sinon from 'sinon';
 
 describe('Mutex', () => {

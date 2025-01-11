@@ -1,10 +1,10 @@
 import chai from 'chai';
-const should = chai.should(); // eslint-disable-line 
-import ValidationError from '../../../dist/error/validation';
-import SchemaTypeArray from '../../../dist/types/array';
-import SchemaTypeString from '../../../dist/types/string';
-import SchemaTypeDate from '../../../dist/types/date';
-import SchemaTypeBoolean from '../../../dist/types/boolean';
+const should = chai.should();
+import ValidationError from '../../../src/error/validation';
+import SchemaTypeArray from '../../../src/types/array';
+import SchemaTypeString from '../../../src/types/string';
+import SchemaTypeDate from '../../../src/types/date';
+import SchemaTypeBoolean from '../../../src/types/boolean';
 
 describe('SchemaTypeArray', () => {
   const type = new SchemaTypeArray('test');

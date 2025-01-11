@@ -1,7 +1,7 @@
 import chai from 'chai';
 const should = chai.should(); // eslint-disable-line
-import ValidationError from '../../../dist/error/validation';
-import SchemaTypeString from '../../../dist/types/string';
+import ValidationError from '../../../src/error/validation';
+import SchemaTypeString from '../../../src/types/string';
 
 describe('SchemaTypeString', () => {
   const type = new SchemaTypeString('test');
