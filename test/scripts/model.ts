@@ -9,8 +9,6 @@ import Promise from 'bluebird';
 import sinon from 'sinon';
 import { nanoid } from 'nanoid';
 import Database from '../../src/database';
-import type Query from '../../src/query';
-import type Document from '../../src/document';
 import type Model from '../../src/model';
 
 interface UserType {
@@ -124,18 +122,19 @@ describe('Model', () => {
 
   it('insert() - no id', () => {
     const doc = User.new();
+    // @ts-ignore
     delete doc._id;
 
-    return (User.insert(doc) as any).should.eventually.be.rejected;
+    return User.insert(doc).should.eventually.be.rejected;
   });
 
   it('insert() - already existed', () => {
     let user;
 
-    return (User.insert({}).then(data => {
+    return User.insert({}).then(data => {
       user = data;
       return User.insert(data);
-    }).finally(() => User.removeById(user._id)) as any).should.eventually.be.rejected;
+    }).finally(() => User.removeById(user._id)).should.eventually.be.rejected;
   });
 
   it('insert() - hook', () => {
@@ -329,7 +328,7 @@ describe('Model', () => {
     return data;
   }).then(data => User.removeById(data._id)));
 
-  it('updateById() - id not exist', () => (User.updateById('foo', {}) as any).should.eventually.be.rejected);
+  it('updateById() - id not exist', () => User.updateById('foo', {}).should.eventually.be.rejected);
 
   it('updateById() - hook', () => {
     const db = new Database();
@@ -399,7 +398,7 @@ describe('Model', () => {
     }).then(data => User.removeById(data._id));
   });
 
-  it('replaceById() - id not exist', () => (User.replaceById('foo', {}) as any).should.eventually.be.rejected);
+  it('replaceById() - id not exist', () => User.replaceById('foo', {}).should.eventually.be.rejected);
 
   it('replaceById() - pre-hook', () => {
     const db = new Database();
@@ -458,7 +457,7 @@ describe('Model', () => {
     });
   });
 
-  it('removeById() - id not exist', () => (User.removeById('foo', () => {}) as any).should.eventually.be.rejected);
+  it('removeById() - id not exist', () => User.removeById('foo', () => {}).should.eventually.be.rejected);
 
   it('removeById() - hook', () => {
     const db = new Database();
@@ -555,7 +554,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    const query = User.find({age: {$gt: 20}}) as Query<UserType>;
+    const query = User.find({age: {$gt: 20}});
     query.data.should.eql(data.slice(2));
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
@@ -695,7 +694,7 @@ describe('Model', () => {
     {age: 30},
     {age: 40}
   ]).then(data => {
-    (User.findOne({age: {$gt: 20}}, {lean: true}) as Document<UserType>)._id!.should.eql(data[2]._id);
+    (User.findOne({age: {$gt: 20}}, {lean: true}) as UserType & { _id: string })._id.should.eql(data[2]._id);
     return data;
   }).map<unknown, any>(item => User.removeById(item._id)));
 
@@ -1259,7 +1258,7 @@ describe('Model', () => {
 
     const Test = db.model('Test', schema);
 
-    (Test as any).add({name: 'foo'}).then(data => {
+    Test.add({name: 'foo'}).then(data => {
       data.name.should.eql('foo');
     });
 

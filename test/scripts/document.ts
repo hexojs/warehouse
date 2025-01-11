@@ -51,7 +51,7 @@ describe('Document', () => {
     const doc = User.new({});
 
     return doc.save().then(item => {
-      User.findById(doc._id as string | number).should.exist;
+      User.findById(doc._id).should.exist;
       return User.removeById(item._id);
     });
   });

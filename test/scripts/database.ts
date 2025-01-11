@@ -114,7 +114,7 @@ describe('Database', () => {
       const model = db.model('Test');
       const json = db.toJSON();
       json.meta.version.should.eql(0);
-      (json.models as any).Test.should.eql(model);
+      json.models.Test.should.eql(model);
       console.log(db.toJSON());
     });
   });
