@@ -1,6 +1,6 @@
 import { parse as createJsonParseStream } from './lib/jsonstream';
 import BluebirdPromise from 'bluebird';
-import { promises as fsPromises, createReadStream } from 'graceful-fs';
+import { createReadStream, createWriteStream } from 'graceful-fs';
 import { pipeline, Stream } from 'stream';
 import Model from './model';
 import Schema from './schema';
@@ -8,40 +8,41 @@ import SchemaType from './schematype';
 import WarehouseError from './error';
 import { logger } from 'hexo-log';
 import type { AddSchemaTypeOptions, NodeJSLikeCallback } from './types';
+import { asyncWriteToStream } from './util';
 
 const log = logger();
 const pkg = require('../package.json');
-const { open } = fsPromises;
 const pipelineAsync = BluebirdPromise.promisify(pipeline) as unknown as (...args: Stream[]) => BluebirdPromise<unknown>;
 
 async function exportAsync(database: Database, path: string): Promise<void> {
-  const handle = await open(path, 'w');
+  const writeStream = createWriteStream(path, { flags: 'w' });
 
   try {
+    let p: Promise<unknown> | undefined;
     // Start body & Meta & Start models
-    await handle.write(`{"meta":${JSON.stringify({
+    p = asyncWriteToStream(writeStream, `{"meta":${JSON.stringify({
       version: database.options.version,
       warehouse: pkg.version
     })},"models":{`);
+    if (p) await p;
 
     const models = database._models;
     const keys = Object.keys(models);
     const { length } = keys;
-
     // models body
     for (let i = 0; i < length; i++) {
       const key = keys[i];
 
       if (!models[key]) continue;
 
-      let prefix = '';
-      if (i) {
-        prefix = ',';
-      }
-      await handle.write(`${prefix}"${key}":${models[key]._export()}`);
+      const prefix = i ? ',' : '';
+      p = asyncWriteToStream(writeStream, `${prefix}"${key}":`);
+      if (p) await p;
+      await models[key].toJSONStream(writeStream);
     }
     // End models
-    await handle.write('}}');
+    p = asyncWriteToStream(writeStream, '}}');
+    if (p) await p;
   } catch (e) {
     log.error(e);
     if (e instanceof RangeError && e.message.includes('Invalid string length')) {
@@ -53,7 +54,11 @@ async function exportAsync(database: Database, path: string): Promise<void> {
       throw e;
     }
   } finally {
-    await handle.close();
+    await new Promise<void>((resolve, reject) => {
+      writeStream.end(() => {
+        resolve();
+      });
+    });
   }
 }
 
