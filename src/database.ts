@@ -1,6 +1,6 @@
 import { parse as createJsonParseStream } from './lib/jsonstream';
 import BluebirdPromise from 'bluebird';
-import { writev, promises as fsPromises, createReadStream } from 'graceful-fs';
+import { promises as fsPromises, createReadStream } from 'graceful-fs';
 import { pipeline, Stream } from 'stream';
 import Model from './model';
 import Schema from './schema';
@@ -13,16 +13,6 @@ const log = logger();
 const pkg = require('../package.json');
 const { open } = fsPromises;
 const pipelineAsync = BluebirdPromise.promisify(pipeline) as unknown as (...args: Stream[]) => BluebirdPromise<unknown>;
-
-let _writev: (handle: fsPromises.FileHandle, buffers: Buffer[]) => Promise<unknown>;
-
-if (typeof writev === 'function') {
-  _writev = (handle, buffers) => handle.writev(buffers);
-} else {
-  _writev = async (handle, buffers) => {
-    for (const buffer of buffers) await handle.write(buffer);
-  };
-}
 
 async function exportAsync(database: Database, path: string): Promise<void> {
   const handle = await open(path, 'w');
@@ -44,16 +34,12 @@ async function exportAsync(database: Database, path: string): Promise<void> {
 
       if (!models[key]) continue;
 
-      const buffers = [];
-
-      if (i) buffers.push(Buffer.from(',', 'ascii'));
-
-      buffers.push(Buffer.from(`"${key}":`));
-
-      buffers.push(Buffer.from(models[key]._export()));
-      await _writev(handle, buffers);
+      let prefix = '';
+      if (i) {
+        prefix = ',';
+      }
+      await handle.write(`${prefix}"${key}":${models[key]._export()}`);
     }
-
     // End models
     await handle.write('}}');
   } catch (e) {
