@@ -55,9 +55,7 @@ async function exportAsync(database: Database, path: string): Promise<void> {
     }
   } finally {
     await new Promise<void>((resolve, reject) => {
-      writeStream.end(() => {
-        resolve();
-      });
+      writeStream.end(resolve);
     });
   }
 }
