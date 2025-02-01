@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import rfdc from 'rfdc';
 const cloneDeep = rfdc();
 import BluebirdPromise from 'bluebird';
-import { parseArgs, getProp, setGetter, shuffle } from './util';
+import { parseArgs, getProp, setGetter, shuffle, asyncWriteToStream } from './util';
 import Document from './document';
 import Query from './query';
 import Schema from './schema';
@@ -12,6 +12,7 @@ import PopulationError from './error/population';
 import Mutex from './mutex';
 import type Database from './database';
 import type { AddSchemaTypeOptions, NodeJSLikeCallback, Options, queryCallback } from './types';
+import type { Writable } from 'node:stream';
 
 class Model<T> extends EventEmitter {
   _mutex = new Mutex();
@@ -1008,6 +1009,26 @@ class Model<T> extends EventEmitter {
    */
   _export(): string {
     return JSON.stringify(this.toJSON());
+  }
+
+  async toJSONStream(writeStream: Writable): Promise<void> {
+    let p: Promise<unknown> | undefined;
+    const { data, schema } = this;
+    const keys = this.dataKeys;
+    const { length } = keys;
+
+    p = asyncWriteToStream(writeStream, '[');
+    if (p) await p;
+    for (let i = 0; i < length; i++) {
+      const raw = data[keys[i]];
+      if (raw) {
+        const prefix = i === 0 ? '' : ',';
+        p = asyncWriteToStream(writeStream, `${prefix}${JSON.stringify(schema._exportDatabase(cloneDeep(raw) as object))}`);
+        if (p) await p;
+      }
+    }
+    p = asyncWriteToStream(writeStream, ']');
+    if (p) await p;
   }
 
   toJSON(): any[] {
