@@ -14,7 +14,7 @@
     "build": "tsc -b",
     "clean": "tsc -b --clean",
     "eslint": "eslint src test",
-    "test": "mocha -r ts-node/register 'test/scripts/**/*.ts'",
+    "test": "mocha -r ts-node/register test/scripts/**/*.ts",
     "test-cov": "c8 --reporter=lcovonly --reporter=text-summary npm test",
     "typedoc": "typedoc --entryPointStrategy expand ./src"
   },
