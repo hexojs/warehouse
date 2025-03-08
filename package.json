@@ -50,7 +50,7 @@
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.26.0",
-    "eslint-config-hexo": "^5.0.0",
+    "eslint-config-hexo": "^6.0.0",
     "lodash": "^4.17.21",
     "mocha": "11.0.2",
     "sinon": "^19.0.2",
