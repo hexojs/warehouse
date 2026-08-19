@@ -3,13 +3,12 @@ const should = chai.should();
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 
-import lodash from 'lodash';
-const { sortBy } = lodash;
 import Promise from 'bluebird';
 import sinon from 'sinon';
 import { nanoid } from 'nanoid';
 import Database from '../../src/database';
 import type Model from '../../src/model';
+import { sortBy } from '../helpers';
 
 interface UserType {
   name?: {
